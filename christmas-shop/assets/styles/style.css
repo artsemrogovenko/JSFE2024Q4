@@ -128,7 +128,8 @@ html {
 main {
     background-color: var(--primary);
     border-radius: 20px;
-    width: 1440px;
+    max-width: 1440px;
+    width: 100%;
 }
 
 body {
@@ -247,7 +248,7 @@ section {
     height: 100%;
     width: 100%;
     background: url(../images/bg-ball.png) no-repeat;
-    background-size: 99%;
+    background-size: auto 115%;
     background-position: center;
 }
 
@@ -391,13 +392,14 @@ section {
 .section_best{
     display: flex;
     flex-direction: column;
-    height: 554px;
+    /* min-height: 554px; */
+    padding: 60px 0;
 }
 
 .container_best {
     display: flex;
     width: 100%;
-    height: 434px;
+    /* height: 434px; */
     max-width: 1276px;
     row-gap: 20px;
     flex-direction: column;
@@ -417,6 +419,11 @@ section {
 .cards_container {
     display: flex;
     gap: 12px;
+    flex-wrap: wrap;
+    max-width: 1276px;
+    align-self: center;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .card {
@@ -490,7 +497,7 @@ section {
     justify-content: center;
     width: 100%;
     height: 100%;
-    background-image: url(../images/bg-forest.png);
+    background: url(../images/bg-forest.png) center;
     background-size: cover;
 }
 
@@ -702,6 +709,8 @@ footer {
     background: url(../images/vector/arrow-up.svg) no-repeat center ,var(--static-white);
 }
 
+/* #region gifts */
+
 /* #region tabs */
 .tab {
     display: flex;
@@ -723,3 +732,44 @@ footer {
     cursor: pointer;
 }
 /* #endregion tabs */
+
+
+.nav.active{
+    border-radius: 12px;
+    background-color: var(--primary-10);
+    color: var(--primary);
+}
+
+.gifts_section{
+    width: 100%;
+    flex-direction: column;
+    background: url(../images/bg-garland.png) no-repeat;
+    background-size: 100%;
+}
+
+.gifts-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1276px;
+    row-gap: 20px;
+    padding: 60px 8px;
+}
+
+.gifts-header{
+    max-width: 426px;
+    text-align: center;
+    color: var(--static-white);
+}
+
+.container_tabs{
+    display: flex;
+    max-width: 474px;
+    width: 100%;
+    height: 40px;
+    justify-content: space-between;
+    padding: 0 5px;
+}
+
+
+/* #endregion gifts */
