@@ -197,10 +197,11 @@ header {
     align-items: center;
     justify-content: center;
     padding: 12px 20px;
+    border-radius: 12px;
 }
 
 .nav:hover:not(.active){
-    border-radius: 12px;
+    /* border-radius: 12px; */
     background-color: var(--primary-10);
     color: var(--primary);
 }
@@ -445,6 +446,8 @@ section {
     row-gap: 8px;
     align-self: stretch;
     padding: 20px;
+    background-color: var(--static-white);
+    border-radius: 20px;
 }
 
 .card.for_work h4{ color: var(--tag-purple);}
@@ -465,23 +468,28 @@ section {
 }
 
 .card.for_work .card-image {
-    background: url(../images/gift-for-work.png) lightgray 50% / cover no-repeat;
+    background: url(../images/gift-for-work.png) no-repeat;
+    background-size: cover;
 }
 
 .card.for_health .card-image {
-    background: url(../images/gift-for-health.png) lightgray 50% / cover no-repeat;
+    background: url(../images/gift-for-health.png) no-repeat;
+    background-size: cover;
 }
 
 .card.for_harmony .card-image {
-    background: url(../images/gift-for-harmony.png)lightgray 50% / cover no-repeat;
+    background: url(../images/gift-for-harmony.png) no-repeat;
+    background-size: cover;
 }
 
 .card:hover{
     cursor: pointer;
 }
+.card h3{
+    transition: color 500ms;
+}
 .card:hover h3{
     color: var(--primary);
-    transition: color 500ms;
 }
 /* #endregion cards */
 
@@ -591,6 +599,10 @@ footer {
 .contact:hover span,
 .contact:hover h3{
     color: var(--primary);
+}
+
+.contact span,
+.contact h3{
     transition: color 500ms;
 }
 
@@ -622,7 +634,10 @@ footer {
 }
 .social:hover path{
     stroke: var(--primary);
-    transition: all 500ms;
+}
+
+.social path{
+    transition: stroke 500ms;
 }
 
 .social:hover{
