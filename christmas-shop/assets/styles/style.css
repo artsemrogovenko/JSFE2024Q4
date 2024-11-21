@@ -753,6 +753,7 @@ footer {
     border-radius: 12px;
     background-color: var(--primary-10);
     color: var(--primary);
+    pointer-events: none;
 }
 
 .gifts_section{
