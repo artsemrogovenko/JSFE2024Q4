@@ -329,6 +329,7 @@ section {
     height: 368px;
     row-gap: 18px;
     color: var(--static-white);
+    padding: 0 8px;
 }
 
 .slider-header {
