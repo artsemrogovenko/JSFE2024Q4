@@ -708,9 +708,9 @@ footer .container{
 .button_line{
      height: 1px;
      width: 20px;
-    /* background-color: var(--dark); */
+    background-color: var(--dark);
     transition: transform var(--my-transform-time);
-    background : url(../images/vector/burger-line.svg) center no-repeat;
+    /* background : url(../images/vector/burger-line.svg) center no-repeat; */
 }
 
 .burger_button.pressed .button_line.top{
