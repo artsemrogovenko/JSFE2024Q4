@@ -17,6 +17,7 @@
     /* burger vars */
     --my-burger-width: 0px;
     --my-burger-height: 0px;
+    --my-burger-top-position: 0px;
     --my-transform-time: 1s;
 }
 
@@ -145,9 +146,9 @@ a {
     transition: background 500ms, color 500ms;
 }
 
-a:hover:not(.inactive,.active){
+/* a:hover:not(.inactive,.active){
     cursor: pointer;
-}
+} */
 
 .container {
     display: flex;
@@ -165,6 +166,7 @@ header {
     width: 100%;
     max-width: 1440px;
     align-self: center;
+    z-index: 2;
 }
 
 .container_header {
@@ -200,11 +202,11 @@ header {
     border-radius: 12px;
 }
 
-.nav:hover:not(.active){
-    /* border-radius: 12px; */
+/* .nav:hover:not(.active){
+    border-radius: 12px;
     background-color: var(--primary-10);
     color: var(--primary);
-}
+} */
 
 button{
     transition: all 500ms;
@@ -221,11 +223,11 @@ button{
     /* transition: all 500ms; */
 }
 
-.button_primary:hover {
+/* .button_primary:hover {
     background-color: var(--static-white);
     color: var(--dark);
     cursor: pointer;
-}
+} */
 
 section {
     display: flex;
@@ -329,6 +331,7 @@ section {
     height: 368px;
     row-gap: 18px;
     color: var(--static-white);
+    padding: 0 8px;
 }
 
 .slider-header {
@@ -371,7 +374,7 @@ section {
     background: none;
 }
 /* #region buttons */
-.scroll:hover:not(.inactive) {
+/* .scroll:hover:not(.inactive) {
     background: var(--static-white);
     cursor: pointer;
 }
@@ -379,7 +382,7 @@ section {
 .scroll:hover:not(.inactive) #VectorL,
 .scroll:hover:not(.inactive) #VectorR {
     stroke: var(--primary);
-}
+} */
 
 .inactive{
     opacity: 0.4;
@@ -482,15 +485,15 @@ section {
     background-size: cover;
 }
 
-.card:hover{
+/* .card:hover{
     cursor: pointer;
-}
+} */
 .card h3{
     transition: color 500ms;
 }
-.card:hover h3{
+/* .card:hover h3{
     color: var(--primary);
-}
+} */
 /* #endregion cards */
 
 .section_cta{
@@ -564,6 +567,10 @@ footer {
     max-width: 1440px;
 }
 
+footer .container{
+    padding: 0;
+}
+
 .container_footer{
     display: flex;
     flex-direction: column;
@@ -596,10 +603,10 @@ footer {
     color: var(--dark);
 }
 
-.contact:hover span,
+/* .contact:hover span,
 .contact:hover h3{
     color: var(--primary);
-}
+} */
 
 .contact span,
 .contact h3{
@@ -632,21 +639,21 @@ footer {
     width: 40px;
     height: 40px;
 }
-.social:hover path{
+/* .social:hover path{
     stroke: var(--primary);
-}
+} */
 
 .social path{
     transition: stroke 500ms;
 }
 
-.social:hover{
+/* .social:hover{
     cursor: pointer;
-}
+} */
 
-.school-link:hover{
+/* .school-link:hover{
     color: var(--primary);
-}
+} */
 /* #endregion footer */
 
 /* #region burger  */
@@ -657,7 +664,7 @@ footer {
     width: var(--my-burger-width);
     height: var(--my-burger-height);
     position: absolute;
-    top: 64px;
+    /* top: var(--my-burger-top-position); */
     right: calc(var(--my-burger-width)*-1);
     background: var(--static-white);
     transition: transform var(--my-transform-time);
@@ -669,6 +676,8 @@ footer {
     justify-content: center;
     flex-direction: column;
     row-gap: 8px;
+    position: absolute;
+    top: var(--my-burger-top-position);
 }
 
 .hidden {
@@ -692,16 +701,16 @@ footer {
     display: flex;
 }
 
-.burger_button:hover{
+/* .burger_button:hover{
     cursor: pointer;
-}
+} */
 
 .button_line{
      height: 1px;
      width: 20px;
-    /* background-color: var(--dark); */
+    background-color: var(--dark);
     transition: transform var(--my-transform-time);
-    background : url(../images/vector/burger-line.svg) center no-repeat;
+    /* background : url(../images/vector/burger-line.svg) center no-repeat; */
 }
 
 .burger_button.pressed .button_line.top{
@@ -742,10 +751,10 @@ footer {
     background: var(--static-white-20);
 }
 
-.tab:hover:not(.active){
+/* .tab:hover:not(.active){
     background: var(--static-white-20);
     cursor: pointer;
-}
+} */
 /* #endregion tabs */
 
 
@@ -789,3 +798,65 @@ footer {
 
 
 /* #endregion gifts */
+
+@media (hover: hover) {
+    a:hover:not(.inactive,.active){
+        cursor: pointer;
+    }
+
+    .nav:hover:not(.active){
+        /* border-radius: 12px; */
+        background-color: var(--primary-10);
+        color: var(--primary);
+    }
+
+    .button_primary:hover {
+        background-color: var(--static-white);
+        color: var(--dark);
+        cursor: pointer;
+    }
+
+    .scroll:hover:not(.inactive) {
+        background: var(--static-white);
+        cursor: pointer;
+    }
+
+    .scroll:hover:not(.inactive) #VectorL,
+    .scroll:hover:not(.inactive) #VectorR {
+        stroke: var(--primary);
+    }
+
+    .card:hover{
+        cursor: pointer;
+    }
+
+    .card:hover h3{
+        color: var(--primary);
+    }
+
+    .contact:hover span,
+    .contact:hover h3{
+        color: var(--primary);
+    }
+
+    .social:hover path{
+        stroke: var(--primary);
+    }
+
+    .social:hover{
+        cursor: pointer;
+    }
+
+    .school-link:hover{
+        color: var(--primary);
+    }
+
+    .burger_button:hover{
+        cursor: pointer;
+    }
+
+    .tab:hover:not(.active){
+        background: var(--static-white-20);
+        cursor: pointer;
+    }
+}
