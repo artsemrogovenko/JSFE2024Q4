@@ -10,11 +10,7 @@ burgerIcon.addEventListener("click", initBurger);
 let myDelay ;
 
 window.addEventListener("resize", initialize);
-document.addEventListener('DOMContentLoaded', function() {
-  const time = rootStyles.getPropertyValue("--my-transform-time").trim();
-  myDelay = parseFloat(time) * 1000;
-  initialize();
-});
+document.addEventListener('DOMContentLoaded', preparationFirstLoading);
 
 function initialize() {
   calcPositionBurger();
@@ -84,6 +80,10 @@ function calcPositionBurger() {
   );
 }
 
+function preparationFirstLoading(){
+  const time = rootStyles.getPropertyValue("--my-transform-time").trim();
+  myDelay = parseFloat(time) * 1000;
+
 // добавление событий на ссылки бургера
 let burgerButtons = Array.from(burgerContent.childNodes).filter(
   (e) => e.nodeType === 1 && e.classList.contains("nav")
@@ -100,7 +100,8 @@ burgerButtons.forEach((button) => {
   });
 });
 
-
+  initialize();
+}
 
 document.querySelector('.social.telegram').addEventListener('click', function () {
   window.open('https://web.telegram.org/', '_blank');
