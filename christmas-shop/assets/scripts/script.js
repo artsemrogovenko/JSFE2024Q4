@@ -1,3 +1,19 @@
+let gifts ;
+loadGifts();
+function loadGifts(){
+  fetch('./assets/gifts.json')
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(res => {
+    gifts = Array.from(res);
+  })
+}
+
+
 
 document.querySelector('.social.telegram').addEventListener('click', function () {
   window.open('https://web.telegram.org/', '_blank');

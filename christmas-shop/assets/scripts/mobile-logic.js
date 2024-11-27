@@ -18,6 +18,7 @@ function initialize() {
   document.documentElement.style.setProperty("--my-burger-width",`${documentElement.clientWidth}px`);
   toggleNavigation();
   toggleBurgerButton();
+  toTop();
 }
 
 function toggleNavigation() {
@@ -99,4 +100,23 @@ burgerButtons.forEach((button) => {
 });
 
   initialize();
+}
+
+const scrollUp = document.querySelector('.to_top');
+let positionScrollUp = 300;
+
+function toTop() {
+  if (window.innerWidth <= 768) {
+    if (window.pageYOffset >= positionScrollUp) {
+      document.querySelector(".to_top").classList.remove("hidden");
+    }else {
+      document.querySelector(".to_top").classList.add("hidden");
+    }
+  } else {
+    document.querySelector(".to_top").classList.add("hidden");
+  }
+}
+
+if(document.location.pathname.includes('gifts.html')){
+  window.addEventListener('scroll', toTop);
 }
