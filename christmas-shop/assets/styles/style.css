@@ -146,9 +146,6 @@ a {
     transition: background 500ms, color 500ms;
 }
 
-/* a:hover:not(.inactive,.active){
-    cursor: pointer;
-} */
 
 .container {
     display: flex;
@@ -202,32 +199,20 @@ header {
     border-radius: 12px;
 }
 
-/* .nav:hover:not(.active){
-    border-radius: 12px;
-    background-color: var(--primary-10);
-    color: var(--primary);
-} */
 
 button{
     transition: all 500ms;
 }
 
 .button_primary {
-    /* width: 235px; */
-    /* height: 56px; */
     padding: 20px 32px;
     border: none;
     border-radius: 20px;
     background-color: var(--dark);
     color: var(--static-white);
-    /* transition: all 500ms; */
 }
 
-/* .button_primary:hover {
-    background-color: var(--static-white);
-    color: var(--dark);
-    cursor: pointer;
-} */
+
 
 section {
     display: flex;
@@ -373,16 +358,6 @@ section {
     border: 1px solid var(--static-white, #FFF);
     background: none;
 }
-/* #region buttons */
-/* .scroll:hover:not(.inactive) {
-    background: var(--static-white);
-    cursor: pointer;
-}
-
-.scroll:hover:not(.inactive) #VectorL,
-.scroll:hover:not(.inactive) #VectorR {
-    stroke: var(--primary);
-} */
 
 .inactive{
     opacity: 0.4;
@@ -403,7 +378,6 @@ section {
 .container_best {
     display: flex;
     width: 100%;
-    /* height: 434px; */
     max-width: 1276px;
     row-gap: 20px;
     flex-direction: column;
@@ -485,15 +459,11 @@ section {
     background-size: cover;
 }
 
-/* .card:hover{
-    cursor: pointer;
-} */
+
 .card h3{
     transition: color 500ms;
 }
-/* .card:hover h3{
-    color: var(--primary);
-} */
+
 /* #endregion cards */
 
 .section_cta{
@@ -603,10 +573,7 @@ footer .container{
     color: var(--dark);
 }
 
-/* .contact:hover span,
-.contact:hover h3{
-    color: var(--primary);
-} */
+
 
 .contact span,
 .contact h3{
@@ -639,22 +606,12 @@ footer .container{
     width: 40px;
     height: 40px;
 }
-/* .social:hover path{
-    stroke: var(--primary);
-} */
+
 
 .social path{
     transition: stroke 500ms;
 }
 
-/* .social:hover{
-    cursor: pointer;
-} */
-
-/* .school-link:hover{
-    color: var(--primary);
-} */
-/* #endregion footer */
 
 /* #region burger  */
 .burger-container {
@@ -701,16 +658,12 @@ footer .container{
     display: flex;
 }
 
-/* .burger_button:hover{
-    cursor: pointer;
-} */
 
 .button_line{
      height: 1px;
      width: 20px;
     background-color: var(--dark);
     transition: transform var(--my-transform-time);
-    /* background : url(../images/vector/burger-line.svg) center no-repeat; */
 }
 
 .burger_button.pressed .button_line.top{
@@ -751,11 +704,6 @@ footer .container{
     background: var(--static-white-20);
 }
 
-/* .tab:hover:not(.active){
-    background: var(--static-white-20);
-    cursor: pointer;
-} */
-/* #endregion tabs */
 
 
 .nav.active{
