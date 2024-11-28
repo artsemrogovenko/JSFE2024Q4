@@ -106,7 +106,7 @@ const scrollUp = document.querySelector('.to_top');
 let positionScrollUp = 300;
 
 function toTop() {
-  if (window.innerWidth <= 768) {
+  if (window.innerWidth <= 768 && document.location.pathname.includes('gifts.html')) {
     if (window.pageYOffset >= positionScrollUp) {
       document.querySelector(".to_top").classList.remove("hidden");
     }else {

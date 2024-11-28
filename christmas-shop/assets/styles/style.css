@@ -316,7 +316,7 @@ section {
     height: 368px;
     row-gap: 18px;
     color: var(--static-white);
-    padding: 0 8px;
+    /* padding: 0 8px; */
 }
 
 .slider-header {
@@ -333,6 +333,8 @@ section {
 .slider {
     display: flex;
     align-items: center;
+    transition: transform calc(var(--my-transform-time)/1.45);
+    width: min-content;
 }
 
 .slider_image img {
@@ -340,6 +342,10 @@ section {
     height: 200px;
     border-radius: 20px;
     margin: 0 20px;
+}
+
+.slider_image:last-child img {
+    margin-right: 0 ;
 }
 
 .slider_arrows {
