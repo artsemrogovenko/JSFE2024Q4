@@ -626,7 +626,7 @@ footer .container{
     justify-content: center;
     width: var(--my-burger-width);
     height: var(--my-burger-height);
-    position: absolute;
+    position: fixed;
     /* top: var(--my-burger-top-position); */
     right: calc(var(--my-burger-width)*-1);
     background: var(--static-white);

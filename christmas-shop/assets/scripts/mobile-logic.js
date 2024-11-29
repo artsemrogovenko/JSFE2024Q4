@@ -52,6 +52,7 @@ function initBurger() {
     } else {
       burgerIcon.classList.add("pressed");
       burgerContainer.classList.remove("hidden");
+      document.body.style.overflow='hidden';
       setTimeout(() => {
         burgerContainer.classList.add("move_burger");
       }, 50);
@@ -63,6 +64,7 @@ function initBurger() {
 function hideBurgerMenu() {
   burgerIcon.classList.remove("pressed");
   burgerContainer.classList.remove("move_burger");
+  document.body.style.overflow='';
   setTimeout(() => {
     burgerContainer.classList.add("hidden");
   }, myDelay);
