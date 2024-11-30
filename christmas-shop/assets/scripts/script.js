@@ -37,7 +37,15 @@ setInterval(() => {
   calculateTime();
 }, 1000);
 //#endregion timer
-const cardsContainer = document.querySelector('.cards_container');
+let cardsContainer = document.querySelector('.cards_container');
+
+cardsContainer.addEventListener("click", function (event) {
+  let selected = event.target;
+  while (!selected.classList.contains("card")) {
+    selected = selected.parentElement;
+  }
+  formFields(selected);
+});
 
 const isHomePage = document.location.pathname.includes("home.html");
 document.addEventListener("DOMContentLoaded", function () {
@@ -166,27 +174,46 @@ function homeGifts() {
   cardsContainer.innerHTML= pickRandom(4).reduce((acc,element) => acc+draftingBlock(element),'');
 }
 
-function formFields(data) {
-  const forDescription = `<h4>${data}</h4><h3>${data}</h3><p>${data}</p>`;
-  const forLive = `<p>Live</p><p>${data}</p>
-     							 <div class="stars_container">
-                  ${'<div class="star light">'.repeat(5)}
-                  </div>`;
+function searchData(cardElement) {
+  let contentBlock = Array.from(cardElement.childNodes).filter(
+    (node) => node.nodeType === 1 && node.classList.contains("card-content"));
+  let searchNamePhrase=contentBlock.pop().innerText.split('\n')[0].toLowerCase();
+  let foundElement = gifts.filter(gift=>gift.name.toLowerCase() === searchNamePhrase);
+  return foundElement[0];
+}
 
-  const forCreate = `<p>Create</p><p>${data}</p>
-                  <div class="stars_container">
-                  ${'<div class="star light">'.repeat(5)}
-                  </div>`;
+const modalBackground = document.querySelector(".modal_background");
+const modalWindow = document.querySelector(".modal");
+const modalDescription = document.querySelector(".modal-description");
 
-  const forLove = `<p>Love</p><p>${data}</p>
-                  <div class="stars_container">
-                  ${'<div class="star light">'.repeat(5)}
-                  </div>`;
+function formFields(cardElement) {
+  const data = searchData(cardElement);
+  let modalContent= modalDescription.firstElementChild;
 
-  const forDream = `<p>Dream</p><p>${data}</p>
-                  <div class="stars_container">
-                  ${'<div class="star light">'.repeat(5)}
-                  </div>`;
+  modalWindow.className="modal";
+  modalWindow.classList.add(`${data.category.toLowerCase().replace(' ','_')}`);
+  modalContent.innerHTML = `<h4>${data.category}</h4><h3>${data.name}</h3><p>${data.description}</p>`;
+
+  let adds=document.querySelector(".adds").children;
+  const forLive = parseInt(data.superpowers.live);
+  const forCreate = parseInt(data.superpowers.create);
+  const forLove = parseInt(data.superpowers.love);
+  const forDream = parseInt(data.superpowers.dream);
+  adds[0].innerHTML = composeInner("Live", forLive);
+  adds[1].innerHTML = composeInner("Create", forCreate);
+  adds[2].innerHTML = composeInner("Love", forLove);
+  adds[3].innerHTML = composeInner("Dream", forDream);
+
+  modalBackground.classList.remove('hidden');
+  documentElement.style.overflow="hidden";
+}
+
+function composeInner(title,rating){
+ return `<p>${title}</p><p>+${rating}</p>
+        <div class="stars_container">
+        ${'<div class="star"></div>'.repeat(rating/100)}
+        ${'<div class="star light"></div>'.repeat(5 - rating/100)}
+        </div>`;
 }
 //#endregion
 
