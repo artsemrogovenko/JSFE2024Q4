@@ -217,6 +217,20 @@ function composeInner(title,rating){
 }
 //#endregion
 
+//#region closeModal
+modalBackground.addEventListener('click',(event)=>{
+  let selected = event.target;
+  if (
+    selected.classList.contains("close_modal") ||
+    selected.classList.contains("modal_background")
+  ) {
+    modalBackground.classList.add('hidden');
+    documentElement.style.overflow="";
+  }
+}
+);
+
+//#endregion closeModal
 
 document.querySelector('.social.telegram').addEventListener('click', function () {
   window.open('https://web.telegram.org/', '_blank');

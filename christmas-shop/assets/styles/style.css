@@ -814,6 +814,10 @@ footer .container{
         background: var(--static-white-20);
         cursor: pointer;
     }
+
+    .close_modal:hover{
+        cursor: pointer;
+    }
 }
 
 /* #region modal */
@@ -920,6 +924,16 @@ flex-direction: column;
 .star.light {
     opacity: 0.1;
 }
+
+.close_modal{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: center no-repeat url(../images/vector/close.svg);
+}
+
 /* #endregion modal */
 
 .hidden {
