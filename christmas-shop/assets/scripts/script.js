@@ -232,6 +232,28 @@ modalBackground.addEventListener('click',(event)=>{
 
 //#endregion closeModal
 
+//#region filter-gifts
+const filterTabs = document.querySelectorAll('.tab');
+
+filterTabs.forEach((element) => {
+  if (element.className.includes("tab")) {
+    element.addEventListener("click", (tab) =>
+      filteringGifts(tab.target.innerText)
+    );
+  }
+});
+
+function filteringGifts(parameter){
+ if (parameter === "ALL") {
+  return cardsContainer.innerHTML = pickRandom(gifts.length)
+  .reduce((acc, element) => acc + draftingBlock(element),'');
+ }
+ return (cardsContainer.innerHTML = gifts
+   .filter((gift) => gift.category.toLowerCase() === parameter.toLowerCase())
+   .reduce((acc, element) => acc + draftingBlock(element), ''));
+}
+//#endregion filter
+
 document.querySelector('.social.telegram').addEventListener('click', function () {
   window.open('https://web.telegram.org/', '_blank');
 });
