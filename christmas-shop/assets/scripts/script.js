@@ -237,11 +237,20 @@ const filterTabs = document.querySelectorAll('.tab');
 
 filterTabs.forEach((element) => {
   if (element.className.includes("tab")) {
-    element.addEventListener("click", (tab) =>
-      filteringGifts(tab.target.innerText)
+    element.addEventListener("click", function(tab){
+      unsetActiveTabs();
+      tab.target.classList.add('active');
+      filteringGifts(tab.target.innerText);
+    }
     );
   }
 });
+
+function unsetActiveTabs() {
+  filterTabs.forEach(element => {
+    element.classList.remove('active');
+  });
+}
 
 function filteringGifts(parameter){
  if (parameter === "ALL") {
