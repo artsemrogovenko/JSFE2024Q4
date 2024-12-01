@@ -19,6 +19,7 @@
     --my-burger-height: 0px;
     --my-burger-top-position: 0px;
     --my-transform-time: 1s;
+    --my-transform-slider: 0s;
 }
 
 * {
@@ -687,9 +688,9 @@ footer .container{
     border: 1px solid var(--primary);
     border-radius: 50%;
     position: fixed;
-    bottom: 20px;
+    bottom: 8px;
     align-self: self-end;
-    margin-right: 20px;
+    margin-right: 8px;
     background: url(../images/vector/arrow-up.svg) no-repeat center ,var(--static-white);
 }
 

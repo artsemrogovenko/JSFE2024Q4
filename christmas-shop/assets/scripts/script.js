@@ -58,13 +58,13 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 });
 
-let templateWidth;
+// let templateWidth;
 // #region slider
-const buttonsSlider=document.querySelectorAll('.scroll');
+// const buttonsSlider=document.querySelectorAll('.scroll');
 const slider = document.querySelector('.slider');
 
-let leftPageCoordinate ;
-let distanceOnParent ;
+// let leftPageCoordinate ;
+// let distanceOnParent ;
 
 let maxClicks;
 let countClicks;
@@ -85,9 +85,9 @@ function initSlider() {
 }
 
 function initWindow(){
-  templateWidth = document.querySelector('section').offsetWidth;
-  leftPageCoordinate = document.querySelector('section').getBoundingClientRect().left;
-  distanceOnParent=document.querySelector('.slider_text').getBoundingClientRect().left - leftPageCoordinate;
+  // templateWidth = document.querySelector('section').offsetWidth;
+  // leftPageCoordinate = document.querySelector('section').getBoundingClientRect().left;
+  // distanceOnParent=document.querySelector('.slider_text').getBoundingClientRect().left - leftPageCoordinate;
   countClicks = 0;
   if (documentElement.clientWidth > 768) {
     maxClicks = 3;
@@ -122,12 +122,16 @@ function sliderButtonLogic(btnL,btnR){
 
 
 function sliderLogic(direction) {
-  const sliderWidth = slider.getBoundingClientRect().width;
-  // const stepFormula = parseInt((sliderWidth - documentElement.clientWidth) / maxClicks);
-  let stepFormula = parseInt((sliderWidth- templateWidth) / maxClicks+(distanceOnParent)/1.5);
-  if(documentElement.clientWidth<=768){
-    stepFormula=stepFormula-((distanceOnParent+15)/maxClicks);
-  }
+  const sliderWidth = slider.scrollWidth;
+  const parentWidth = slider.parentElement.offsetWidth;
+  // const sliderWidth = slider.getBoundingClientRect().width;
+  // const sliderWidth = slider.scrollWidth;
+  const stepFormula = (sliderWidth+8 - parentWidth) / maxClicks;
+  // const stepFormula = parseInt((sliderWidth - templateWidth) / maxClicks+offsetLeft+distanceOnParent);
+  // let stepFormula = parseInt((sliderWidth- templateWidth) / maxClicks+(distanceOnParent)/1.5);
+  // if(documentElement.clientWidth<=768){
+  //   stepFormula=stepFormula-((distanceOnParent+15)/maxClicks);
+  // }
 
   let currentValue = parseFloat((slider.style.transform).slice(11));
   switch (direction) {
