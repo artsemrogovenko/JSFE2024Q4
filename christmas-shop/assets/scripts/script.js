@@ -41,10 +41,12 @@ let cardsContainer = document.querySelector('.cards_container');
 
 cardsContainer.addEventListener("click", function (event) {
   let selected = event.target;
-  while (!selected.classList.contains("card")) {
-    selected = selected.parentElement;
+  if (selected.className !== "cards_container") {
+    while (!selected.classList.contains("card")) {
+      selected = selected.parentElement;
+    }
+    formFields(selected);
   }
-  formFields(selected);
 });
 
 const isHomePage = document.location.pathname.includes("home.html");
@@ -241,10 +243,15 @@ const filterTabs = document.querySelectorAll('.tab');
 
 filterTabs.forEach((element) => {
   if (element.className.includes("tab")) {
-    element.addEventListener("click", function(tab){
+    element.addEventListener("click", function(e){
       unsetActiveTabs();
-      tab.target.classList.add('active');
-      filteringGifts(tab.target.innerText);
+      let clicked = e.target;
+      if(clicked.className==='action_small'){
+        clicked.parentElement.classList.add('active');
+      }else{
+        clicked.classList.add('active');
+      }
+      filteringGifts(clicked.innerText);
     }
     );
   }

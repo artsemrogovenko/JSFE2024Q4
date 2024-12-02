@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', preparationFirstLoading);
 function initialize() {
   calcPositionBurger();
   document.documentElement.style.setProperty("--my-burger-height",`${document.body.scrollHeight}px`);
-  document.documentElement.style.setProperty("--my-burger-width",`${documentElement.clientWidth}px`);
+  document.documentElement.style.setProperty("--my-burger-width",`${window.innerWidth}px`);
   toggleNavigation();
   toggleBurgerButton();
   toTop();
