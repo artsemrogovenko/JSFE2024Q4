@@ -241,10 +241,15 @@ const filterTabs = document.querySelectorAll('.tab');
 
 filterTabs.forEach((element) => {
   if (element.className.includes("tab")) {
-    element.addEventListener("click", function(tab){
+    element.addEventListener("click", function(e){
       unsetActiveTabs();
-      tab.target.classList.add('active');
-      filteringGifts(tab.target.innerText);
+      let clicked = e.target;
+      if(clicked.className==='action_small'){
+        clicked.parentElement.classList.add('active');
+      }else{
+        clicked.classList.add('active');
+      }
+      filteringGifts(clicked.innerText);
     }
     );
   }
