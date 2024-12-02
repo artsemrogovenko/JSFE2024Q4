@@ -41,10 +41,12 @@ let cardsContainer = document.querySelector('.cards_container');
 
 cardsContainer.addEventListener("click", function (event) {
   let selected = event.target;
-  while (!selected.classList.contains("card")) {
-    selected = selected.parentElement;
+  if (selected.className !== "cards_container") {
+    while (!selected.classList.contains("card")) {
+      selected = selected.parentElement;
+    }
+    formFields(selected);
   }
-  formFields(selected);
 });
 
 const isHomePage = document.location.pathname.includes("home.html");
