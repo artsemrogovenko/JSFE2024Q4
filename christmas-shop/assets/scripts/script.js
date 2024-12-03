@@ -170,8 +170,8 @@ function draftingBlock(object) {
   return `<div class="card ${formattedCategory}">
   <div class="card-image"></div>
   <div class="card-content">
-      <h4>${object.name}</h4>
-      <h3>${object.description}</h3>
+      <h4>${object.category}</h4>
+      <h3>${object.name}</h3>
   </div>
 </div>`;
 }
@@ -186,7 +186,7 @@ function homeGifts() {
 function searchData(cardElement) {
   let contentBlock = Array.from(cardElement.childNodes).filter(
     (node) => node.nodeType === 1 && node.classList.contains("card-content"));
-  let searchNamePhrase=contentBlock.pop().innerText.split('\n')[0].toLowerCase();
+  let searchNamePhrase=contentBlock.pop().innerText.split('\n')[1].toLowerCase();
   let foundElement = gifts.filter(gift=>gift.name.toLowerCase() === searchNamePhrase);
   return foundElement[0];
 }
