@@ -1,18 +1,18 @@
-// let gifts ;
+let gifts ;
 // loadGifts();
-import gifts from "../gifts.json" assert {type: 'json'};
-// function loadGifts(){
-//   fetch('./assets/gifts.json')
-//   .then(response => {
-//       if (!response.ok) {
-//           throw new Error('Network response was not ok');
-//       }
-//       return response.json();
-//   })
-//   .then(res => {
-//     gifts = Array.from(res);
-//   })
-// }
+// import gifts from "../gifts.json" assert {type: 'json'};
+async function loadGifts(){
+ return fetch('./assets/gifts.json')
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(res => {
+    gifts = Array.from(res);
+  })
+}
 //#region timer
 const daysValue =document.getElementById('days');
 const hoursValue =document.getElementById('hours');
@@ -50,7 +50,10 @@ cardsContainer.addEventListener("click", function (event) {
 });
 
 const isHomePage = document.location.pathname.includes("home.html");
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", start);
+
+async function start() {
+  await loadGifts();
   if (isHomePage) {
     calculateTime();
     initSlider();
@@ -58,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }else{
    cardsContainer.innerHTML=gifts.reduce((acc,element) => acc+draftingBlock(element),'');
 }
-});
+}
 
 // let templateWidth;
 // #region slider
