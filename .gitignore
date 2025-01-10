@@ -102,3 +102,15 @@ dist
 
 # TernJS port file
 .tern-port
+
+.prettierignore
+.commitlintrc.json
+.eslintignore
+.eslintrc.js
+.prettierrc
+eslint.config.mjs
+package-lock.json
+package.json
+.husky/
+.github
+.gitignore
