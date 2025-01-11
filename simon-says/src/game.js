@@ -29,13 +29,16 @@ constructor(){
     this.pressed=null;
     this.required=null;
     this.mistakes=0;
+    this.gaming=false;
   }
 
   start(){
     this.gaming=true;
     this.generateSymbols();
     this.position=0;
-    this.showSequence();
+    setTimeout(() => {
+      this.showSequence();
+    }, 500);
   }
 
   increaseSymbols(){
@@ -73,9 +76,11 @@ constructor(){
    }
 
    set validateInput(symbol){
+    if(this.gaming){
     let currentSymbol=this.required[this.position];
 
-    if(this.dictionary[this.mode].includes(currentSymbol)){
+    if(this.dictionary[this.mode].includes(symbol)){
+      this.area.textContent=this.area.textContent+symbol;
       if(currentSymbol===symbol.toLowerCase()){
         this.position+=1;
       }else{
@@ -83,22 +88,31 @@ constructor(){
         this.position=0;
       }
     }
-    if(this.mistakes==1){
-      repeatSequence();
+    if(this.mistakes===1){
+      this.area.textContent="~ERROR~";
+      return;
     }
-    if(this.mistakes==2){
-      gameOver();
+    if(this.mistakes===2){
+      this.gameOver();
+    }
+    if(this.position===this.required.length){
+      setTimeout(() => {
+        this.area.textContent="";
+        this.roundWin();
+      }, 500);
+    }
     }
    }
 
    roundWin(){
     if(this.round===5){
       this.gaming==false;
-      congratulate();
+      this.congratulate();
+      return;
     }
-    increaseSymbols();
+    this.increaseSymbols();
     this.round+=1;
-    start();
+    this.start();
    }
 
   easy(){
@@ -115,6 +129,10 @@ constructor(){
   }
 
   showSequence(){
+    console.log(this.required);
+    setTimeout(() => {
+    this.area.textContent="";
+    }, 0);
     for (let index = 0; index < this.required.length; index++) {
       const element = this.required[index];
       const button=document.getElementById(element);
@@ -131,8 +149,13 @@ constructor(){
     }, 500*this.required.length);
   }
 
-  repeatSequence(){}
-  gameOver(){}
+  repeatSequence(){
+    showSequence();
+  }
+  gameOver(){
+    this.resetGame();
+    this.area.textContent="Game Over";
+  }
   congratulate(){}
 }
 

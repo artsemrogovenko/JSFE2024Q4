@@ -13,6 +13,9 @@ body.addEventListener("click",e=>{
   if( ["hard","medium","easy"].includes(e.target.id)){
   game.setMode=e.target.id;
   }
+  if(game.gaming){
+    game.validateInput=e.target.id;
+  }
 });
 
 body.addEventListener("mousedown",e=>{
