@@ -44,6 +44,7 @@ constructor(){
     this.roundInfo.classList.remove("invisible");
     this.roundInfo.textContent=`ROUND ${this.round}`;
     this.multiButton.textContent="New game";
+    this.repeatBtn.textContent="Repeat the sequence";
     this.gaming=true;
     this.generateSymbols();
     this.position=0;
@@ -92,8 +93,12 @@ constructor(){
     let currentSymbol=this.required[this.position];
 
     if(symbol==="repeat"){
-      this.repeatSequence();
-      return;
+      if(this.goNext){
+        this.start();
+      }else{
+        this.repeatSequence();
+        return;
+      }
     }
 
     if(this.dictionary[this.mode].includes(symbol)){
@@ -133,9 +138,12 @@ constructor(){
       this.congratulate();
       return;
     }
+    this.goNext=true;
     this.increaseSymbols();
+    this.repeatBtn.textContent="Next";
+    this.repeatBtn.classList.remove("invisible");
     this.round+=1;
-    this.start();
+    // this.start();
    }
 
   easy(){
