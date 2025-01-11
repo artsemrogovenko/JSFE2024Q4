@@ -19,7 +19,7 @@ body.addEventListener("click",e=>{
 });
 
 body.addEventListener("mousedown",e=>{
-  let button = document.getElementById(e.srcElement.id);
+  let button = document.getElementById(e.target.id);
   if(button){
   button.classList.add("pressed");
   const rmMouse=()=>removeFn(button, "mouseup", rmMouse);
@@ -30,7 +30,7 @@ body.addEventListener("mousedown",e=>{
 
 
 body.addEventListener("keydown",e=>{
-  let symbol = String.fromCharCode(e.keyCode).toLowerCase();
+  let symbol = String.fromCharCode(e.code).toLowerCase();
   let button = document.getElementById(symbol);
 
   if(button){
@@ -45,6 +45,5 @@ function removeFn(obj,event,operation) {
   document.removeEventListener(event, operation);
 };
 
-if(game.gaming){
-
-}
+document.getElementById("repeat")
+.addEventListener("click",e=>game.validateInput=e.target.id);

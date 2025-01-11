@@ -3,7 +3,23 @@ function createMenu() {
   menu.classList.add('menu');
 
   menu.append(...createButtons(null, null, ['easy', 'medium', 'hard', 'start']));
+
+  let miscPanel = document.createElement('div');
+  miscPanel.classList.add('invisible');
+  miscPanel.id='misc';
+
+  let repeatButton = document.createElement('button');
+  repeatButton.classList.add('button','repeat','invisible');
+  repeatButton.id = 'repeat';
+  repeatButton.textContent = 'Repeat the sequence';
+
+  let round = document.createElement('div');
+  round.classList.add('invisible');
+  round.id = 'round';
+
   document.body.append(menu);
+  miscPanel.append(repeatButton,round);
+  document.body.append(miscPanel);
 }
 
 function createKeyboard() {

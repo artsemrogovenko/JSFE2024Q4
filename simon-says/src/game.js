@@ -17,7 +17,10 @@ constructor(){
     this.dictionary={"easy":this.digits,"medium":this.alphabet,"hard":this.mixed}
     this.letters=document.querySelector(".letters");
     this.numbers=document.querySelector(".numbers");
-    this.multiButton =document.querySelector(".start");
+    this.multiButton =document.getElementById("start");
+    this.repeatBtn =document.getElementById("repeat");
+    this.roundInfo =document.getElementById("round");
+    this.misc =document.getElementById("misc");
     this.area=document.querySelector(".panel");
     this.mistakes=0;
     this.easy();
@@ -30,9 +33,17 @@ constructor(){
     this.required=null;
     this.mistakes=0;
     this.gaming=false;
+    this.helped=false;
   }
 
   start(){
+    this.highlight();
+    this.inputAvailable=false;
+    this.repeatBtn.classList.remove("invisible");
+    this.misc.classList.remove("invisible");
+    this.roundInfo.classList.remove("invisible");
+    this.roundInfo.textContent=`ROUND ${this.round}`;
+    this.multiButton.textContent="New game";
     this.gaming=true;
     this.generateSymbols();
     this.position=0;
@@ -72,12 +83,18 @@ constructor(){
         case "hard":this.hard();break;
         default: break;
       }
+      this.highlight();
     }
    }
 
    set validateInput(symbol){
-    if(this.gaming){
+    if(this.gaming && this.inputAvailable){
     let currentSymbol=this.required[this.position];
+
+    if(symbol==="repeat"){
+      this.repeatSequence();
+      return;
+    }
 
     if(this.dictionary[this.mode].includes(symbol)){
       this.area.textContent=this.area.textContent+symbol;
@@ -89,8 +106,14 @@ constructor(){
       }
     }
     if(this.mistakes===1){
-      this.area.textContent="~ERROR~";
-      return;
+      setTimeout(() => {
+        this.inputAvailable=false;
+        this.area.textContent="~ERROR~";
+      }, 0);
+      setTimeout(() => {
+        this.inputAvailable=true;
+        this.area.textContent="";
+        }, 1000);
     }
     if(this.mistakes===2){
       this.gameOver();
@@ -129,7 +152,7 @@ constructor(){
   }
 
   showSequence(){
-    console.log(this.required);
+    this.inputAvailable=false;
     setTimeout(() => {
     this.area.textContent="";
     }, 0);
@@ -146,17 +169,45 @@ constructor(){
     }
     setTimeout(() => {
       this.area.textContent="";
+      this.inputAvailable=true;
     }, 500*this.required.length);
   }
 
   repeatSequence(){
-    showSequence();
+    if(!this.helped){
+      this.showSequence();
+      this.helped=true;
+      this.repeatBtn.classList.add("invisible");
+    }
   }
   gameOver(){
     this.resetGame();
     this.area.textContent="Game Over";
   }
   congratulate(){}
+
+  highlight(){
+    let [easy,medium,hard]=document.querySelector(".menu").childNodes;
+    switch (this.mode) {
+      case 'easy':
+        easy.classList.add("active");
+        medium.classList.remove("active");
+        hard.classList.remove("active");
+        break;
+      case 'medium':
+        easy.classList.remove("active");
+        medium.classList.add("active");
+        hard.classList.remove("active");
+        break;
+      case 'hard':
+        easy.classList.remove("active");
+        medium.classList.remove("active");
+        hard.classList.add("active");
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 export {Game};
