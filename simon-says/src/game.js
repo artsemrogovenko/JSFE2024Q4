@@ -45,6 +45,9 @@ constructor(){
     this.roundInfo.textContent=`ROUND ${this.round}`;
     this.multiButton.textContent="New game";
     this.repeatBtn.textContent="Repeat the sequence";
+    this.helped=false;
+    this.goNext=false;
+    this.mistakes=0;
     this.gaming=true;
     this.generateSymbols();
     this.position=0;
@@ -101,16 +104,25 @@ constructor(){
       }
     }
 
-    if(this.dictionary[this.mode].includes(symbol)){
+    if(this.dictionary[this.mode].includes(symbol) && !this.goNext){
       this.area.textContent=this.area.textContent+symbol;
       if(currentSymbol===symbol.toLowerCase()){
         this.position+=1;
+
+        if(this.position===this.required.length){
+          setTimeout(() => {
+            this.area.textContent="";
+            this.roundWin();
+          }, 500);
+        }
+        return;
       }else{
         this.mistakes+=1;
         this.position=0;
       }
+
     }
-    if(this.mistakes===1){
+    if(this.mistakes===1 && !this.goNext){
       setTimeout(() => {
         this.inputAvailable=false;
         this.area.textContent="~ERROR~";
@@ -120,15 +132,10 @@ constructor(){
         this.area.textContent="";
         }, 1000);
     }
-    if(this.mistakes===2){
+    if(this.mistakes===2 && !this.goNext){
       this.gameOver();
     }
-    if(this.position===this.required.length){
-      setTimeout(() => {
-        this.area.textContent="";
-        this.roundWin();
-      }, 500);
-    }
+
     }
    }
 
@@ -143,6 +150,7 @@ constructor(){
     this.repeatBtn.textContent="Next";
     this.repeatBtn.classList.remove("invisible");
     this.round+=1;
+    this.mistakes=0;
     // this.start();
    }
 
@@ -184,6 +192,7 @@ constructor(){
   repeatSequence(){
     if(!this.helped){
       this.showSequence();
+      this.position=0;
       this.helped=true;
       this.repeatBtn.classList.add("invisible");
     }
