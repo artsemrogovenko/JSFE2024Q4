@@ -7,7 +7,7 @@ class Game{
 digits=null;
 alphabet=null;
 gaming=null;
-  constructor(){
+constructor(){
     this.mode="easy";
     this.symbols=2;
     this.round=1;
@@ -18,7 +18,9 @@ gaming=null;
     this.letters=document.querySelector(".letters");
     this.numbers=document.querySelector(".numbers");
     this.multiButton =document.querySelector(".start");
+    this.area=document.querySelector(".panel");
     this.mistakes=0;
+    this.easy();
   }
 
   resetGame(){
@@ -33,7 +35,7 @@ gaming=null;
     this.gaming=true;
     this.generateSymbols();
     this.position=0;
-    console.log(this);
+    this.showSequence();
   }
 
   increaseSymbols(){
@@ -110,6 +112,23 @@ gaming=null;
   hard(){
     this.letters.classList.remove("invisible");
     this.numbers.classList.remove("invisible");
+  }
+
+  showSequence(){
+    for (let index = 0; index < this.required.length; index++) {
+      const element = this.required[index];
+      const button=document.getElementById(element);
+      setTimeout(() => {
+        button.classList.add("pressed");
+        setTimeout(() => {
+          button.classList.remove("pressed");
+        },500);
+        this.area.textContent=this.area.textContent+element;
+      }, 500*index+1);
+    }
+    setTimeout(() => {
+      this.area.textContent="";
+    }, 500*this.required.length);
   }
 
   repeatSequence(){}
