@@ -12,12 +12,12 @@ gaming=null;
     this.symbols=2;
     this.round=1;
     this.alphabet=Array.from({length:26},(v,i)=>String.fromCharCode(i+97));
-    this.digits=Array.from({length:10},(v,i)=>i);
+    this.digits=Array.from({length:10},(v,i)=>`${i}`);
     this.mixed=this.digits.concat(this.alphabet);
     this.dictionary={"easy":this.digits,"medium":this.alphabet,"hard":this.mixed}
-    this.letters=document.getElementsByClassName("letters");
-    this.numbers=document.getElementsByClassName("numbers");
-    this.multiButton =document.getElementsByClassName("start");
+    this.letters=document.querySelector(".letters");
+    this.numbers=document.querySelector(".numbers");
+    this.multiButton =document.querySelector(".start");
     this.mistakes=0;
   }
 
@@ -62,9 +62,9 @@ gaming=null;
     if(!this.gaming){
       this.mode=input;
       switch (input) {
-        case "easy": easy();break;
-        case "medium":medium();break;
-        case "hard":hard();break;
+        case "easy": this.easy();break;
+        case "medium":this.medium();break;
+        case "hard":this.hard();break;
         default: break;
       }
     }

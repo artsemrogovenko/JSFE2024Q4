@@ -118,3 +118,7 @@ body {
 .invisible {
     display: none;
 }
+
+.pressed{
+    background: linear-gradient(26deg, #ffff61, #7bff63 100px);
+}
