@@ -149,7 +149,7 @@ constructor(){
 
    roundWin(){
     if(this.round===5){
-      this.gaming==false;
+      this.repeatBtn.classList.add("invisible");
       this.congratulate();
       return;
     }
@@ -209,7 +209,10 @@ constructor(){
     this.resetGame();
     this.area.textContent="Game Over";
   }
-  congratulate(){}
+  congratulate(){
+    this.area.textContent="You Win!";
+    this.resetGame();
+  }
 
   highlight(){
     let [easy,medium,hard]=document.querySelector(".menu").childNodes;
