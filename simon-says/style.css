@@ -115,6 +115,6 @@ body {
     padding: 0 15vw;
 }
 
-.visible {
-    display: flex;
+.invisible {
+    display: none;
 }
