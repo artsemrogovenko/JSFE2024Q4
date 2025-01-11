@@ -23,6 +23,7 @@ constructor(){
     this.misc =document.getElementById("misc");
     this.area=document.querySelector(".panel");
     this.mistakes=0;
+    this.inputAvailable=true;
     this.easy();
   }
 
@@ -37,6 +38,7 @@ constructor(){
   }
 
   start(){
+    if(this.inputAvailable){
     this.highlight();
     this.inputAvailable=false;
     this.repeatBtn.classList.remove("invisible");
@@ -54,6 +56,7 @@ constructor(){
     setTimeout(() => {
       this.showSequence();
     }, 500);
+    }
   }
 
   increaseSymbols(){
@@ -92,6 +95,11 @@ constructor(){
    }
 
    set validateInput(symbol){
+    if(symbol==="start" && this.inputAvailable){
+      this.resetGame();
+      this.start();
+    }
+
     if(this.gaming && this.inputAvailable){
     let currentSymbol=this.required[this.position];
 

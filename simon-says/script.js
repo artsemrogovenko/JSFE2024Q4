@@ -7,13 +7,12 @@ let game = new Game();
 const body = document.querySelector("body");
 
 body.addEventListener("click",e=>{
-  if(e.target.id==="start"){
-  game.start();
-  }
+  // if(e.target.id==="start"){
+  // game.start();
+  // }
   if( ["hard","medium","easy"].includes(e.target.id)){
   game.setMode=e.target.id;
-  }
-  if(game.gaming){
+  }else{
     game.validateInput=e.target.id;
   }
 });
