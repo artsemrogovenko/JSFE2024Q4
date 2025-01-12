@@ -29,3 +29,5 @@ function removeFn(obj,event,operation) {
   obj.classList.remove("pressed");
   document.removeEventListener(event, operation);
 };
+
+export {game};

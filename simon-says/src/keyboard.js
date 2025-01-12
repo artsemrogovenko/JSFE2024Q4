@@ -1,3 +1,5 @@
+import {game} from '../script.js';
+
 function keyboardLogic() {
 const body = document.querySelector("body");
 
@@ -6,6 +8,7 @@ body.addEventListener("keydown",e=>{
   let button = document.getElementById(symbol);
 
   if(button){
+    game.validateInput=symbol;
     button.classList.add("pressed");
     const rmMouse=()=>removeFn(button, "keyup", rmMouse);
     document.addEventListener("keyup", rmMouse);
