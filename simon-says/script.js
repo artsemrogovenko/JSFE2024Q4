@@ -1,4 +1,4 @@
-import { initGame } from './src/keyboard.js';
+import { initGame } from './src/markup.js';
 import {Game} from './src/game.js';
 
 initGame();
