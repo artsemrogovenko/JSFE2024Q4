@@ -7,7 +7,6 @@
 html {
     margin: 0 auto;
     border: none;
-    background: red;
     padding: 0;
 }
 
@@ -58,8 +57,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 30vh;
-    width: 30vw;
-    background-color: rgb(70, 188, 214);
+    /* width: 30vw; */
     font-size: var(--area-text);
     padding: 0px;
     text-transform: uppercase;
@@ -70,10 +68,10 @@ body {
     flex-direction: column;
     align-items: center;
     max-height: 60%;
-    background: aqua;
     gap: 4px;
     width: 80vw;
     min-height: 40vh;
+    padding: 20px;
 }
 
 .keyboard .button {
@@ -133,7 +131,7 @@ body {
     display: flex;
     /* justify-content: center; */
     position: absolute;
-    top: 85px;
+    top: 100px;
     align-items: center;
     gap: 20px
 }
@@ -154,4 +152,38 @@ body {
 
 .active{
     background-color: rgba(0, 81, 255, 0.585);
+}
+
+@media  screen and (max-width: 698px) {
+    #start {
+        margin-left: 0;
+        width: 100px;
+    }
+    .panel {
+        position: absolute;
+        top: 50px;
+    }
+    .keyboard .button{
+        height: 50px;
+    }
+    .letters{
+        position: relative;
+        top:2px;
+    }
+    .line_letter{
+        height: auto;
+    }
+    .line_letter:nth-child(2) {
+        margin: 0 ;
+    }
+
+    .line_letter:nth-child(3) {
+        margin: 0  ;
+    }
+
+    .keyboard {
+        justify-content: space-between;
+        position: absolute;
+        bottom: 20px;
+    }
 }
