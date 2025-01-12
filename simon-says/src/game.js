@@ -129,7 +129,6 @@ constructor(){
         this.position=0;
       }
 
-    }
     if(this.mistakes===1 && !this.goNext){
       setTimeout(() => {
         this.inputAvailable=false;
@@ -144,6 +143,7 @@ constructor(){
       this.gameOver();
     }
 
+    }
     }
    }
 
