@@ -90,6 +90,10 @@ body {
     flex-wrap: wrap;
 }
 
+.numbers .button:nth-child(1){
+    order: 1;
+}
+
 .letters {
     display: flex;
     flex-direction: row;
@@ -110,11 +114,11 @@ body {
 }
 
 .line_letter:nth-child(2) {
-    padding: 0 5vw;
+    margin: 0 5vw;
 }
 
 .line_letter:nth-child(3) {
-    padding: 0 15vw;
+    margin: 0 12.9vw;
 }
 
 .invisible {
@@ -129,7 +133,7 @@ body {
     display: flex;
     /* justify-content: center; */
     position: absolute;
-    top: 15vh;
+    top: 85px;
     align-items: center;
     gap: 20px
 }
