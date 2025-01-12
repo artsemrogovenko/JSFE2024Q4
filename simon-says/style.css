@@ -62,6 +62,7 @@ body {
     background-color: rgb(70, 188, 214);
     font-size: var(--area-text);
     padding: 0px;
+    text-transform: uppercase;
 }
 
 .keyboard {
