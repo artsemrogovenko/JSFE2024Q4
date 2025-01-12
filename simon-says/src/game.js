@@ -208,6 +208,7 @@ constructor(){
   gameOver(){
     this.resetGame();
     this.area.textContent="Game Over";
+    this.repeatBtn.classList.add("invisible");
   }
   congratulate(){
     this.area.textContent="You Win!";
