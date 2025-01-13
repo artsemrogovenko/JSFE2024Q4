@@ -176,6 +176,7 @@ constructor(){
   }
 
   showSequence(){
+    console.log(this.required);
     this.inputAvailable=false;
     setTimeout(() => {
     this.area.textContent="";
