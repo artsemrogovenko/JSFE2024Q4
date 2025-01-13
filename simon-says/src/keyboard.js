@@ -9,10 +9,8 @@ body.addEventListener("keydown",e=>{
   let button = document.getElementById(symbol);
 
   if(button){
-    if(firstPressed===null){
+    if(firstPressed===null && game.inputIsAvailable){
       firstPressed=symbol;
-    }
-    if(game.inputIsAvailable){
       button.classList.add("pressed");
     }
     const rmMouse=()=>removeFn(button, "keyup", rmMouse);
