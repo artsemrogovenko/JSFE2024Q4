@@ -7,6 +7,8 @@ class Game{
 digits=null;
 alphabet=null;
 gaming=null;
+buttons = document.querySelectorAll("button");
+globalStyles=document.documentElement.style;
 constructor(){
     this.mode="easy";
     this.symbols=2;
@@ -29,6 +31,7 @@ constructor(){
   }
 
   resetGame(){
+    this.enableSelectors();
     this.symbols=2;
     this.round=1;
     this.pressed=null;
@@ -40,10 +43,11 @@ constructor(){
 
   start(){
     if(this.inputAvailable){
+    this.disableSelectors();
     this.highlight();
     this.inputAvailable=false;
     this.repeatBtn.classList.remove("invisible");
-    this.misc.classList.remove("invisible");
+    this.globalStyles.setProperty("--misc-display","flex");
     this.roundInfo.classList.remove("invisible");
     this.roundInfo.textContent=`ROUND ${this.round}`;
     this.multiButton.textContent="New game";
@@ -102,7 +106,12 @@ constructor(){
    set validateInput(symbol){
     if(symbol==="start" && this.inputAvailable){
       this.resetGame();
-      this.start();
+      if(this.multiButton.textContent==="New game"){
+        this.multiButton.textContent="Start";
+        this.globalStyles.setProperty("--misc-display","none");
+      }else{
+        this.start();
+      }
     }
 
     if(this.gaming && this.inputAvailable){
@@ -242,6 +251,18 @@ constructor(){
       default:
         break;
     }
+  }
+
+  disableSelectors(){
+    this.buttons[0].style="pointer-events: none";
+    this.buttons[1].style="pointer-events: none";
+    this.buttons[2].style="pointer-events: none";
+  }
+
+  enableSelectors(){
+    this.buttons[0].style="pointer-events: all";
+    this.buttons[1].style="pointer-events: all";
+    this.buttons[2].style="pointer-events: all";
   }
 }
 

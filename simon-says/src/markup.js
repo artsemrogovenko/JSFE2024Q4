@@ -5,7 +5,7 @@ function createMenu() {
   menu.append(...createButtons(null, null, ['easy', 'medium', 'hard', 'start']));
 
   let miscPanel = document.createElement('div');
-  miscPanel.classList.add('invisible');
+  // miscPanel.classList.add('invisible');
   miscPanel.id='misc';
 
   let repeatButton = document.createElement('button');
