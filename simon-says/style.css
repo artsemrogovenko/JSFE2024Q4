@@ -15,7 +15,7 @@ body {
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
 }
 
 .button {
@@ -52,15 +52,23 @@ body {
     width: 100px;
 }
 
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
 .panel {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 30vh;
-    /* width: 30vw; */
-    font-size: var(--area-text);
+    height: 5vw;
+    font-size: 5vw;
     padding: 0px;
     text-transform: uppercase;
+    margin: 0;
 }
 
 .keyboard {
@@ -159,10 +167,6 @@ body {
         margin-left: 0;
         width: 100px;
     }
-    .panel {
-        position: absolute;
-        top: 50px;
-    }
     .keyboard .button{
         height: 50px;
     }
@@ -181,9 +185,4 @@ body {
         margin: 0  ;
     }
 
-    .keyboard {
-        justify-content: space-between;
-        position: absolute;
-        bottom: 20px;
-    }
 }

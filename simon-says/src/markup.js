@@ -51,7 +51,8 @@ function createKeyboard() {
 
   letters.append(firstline, secondtline, thirdline);
   keyboard.append(numbers, letters);
-  document.body.append(keyboard);
+  // document.body.append(keyboard);
+  return keyboard;
 }
 
 function createButtons(start, end, arrNames = null) {
@@ -79,11 +80,15 @@ function createButtons(start, end, arrNames = null) {
 function init() {
   createMenu();
 
-  let area = document.createElement('dir');
+  let area = document.createElement('div');
   area.classList.add('panel');
-  document.body.append(area);
 
-  createKeyboard();
+  let wrapper = document.createElement('div');
+  wrapper.classList.add('wrapper');
+  wrapper.append(area,createKeyboard());
+
+  document.body.append(wrapper);
+
 }
 
 export { init as initGame };
