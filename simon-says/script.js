@@ -19,7 +19,9 @@ body.addEventListener("click",e=>{
 body.addEventListener("mousedown",e=>{
   let button = document.getElementById(e.target.id);
   if(button){
-  button.classList.add("pressed");
+    if(game.inputIsAvailable){
+      button.classList.add("pressed");
+    }
   const rmMouse=()=>removeFn(button, "mouseup", rmMouse);
   document.addEventListener("mouseup", rmMouse);
   }

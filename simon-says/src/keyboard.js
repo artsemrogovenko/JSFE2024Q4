@@ -12,7 +12,9 @@ body.addEventListener("keydown",e=>{
     if(firstPressed===null){
       firstPressed=symbol;
     }
-    button.classList.add("pressed");
+    if(game.inputIsAvailable){
+      button.classList.add("pressed");
+    }
     const rmMouse=()=>removeFn(button, "keyup", rmMouse);
     document.addEventListener("keyup", rmMouse);
   }

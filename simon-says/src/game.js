@@ -81,6 +81,10 @@ constructor(){
     return this.required;
   }
 
+  get inputIsAvailable(){
+    return this.inputAvailable;
+  }
+
   set setMode(input){
     if(!this.gaming){
       this.mode=input;
