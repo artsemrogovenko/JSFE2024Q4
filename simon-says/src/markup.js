@@ -6,10 +6,10 @@ function createMenu() {
 
   let miscPanel = document.createElement('div');
   // miscPanel.classList.add('invisible');
-  miscPanel.id='misc';
+  miscPanel.id = 'misc';
 
   let repeatButton = document.createElement('button');
-  repeatButton.classList.add('button','repeat','invisible');
+  repeatButton.classList.add('button', 'repeat', 'invisible');
   repeatButton.id = 'repeat';
   repeatButton.textContent = 'Repeat the sequence';
 
@@ -18,7 +18,7 @@ function createMenu() {
   round.id = 'round';
 
   document.body.append(menu);
-  miscPanel.append(repeatButton,round);
+  miscPanel.append(repeatButton, round);
   document.body.append(miscPanel);
 }
 
@@ -85,10 +85,9 @@ function init() {
 
   let wrapper = document.createElement('div');
   wrapper.classList.add('wrapper');
-  wrapper.append(area,createKeyboard());
+  wrapper.append(area, createKeyboard());
 
   document.body.append(wrapper);
-
 }
 
 export { init as initGame };
