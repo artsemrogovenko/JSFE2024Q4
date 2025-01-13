@@ -25,6 +25,7 @@ constructor(){
     this.mistakes=0;
     this.inputAvailable=true;
     this.easy();
+    this.highlight();
   }
 
   resetGame(){
