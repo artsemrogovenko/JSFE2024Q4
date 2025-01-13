@@ -155,7 +155,14 @@ constructor(){
       this.area.textContent=this.area.textContent+symbol;
       if(currentSymbol===symbol.toLowerCase()){
         this.position+=1;
-
+        setTimeout(() => {
+          this.area.style.color="#0b3000";
+          this.area.style.textShadow="#00ff90 0 0 10px";
+        }, 0);
+        setTimeout(() => {
+          this.area.style.color="";
+          this.area.style.textShadow="";
+        }, 500);
         if(this.position===this.required.length){
           setTimeout(() => {
             this.area.textContent="";
