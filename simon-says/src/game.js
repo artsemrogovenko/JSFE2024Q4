@@ -28,6 +28,7 @@ constructor(){
     this.inputAvailable=true;
     this.easy();
     this.highlight();
+    this.win=false;
   }
 
   resetGame(){
@@ -39,6 +40,12 @@ constructor(){
     this.mistakes=0;
     this.gaming=false;
     this.helped=false;
+    this.multiButton.textContent==="New game";
+    this.multiButton.textContent="START";
+    this.globalStyles.setProperty("--misc-display","none");
+    this.area.textContent="";
+    this.inputAvailable=true;
+    this.win=false;
   }
 
   start(){
@@ -104,12 +111,30 @@ constructor(){
    }
 
    set validateInput(symbol){
-    if(symbol==="start" && this.inputAvailable){
-      this.resetGame();
+    if(symbol==="start"){
+      if(this.inputAvailable){
       if(this.multiButton.textContent==="New game"){
-        this.multiButton.textContent="Start";
-        this.globalStyles.setProperty("--misc-display","none");
+        this.resetGame();
+        return;
       }else{
+        this.start();
+      }
+    }else{
+      if(this.win || this.goNext){
+        this.resetGame();
+        return;
+      }
+      if(this.mistakes > 0){
+        this.resetGame();
+      }
+    }
+    }
+
+    if(this.gaming && symbol==="repeat" && !this.inputAvailable){
+      if(!this.goNext){
+        this.repeatSequence();
+      }else{
+        this.inputAvailable=true;
         this.start();
       }
     }
@@ -142,19 +167,14 @@ constructor(){
         this.mistakes+=1;
         this.position=0;
       }
-
+      
+    if((this.mistakes===2 && !this.goNext)||(this.mistakes===1 && !this.goNext && this.helped)){
+      this.gameOver();
+      return;
+    }
     if(this.mistakes===1 && !this.goNext){
-      setTimeout(() => {
         this.inputAvailable=false;
         this.area.textContent="~ERROR~";
-      }, 0);
-      setTimeout(() => {
-        this.inputAvailable=true;
-        this.area.textContent="";
-        }, 1000);
-    }
-    if(this.mistakes===2 && !this.goNext){
-      this.gameOver();
     }
 
     }
@@ -162,11 +182,14 @@ constructor(){
    }
 
    roundWin(){
+     this.inputAvailable=false;
     if(this.round===5){
       this.repeatBtn.classList.add("invisible");
+      this.win=true;
       this.congratulate();
       return;
     }
+    this.area.textContent="well done";
     this.goNext=true;
     this.increaseSymbols();
     this.repeatBtn.textContent="Next";
@@ -221,13 +244,14 @@ constructor(){
     }
   }
   gameOver(){
-    this.resetGame();
+    this.gaming=false;
     this.area.textContent="Game Over";
     this.repeatBtn.classList.add("invisible");
+    this.inputAvailable=false;
   }
   congratulate(){
     this.area.textContent="You Win!";
-    this.resetGame();
+    // this.resetGame();
   }
 
   highlight(){
