@@ -29,6 +29,7 @@ class Game {
     this.easy();
     this.highlight();
     this.win = false;
+    this.demo = true;
   }
 
   resetGame() {
@@ -65,6 +66,7 @@ class Game {
       this.gaming = true;
       this.generateSymbols();
       this.position = 0;
+      this.demo = true;
       setTimeout(() => {
         this.showSequence();
       }, 500);
@@ -144,7 +146,7 @@ class Game {
       }
     }
 
-    if (this.gaming && symbol === 'repeat' && !this.inputAvailable) {
+    if (this.gaming && symbol === 'repeat' && !this.demo) {
       if (!this.goNext) {
         this.repeatSequence();
       } else {
@@ -258,6 +260,7 @@ class Game {
     setTimeout(() => {
       this.area.textContent = '';
       this.inputAvailable = true;
+      this.demo = false;
     }, 500 * this.required.length);
   }
 
