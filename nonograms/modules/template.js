@@ -1,6 +1,15 @@
-class Template {
+import {nonograms} from '../src/nonograms.js' ;
+
+
+export default class Template {
   #templates = { easy: [], medium: [], hard: [] };
   #currentTemplate;
+  
+  constructor(){
+    this.#templates.easy=nonograms["easy"];
+    this.#templates.medium=nonograms["medium"];
+    this.#templates.hard=nonograms["hard"];
+  }
 
   getTemplate(){
     return this.#currentTemplate;
@@ -16,6 +25,7 @@ class Template {
   }
 
   showTemplates(difficulty){
+    console.log(this.#templates);
     return this.#templates[difficulty];
   }
   setRandom(){
