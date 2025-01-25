@@ -25,7 +25,7 @@ export default class Template {
   }
 
   showTemplates(difficulty){
-    console.log(this.#templates);
+    // console.log(this.#templates);
     return this.#templates[difficulty];
   }
   setRandom(){
