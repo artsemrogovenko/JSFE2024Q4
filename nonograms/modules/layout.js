@@ -28,6 +28,9 @@ export default class Layout{
   #createRow(size){
     for (let index = 0; index < size; index++) {
       const element= new Block("div","left_tip");
+      if((index+1)%5===0 && index!==(size-1)){
+        element.getNode().classList.add("horizontal_bold_line");
+      }
       element.setId(`row${index}`);
       this.#leftTips.addBlock(element);
     }
@@ -36,6 +39,9 @@ export default class Layout{
   #createCol(size){
     for (let index = 0; index < size; index++) {
       const element= new Block("div","top_tip");
+      if((index+1)%5===0 && index!==(size-1)){
+        element.getNode().classList.add("vertical_bold_line");
+      }
       element.setId(`col${index}`);
       this.#topTips.addBlock(element);
     }
@@ -45,6 +51,14 @@ export default class Layout{
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
         const element = new Block("div","cell");
+
+        if((j+1)%5===0 && j!==(size-1)){
+          element.getNode().classList.add("vertical_bold_line");
+        }
+
+        if((i+1)%5===0 && i!==(size-1)){
+          element.getNode().classList.add("horizontal_bold_line");
+        }
         element.setId(`${i},${j}`);
         this.#cells.addBlock(element);
       }

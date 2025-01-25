@@ -100,3 +100,11 @@ body {
   width: var(--cell-size);
   background: #818d13;
 }
+
+.vertical_bold_line{
+ margin-right: 3px;
+}
+
+.horizontal_bold_line{
+  margin-bottom: 3px;
+}

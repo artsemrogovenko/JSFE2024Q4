@@ -1,6 +1,6 @@
 import Game from '../modules/game.js';
 
-let nanogramGame = new Game();
+let nanogramGame = new Game(10);
 
 function init(){
   const rootStyle = nanogramGame.getRootStyles();
