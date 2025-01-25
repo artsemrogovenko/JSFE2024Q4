@@ -60,6 +60,14 @@ export default class Layout{
           element.getNode().classList.add("horizontal_bold_line");
         }
         element.setId(`${i},${j}`);
+
+        const elementClasslist= element.getNode().classList;
+        element.addListener('click',()=>{elementClasslist.toggle("dark_cell");
+        elementClasslist.remove("cross_cell")});
+
+        element.addListener('contextmenu',()=>{elementClasslist.toggle("cross_cell");
+        elementClasslist.remove("dark_cell")});
+
         this.#cells.addBlock(element);
       }
     }

@@ -67,7 +67,7 @@ body {
   display: flex;
   height: 100%;
   width: 100%;
-  background: #145e49;
+  background: #2871b1;
   text-align: end;
   flex-direction: column-reverse;
   justify-content: flex-start;
@@ -78,7 +78,7 @@ body {
   display: flex;
   height: 100%;
   width: 100%;
-  background: #145e49;
+  background: #2871b1;
   text-align: right;
   align-items: center;
   justify-content: flex-end;
@@ -98,7 +98,15 @@ body {
 .cell {
   height: var(--cell-size);
   width: var(--cell-size);
-  background: #818d13;
+  background: #ffffff;
+}
+
+.dark_cell{
+  background: black;
+}
+
+.cross_cell{
+  background: center / cover url('./cross.svg');
 }
 
 .vertical_bold_line{
