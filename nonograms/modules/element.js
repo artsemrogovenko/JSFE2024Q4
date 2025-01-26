@@ -53,8 +53,10 @@ export default class Block{
   }
 
   removeAllListeners(){
-    for (const [event,listener] of this.#listeners) {
-      this.#element.removeListener(event,listener);
+    if(Array.isArray(this.#listeners)){
+      for (const [event,listener] of this.#listeners) {
+        this.#element.removeListener(event,listener);
+      }
     }
   };
 

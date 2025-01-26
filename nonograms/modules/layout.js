@@ -12,6 +12,7 @@ export default class Layout{
   #solution=new Block("button","solution","Solution");
   #form=new Block("form","form");
   #time=new Block("div","time");
+  #generatedCol=new CustomEvent("filled",{detail: true});
 
   constructor(){
     this.#mainBlock.addBlock(this.#imageBlock);
@@ -21,6 +22,7 @@ export default class Layout{
 
     this.#solution.setId("solution");
     this.#reset.setId("reset");
+    this.#generateForm();
 
     this.#menuBlock.addBlock(this.#reset);
     this.#menuBlock.addBlock(this.#solution);
@@ -32,6 +34,10 @@ export default class Layout{
   }
 
   createRowsAndColumns(size){
+    this.#leftTips.deleteAllBlocks();
+    this.#topTips.deleteAllBlocks();
+    this.#cells.deleteAllBlocks();
+
     this.#createRow(size);
     this.#createCol(size);
     this.#createCells(size);
@@ -57,6 +63,7 @@ export default class Layout{
       element.setId(`col${index}`);
       this.#topTips.addBlock(element);
     }
+    this.#mainBlock.getNode().dispatchEvent(this.#generatedCol);
   }
 
   #createCells(size){
@@ -101,5 +108,48 @@ export default class Layout{
     this.#cells.getComponents().forEach(e=>this.#toDefaultColor(e));
   }
 
+  destroyCells(){
+    this.#cells.deleteAllBlocks();
+  }
+
   showSolution(){}
+
+  #generateForm(){
+    const label = document.createElement("label");
+    const selDifficulty=new Block("select","");
+    const selNonogram=new Block("select","");
+
+    label.setAttribute('for', 'difficulty');
+    label.textContent = 'Difficulty';
+    this.#form.getNode().appendChild(label);
+
+    selDifficulty.setId("difficulty");
+    selNonogram.setId("nonogram");
+
+    const easy = document.createElement('option');
+    const medium = document.createElement('option');
+    const hard = document.createElement('option');
+
+    easy.value=5;
+    easy.selected=true;
+    medium.value=10;
+    hard.value=15;
+
+    easy.textContent="easy";
+    medium.textContent="medium";
+    hard.textContent="hard";
+
+    selDifficulty.getNode().appendChild(easy);
+    selDifficulty.getNode().appendChild(medium);
+    selDifficulty.getNode().appendChild(hard);
+
+    for (let i = 0; i < 5; i++) {
+      const option = document.createElement('option');
+      option.value = `${i}`;
+      selNonogram.getNode().appendChild(option);
+    }
+
+    this.#form.addBlock(selDifficulty);
+    this.#form.addBlock(selNonogram);
+  }
 }

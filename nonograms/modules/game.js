@@ -1,12 +1,19 @@
 import Layout from "./layout.js";
 const rootStyle = document.querySelector(":root").style;
 
+import {nonograms} from "../src/nonograms.js";
+
+
 export default class Game {
   #gameLayout = new Layout();
   #currentSize;
   constructor(size=5){
     this.#currentSize=size;
     this.#gameLayout.createRowsAndColumns(size);
+
+    const selectDifficulty= document.getElementById("difficulty");
+    const selectNonogram= document.getElementById("difficulty");
+    selectDifficulty.addEventListener('change',(event)=>this.#selectDifficulty(event.target.value));
   }
 
   getSize(){
@@ -21,7 +28,9 @@ export default class Game {
     this.#gameLayout.resetCells();
   }
 
-  selectDifficulty(){}
+  #selectDifficulty(value){
+    this.#gameLayout.createRowsAndColumns(parseInt(value));
+  }
 
-  selectImage(){}
+  #selectImage(){}
 }
