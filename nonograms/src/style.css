@@ -1,5 +1,5 @@
 :root {
-  --image-src: url(../assets/images/);
+  --image-src: url();
   --size-game: 5;
   --cell-size: 0px;
   --ceils-x: 0px;
