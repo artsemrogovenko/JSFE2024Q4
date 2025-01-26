@@ -1,10 +1,12 @@
 import Layout from "./layout.js";
 const rootStyle = document.querySelector(":root").style;
 
-import {nonograms} from "../src/nonograms.js";
+// import {nonograms} from "../src/nonograms.js";
+import Template from "./template.js";
 
 
 export default class Game {
+  #template=new Template();
   #gameLayout = new Layout();
   #currentSize;
   #selectorDifficulty;
@@ -33,13 +35,18 @@ export default class Game {
     this.#gameLayout.resetCells();
   }
 
+  nanogramHint(){
+    const arr = Object.values(this.#template.getTemplate())[0];
+    this.#gameLayout.showSolution(arr);
+  }
+
   #selectDifficulty(target){
     let key = target.options[target.selectedIndex].text;
     this.#initBlocks(key,target.value);
   }
 
   #initBlocks(difficuilty,size){
-    this.#addHeadings(nonograms[difficuilty]);
+    this.#addHeadings(this.#template.showTemplates(difficuilty));
     this.#gameLayout.createRowsAndColumns(parseInt(size));
   }
 
@@ -51,8 +58,11 @@ export default class Game {
   }
 
   #selectNonogram(){
-    let key= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
-    this.#selectImage(key);
+    this.resetCells();
+    let difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
+    let nonogram= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
+    this.#selectImage(nonogram);
+    this.#template.selectTemplate(difficulty,this.#selectorNonograms.selectedIndex);
   }
 
   #selectImage(imgName){

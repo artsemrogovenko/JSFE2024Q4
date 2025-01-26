@@ -112,7 +112,16 @@ export default class Layout{
     this.#cells.deleteAllBlocks();
   }
 
-  showSolution(){}
+  showSolution(array){
+    this.#cells.getComponents().forEach((component,index)=>{
+      let [row,col]= component.getNode().id.split(",");
+      if(array[row][col]===1){
+        this.#toggleDarkColor(component);
+      }else{
+        this.#toDefaultColor(component);
+      }
+    });
+  }
 
   #generateForm(){
     const label = document.createElement("label");

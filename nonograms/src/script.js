@@ -40,3 +40,5 @@ function updateCellSize(tips){
   let tipsWidth=tips.childNodes[0].getBoundingClientRect().width;
   rootStyle.setProperty("--cell-size",`${tipsWidth}px`);
 }
+
+solution.addEventListener('click',()=>nanogramGame.nanogramHint());

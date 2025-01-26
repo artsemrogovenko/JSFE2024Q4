@@ -4,7 +4,6 @@ import {nonograms} from '../src/nonograms.js' ;
 export default class Template {
   #templates = { easy: [], medium: [], hard: [] };
   #currentTemplate;
-
   constructor(){
     this.#templates.easy=nonograms["easy"];
     this.#templates.medium=nonograms["medium"];
@@ -18,9 +17,9 @@ export default class Template {
   selectTemplate(difficulty="easy",position=null){
    if( position===null){
      let index=Math.floor(Math.random()*this.#templates[difficulty].length);
-     this.#currentTemplate=this.#templates.difficulty[index];
+     this.#currentTemplate=this.#templates[difficulty][index];
     }else{
-      this.#currentTemplate=this.#templates.difficulty[position];
+      this.#currentTemplate=this.#templates[difficulty][position];
     }
   }
 
@@ -29,8 +28,14 @@ export default class Template {
     return this.#templates[difficulty];
   }
   setRandom(){
-    let difficulty=  Object.keys(this.#templates)[Math.floor(Math.random()*3)];
-    let template= Math.floor(Math.random()*this.#templates[difficulty].length);
-    this.#currentTemplate=this.#templates[difficulty][template];
+    let indexD = Math.floor(Math.random()*3);
+    let difficulty=  Object.keys(this.#templates)[indexD];
+    let indexT= Math.floor(Math.random()*this.#templates[difficulty].length);
+    this.#currentTemplate=this.#templates[difficulty][indexT];
+    return [indexD,indexT];
+  }
+
+  calculateWinnerCombination(comparable,reference){
+
   }
 }
