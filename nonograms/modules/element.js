@@ -57,4 +57,8 @@ export default class Block{
       this.#element.removeListener(event,listener);
     }
   };
+
+  getComponents(){
+    return this.#components;
+  }
 }

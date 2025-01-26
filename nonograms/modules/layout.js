@@ -8,11 +8,23 @@ export default class Layout{
   #leftTips=new Block("div","left_tips");
   #cells=new Block("div","cell_container");
 
+  #reset=new Block("button","reset_game","Reset Game");
+  #solution=new Block("button","solution","Solution");
+  #form=new Block("form","form");
+  #time=new Block("div","time");
+
   constructor(){
     this.#mainBlock.addBlock(this.#imageBlock);
     this.#mainBlock.addBlock(this.#topTips);
     this.#mainBlock.addBlock(this.#leftTips);
     this.#mainBlock.addBlock(this.#cells);
+
+    this.#solution.setId("solution");
+    this.#reset.setId("reset");
+
+    this.#menuBlock.addBlock(this.#reset);
+    this.#menuBlock.addBlock(this.#solution);
+    this.#menuBlock.addBlock(this.#form);
 
     document.body.append(this.#menuBlock.getNode());
     document.body.append(this.#mainBlock.getNode());
@@ -61,15 +73,33 @@ export default class Layout{
         }
         element.setId(`${i},${j}`);
 
-        const elementClasslist= element.getNode().classList;
-        element.addListener('click',()=>{elementClasslist.toggle("dark_cell");
-        elementClasslist.remove("cross_cell")});
+        element.addListener('click',()=>this.#toggleDarkColor(element));
 
-        element.addListener('contextmenu',()=>{elementClasslist.toggle("cross_cell");
-        elementClasslist.remove("dark_cell")});
+        element.addListener('contextmenu',()=>this.#toggleCrossed(element));
 
         this.#cells.addBlock(element);
       }
     }
   }
+
+  #toDefaultColor(cell){
+    cell.getNode().classList.remove("dark_cell");
+    cell.getNode().classList.remove("cross_cell");
+  }
+
+  #toggleDarkColor(cell){
+    cell.getNode().classList.toggle("dark_cell");
+    cell.getNode().classList.remove("cross_cell");
+  }
+
+  #toggleCrossed(cell){
+    cell.getNode().classList.toggle("cross_cell");
+    cell.getNode().classList.remove("dark_cell");
+  }
+
+  resetCells(){
+    this.#cells.getComponents().forEach(e=>this.#toDefaultColor(e));
+  }
+
+  showSolution(){}
 }

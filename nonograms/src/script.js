@@ -28,3 +28,8 @@ function init(){
 };
 
 init();
+
+const resetGame = document.getElementById("reset");
+const solution = document.getElementById("solution");
+
+resetGame.addEventListener('click',()=>nanogramGame.resetCells());

@@ -16,4 +16,12 @@ export default class Game {
   getRootStyles(){
     return rootStyle;
   }
+
+  resetCells(){
+    this.#gameLayout.resetCells();
+  }
+
+  selectDifficulty(){}
+
+  selectImage(){}
 }
