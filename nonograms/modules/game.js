@@ -66,7 +66,6 @@ export default class Game {
   }
 
   #selectImage(imgName){
-    const url = new URL(`../nonograms/assets/images/${imgName}.jpg`,document.location.origin).href;
-    rootStyle.setProperty("--image-src",url);
+    rootStyle.setProperty("--image-src",`url(../assets/images/${imgName}.jpg)`);
   }
 }
