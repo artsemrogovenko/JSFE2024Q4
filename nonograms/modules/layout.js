@@ -89,17 +89,20 @@ export default class Layout{
           this.#changeState.detail.idCell=element.getNode().id;
           this.#changeState.detail.stateCell=element.getNode().classList.value;
           this.#mainBlock.getNode().dispatchEvent(this.#changeState);
+          this.#reset.getNode().classList.remove("disabled");
         });
         element.addListener('contextmenu',()=>{
           this.#toggleCrossed(element);
           this.#changeState.detail.idCell=element.getNode().id;
           this.#changeState.detail.stateCell="cross";
           this.#mainBlock.getNode().dispatchEvent(this.#changeState);
+          this.#reset.getNode().classList.remove("disabled");
         });
 
         this.#cells.addBlock(element);
       }
     }
+    this.#reset.getNode().classList.add("disabled");
   }
 
   #toDefaultColor(cell){
@@ -119,6 +122,9 @@ export default class Layout{
 
   resetCells(){
     this.#cells.getComponents().forEach(e=>this.#toDefaultColor(e));
+    this.#solution.getNode().classList.remove("disabled");
+    this.#reset.getNode().classList.add("disabled");
+    this.#cells.getNode().style="";
   }
 
   destroyCells(){
@@ -126,6 +132,7 @@ export default class Layout{
   }
 
   showSolution(array){
+    this.#cells.getComponents().forEach(e=>this.#toDefaultColor(e));
     this.#cells.getComponents().forEach((component,index)=>{
       let [row,col]= component.getNode().id.split(",");
       if(array[row][col]===1){
@@ -134,6 +141,9 @@ export default class Layout{
         this.#toDefaultColor(component);
       }
     });
+    this.#solution.getNode().classList.add("disabled");
+    this.#cells.getNode().style.pointerEvents="none";
+    this.#reset.getNode().classList.remove("disabled");
   }
 
   fillTips(forLeft, forTop){

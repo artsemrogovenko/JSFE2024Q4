@@ -34,6 +34,7 @@ export default class Game {
   }
 
   resetCells(){
+    this.#userInput.clear();
     this.#gameLayout.resetCells();
   }
 
