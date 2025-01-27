@@ -151,7 +151,7 @@ export default class Layout{
     this.#topTips.getComponents().forEach(block=>block.deleteAllBlocks());
     let index=0;
     for (const component of this.#leftTips.getComponents()) {
-      const counts=forLeft[index];
+      const counts=forLeft[index].reverse();
       for (const number of counts) {
         component.addBlock(new Block("div","tipDigit left",number));
       }
