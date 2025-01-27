@@ -12,6 +12,7 @@ export default class Game {
   #selectorDifficulty;
   #selectorNonograms;
   #winnerCombination=[];
+  #userInput=new Set();
 
   constructor(size=5){
     this.#currentSize=size;
@@ -73,5 +74,23 @@ export default class Game {
 
   #selectImage(imgName){
     rootStyle.setProperty("--image-src",`url(../assets/images/${imgName}.jpg)`);
+  }
+
+  handleState(event){
+    const obj = event.detail;
+
+      if(obj.stateCell.includes("dark_cell")){
+        this.#userInput.add(obj.idCell);
+      }else{
+        if(this.#userInput.has(obj.idCell)){
+          this.#userInput.delete(obj.idCell);
+        }
+      }
+    if(this.#userInput.size===this.#winnerCombination.length){
+      let isWinner = this.#template.calculateWinnerCombination(Array.from(this.#userInput),this.#winnerCombination);
+      if(isWinner){
+        console.log("вы выиграли ");
+      }
+    }
   }
 }

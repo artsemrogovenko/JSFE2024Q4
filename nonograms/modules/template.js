@@ -36,7 +36,12 @@ export default class Template {
   }
 
   calculateWinnerCombination(comparable,reference){
-
+    for (let i = 0; i < comparable.length; i++) {
+       if(! reference.some((ref)=>ref===comparable[i])){
+        return false;
+       }
+    }
+    return true;
   }
 
   calculateDigitForTip(size){
@@ -64,7 +69,7 @@ export default class Template {
           }
 
           if(template[j][i]===1){
-            winCombination.push(`${j},${i}`);
+            // winCombination.push(`${j},${i}`);
             counterLeft+=1;
           }else{
             if(counterLeft>0){

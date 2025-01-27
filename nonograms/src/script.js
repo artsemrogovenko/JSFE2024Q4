@@ -11,7 +11,7 @@ function init(){
   const tips = document.querySelector(".top_tips");
   let tipsWidth=tips.childNodes[0].getBoundingClientRect().width;
 
-
+  mainBlock.addEventListener('cellState',(event)=> nanogramGame.handleState(event));
   mainBlock.addEventListener('filled',(e)=> updateCellSize(tips));
 
   rootStyle.setProperty("--cell-size",`${tipsWidth}px`);

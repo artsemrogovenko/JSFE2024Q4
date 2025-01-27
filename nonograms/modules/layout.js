@@ -13,6 +13,7 @@ export default class Layout{
   #form=new Block("form","form");
   #time=new Block("div","time");
   #generatedCol=new CustomEvent("filled",{detail: true});
+  #changeState=new CustomEvent("cellState",{detail: {idCell:"" , valueCell:""}});
 
   constructor(){
     this.#mainBlock.addBlock(this.#imageBlock);
@@ -80,9 +81,18 @@ export default class Layout{
         }
         element.setId(`${i},${j}`);
 
-        element.addListener('click',()=>this.#toggleDarkColor(element));
-
-        element.addListener('contextmenu',()=>this.#toggleCrossed(element));
+        element.addListener('click',()=>{
+          this.#toggleDarkColor(element);
+          this.#changeState.detail.idCell=element.getNode().id;
+          this.#changeState.detail.stateCell=element.getNode().classList.value;
+          this.#mainBlock.getNode().dispatchEvent(this.#changeState);
+        });
+        element.addListener('contextmenu',()=>{
+          this.#toggleCrossed(element);
+          this.#changeState.detail.idCell=element.getNode().id;
+          this.#changeState.detail.stateCell="cross";
+          this.#mainBlock.getNode().dispatchEvent(this.#changeState);
+        });
 
         this.#cells.addBlock(element);
       }
