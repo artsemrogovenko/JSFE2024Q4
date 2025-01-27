@@ -38,4 +38,52 @@ export default class Template {
   calculateWinnerCombination(comparable,reference){
 
   }
+
+  calculateDigitForTip(size){
+    const template=Object.values(this.#currentTemplate)[0];
+    const winCombination = [];
+    const countsTop =[];
+    const countsLeft =[];
+    let counterTop;
+    let counterLeft;
+    for (let j = 0; j < size; j++) {
+      let currentTop =[];
+      let currentLeft =[];
+      counterTop =0;
+      counterLeft=0;
+      for (let i = size-1; i >=0; i-=1) {
+
+          if(template[i][j]===1){
+            winCombination.push(`${i},${j}`);
+            counterTop+=1;
+          }else{
+            if(counterTop>0){
+              currentTop.push(counterTop);
+            }
+            counterTop=0;
+          }
+
+          if(template[j][i]===1){
+            winCombination.push(`${j},${i}`);
+            counterLeft+=1;
+          }else{
+            if(counterLeft>0){
+              currentLeft.push(counterLeft);
+            }
+            counterLeft=0;
+          }
+
+          }
+
+          if(counterTop>0){
+            currentTop.push(counterTop);
+          }
+          if(counterLeft>0){
+            currentLeft.push(counterLeft);
+          }
+          countsTop.push(currentTop);
+          countsLeft.push(currentLeft);
+    }
+    return [countsLeft,countsTop,winCombination];
+  }
 }

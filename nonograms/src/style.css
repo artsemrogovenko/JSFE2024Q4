@@ -116,3 +116,16 @@ body {
 .horizontal_bold_line{
   margin-bottom: 3px;
 }
+
+.tipDigit{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(var(--cell-size) / var(--size-game) * 3);
+  width: calc(var(--cell-size) / var(--size-game) * 3);
+  border: solid 2px rgba(240, 248, 255, 0.195);
+  border-radius: 50%;
+  color: aliceblue;
+  margin: 2px;
+  font-size: calc(var(--cell-size) / var(--size-game) * 2);
+}

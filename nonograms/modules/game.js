@@ -11,7 +11,7 @@ export default class Game {
   #currentSize;
   #selectorDifficulty;
   #selectorNonograms;
-  #winnerCombination=new Set();
+  #winnerCombination=[];
 
   constructor(size=5){
     this.#currentSize=size;
@@ -46,8 +46,10 @@ export default class Game {
   }
 
   #initBlocks(difficuilty,size){
+    this.#currentSize=parseInt(size);
+    rootStyle.setProperty("--cell-size",`${this.getSize()}px`);
     this.#addHeadings(this.#template.showTemplates(difficuilty));
-    this.#gameLayout.createRowsAndColumns(parseInt(size));
+    this.#gameLayout.createRowsAndColumns(this.getSize());
   }
 
   #addHeadings(data){
@@ -63,6 +65,10 @@ export default class Game {
     let nonogram= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
     this.#selectImage(nonogram);
     this.#template.selectTemplate(difficulty,this.#selectorNonograms.selectedIndex);
+
+    const [countsLeft,countsTop,combination] =this.#template.calculateDigitForTip(this.#currentSize);
+    this.#winnerCombination=combination;
+    this.#gameLayout.fillTips(countsLeft,countsTop);
   }
 
   #selectImage(imgName){

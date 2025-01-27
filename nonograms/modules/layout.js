@@ -123,6 +123,27 @@ export default class Layout{
     });
   }
 
+  fillTips(forLeft, forTop){
+    this.#leftTips.getComponents().forEach(block=>block.deleteAllBlocks());
+    this.#topTips.getComponents().forEach(block=>block.deleteAllBlocks());
+    let index=0;
+    for (const component of this.#leftTips.getComponents()) {
+      const counts=forLeft[index];
+      for (const number of counts) {
+        component.addBlock(new Block("div","tipDigit left",number));
+      }
+      index+=1;
+    }
+    index=0;
+    for (const component of this.#topTips.getComponents()) {
+      const counts=forTop[index];
+      for (const number of counts) {
+        component.addBlock(new Block("div","tipDigit top",number));
+      }
+      index+=1;
+    }
+  }
+
   #generateForm(){
     const label = document.createElement("label");
     const selDifficulty=new Block("select","");
