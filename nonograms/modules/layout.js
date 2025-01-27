@@ -10,6 +10,7 @@ export default class Layout{
 
   #reset=new Block("button","reset_game","Reset Game");
   #solution=new Block("button","solution","Solution");
+  #random=new Block("button","random","Random Game");
   #form=new Block("form","form");
   #time=new Block("div","time");
   #generatedCol=new CustomEvent("filled",{detail: true});
@@ -23,11 +24,13 @@ export default class Layout{
 
     this.#solution.setId("solution");
     this.#reset.setId("reset");
+    this.#random.setId("random");
     this.#generateForm();
 
     this.#menuBlock.addBlock(this.#reset);
     this.#menuBlock.addBlock(this.#solution);
     this.#menuBlock.addBlock(this.#form);
+    this.#menuBlock.addBlock(this.#random);
 
     document.body.append(this.#menuBlock.getNode());
     document.body.append(this.#mainBlock.getNode());

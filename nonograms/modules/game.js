@@ -22,6 +22,7 @@ export default class Game {
     this.#selectorDifficulty.addEventListener('change',(event)=>this.#selectDifficulty(event.target));
     this.#selectorNonograms.addEventListener('change',()=>this.#selectNonogram());
     this.#initBlocks("easy",size);
+    this.#selectNonogram();
   }
 
   getSize(){
@@ -51,16 +52,17 @@ export default class Game {
     rootStyle.setProperty("--cell-size",`${this.getSize()}px`);
     this.#addHeadings(this.#template.showTemplates(difficuilty));
     this.#gameLayout.createRowsAndColumns(this.getSize());
+    this.#selectNonogram();
   }
 
   #addHeadings(data){
     for (let i = 0; i < data.length; i++) {
       this.#selectorNonograms[i].textContent=Object.keys(data[i])[0];
     }
-    this.#selectNonogram();
   }
 
   #selectNonogram(){
+    this.#userInput.clear();
     this.resetCells();
     let difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
     let nonogram= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
@@ -92,5 +94,15 @@ export default class Game {
         console.log("вы выиграли ");
       }
     }
+  }
+
+  randomGame(){
+    const [d,t] = this.#template.setRandom();
+    this.#selectorDifficulty.selectedIndex=d;
+    this.#selectorNonograms.selectedIndex=t;
+
+    const difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
+    const size = this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].value;
+    this.#initBlocks(difficulty,size);
   }
 }

@@ -33,6 +33,7 @@ init();
 
 const resetGame = document.getElementById("reset");
 const solution = document.getElementById("solution");
+const randomGame = document.getElementById("random");
 
 resetGame.addEventListener('click',()=>nanogramGame.resetCells());
 
@@ -42,3 +43,4 @@ function updateCellSize(tips){
 }
 
 solution.addEventListener('click',()=>nanogramGame.nanogramHint());
+randomGame.addEventListener('click',()=>nanogramGame.randomGame());

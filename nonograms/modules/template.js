@@ -31,7 +31,7 @@ export default class Template {
     let indexD = Math.floor(Math.random()*3);
     let difficulty=  Object.keys(this.#templates)[indexD];
     let indexT= Math.floor(Math.random()*this.#templates[difficulty].length);
-    this.#currentTemplate=this.#templates[difficulty][indexT];
+    // this.#currentTemplate=this.#templates[difficulty][indexT];
     return [indexD,indexT];
   }
 
