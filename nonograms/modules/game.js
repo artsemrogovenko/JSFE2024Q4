@@ -104,7 +104,7 @@ export default class Game {
         this.#gameLayout.disableCells();
         this.#gameLayout.clock.stopClock();
         const [minutes, seconds]=this.#gameLayout.clock.getValue();
-        console.log(`Отлично! Вы решили нонограмму за ${minutes} минут : ${seconds} секунд!`);
+        this.#gameLayout.popUps.saveResult([minutes, seconds]);
       }
     }
   }

@@ -1,5 +1,6 @@
 import Block from "./element.js";
 import Clock from "./clock.js";
+import PopUp from "./popups.js";
 
 export default class Layout{
   #mainBlock= new Block("div","main");
@@ -48,6 +49,7 @@ export default class Layout{
     this.#time.addBlock(this.#timeDelimiter);
     this.#time.addBlock(this.#seconds);
     this.clock = new Clock(this.#minutes,this.#seconds);
+    this.popUps=new PopUp();
 
     this.#secondMenuBlock.addBlock(this.#time);
     this.#secondMenuBlock.addBlock(this.#saveGame);
@@ -57,6 +59,7 @@ export default class Layout{
     document.body.append(this.#menuBlock.getNode());
     document.body.append(this.#secondMenuBlock.getNode());
     document.body.append(this.#mainBlock.getNode());
+    document.body.append(this.popUps.getMsgWindow(),this.popUps.getScoreBlock());
     this.#mainBlock.addListener('contextmenu', function noContext(event){event.preventDefault()});
   }
 
