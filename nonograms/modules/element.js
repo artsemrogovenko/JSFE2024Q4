@@ -5,7 +5,9 @@ export default class Block{
 
   constructor(tag="div", classN="",text=""){
     let element = document.createElement(tag);
-    element.className = classN;
+    if(classN){
+      element.className = classN;
+    }
     element.textContent = text;
     this.#element = element;
   }

@@ -104,7 +104,9 @@ export default class Game {
         this.#gameLayout.disableCells();
         this.#gameLayout.clock.stopClock();
         const [minutes, seconds]=this.#gameLayout.clock.getValue();
-        this.#gameLayout.popUps.saveResult([minutes, seconds]);
+        const difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
+        const nonogram= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
+        this.#gameLayout.popUps.saveResult(difficulty,nonogram,[minutes, seconds]);
       }
     }
   }

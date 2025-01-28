@@ -5,6 +5,7 @@ export default class PopUp{
   #messageContainer;
   #messageWindow;
   #table;
+  #tbody;
   constructor(){
     this.#initMessage();
     this.#initTable();
@@ -38,8 +39,11 @@ export default class PopUp{
     this.#table.addBlock(new Block("caption","titleTable","Top 5 Score"));
     const tableHeader = new Block("thead");
     tableHeader.addBlock(this.#createTR("Level","Nonogram","Time","td"));
+    this.#table.addBlock(tableHeader);
 
-    this.#scoreBlock.addBlock(new Block("table","table"));
+    this.#tbody = new Block("tbody");
+    this.#table.addBlock(this.#tbody);
+    this.#scoreBlock.addBlock(this.#table);
   }
 
   #createTR(difficulty,nonogramName,time,type="tr"){
@@ -50,7 +54,7 @@ export default class PopUp{
     return tr;
   }
 
-  saveResult(timeData){
+  saveResult(difficulty,nonogram,timeData){
     let time =(parseInt(timeData[0])*60) + parseInt(timeData[1]);
     let msg = `Great! You have solved the nonogram in ${time} seconds!`;
     // let msg = "Great! You have solved the nonogram in ";
@@ -60,9 +64,25 @@ export default class PopUp{
     // msg= msg+` ${timeData[1]} seconds!`;
     this.#messageWindow.getComponents()[0].getNode().innerText=msg;
     this.#messageContainer.getNode().classList.add("visible");
+
+    this.#tbody.addBlock(this.#createTR(difficulty,nonogram,timeData.join(":"),"td"));
   }
 
+  showScore(bg){
+    bg.getNode().classList.add("visible");
+    setTimeout(()=>{
+      this.#scoreBlock.getNode().classList.add("visible");
+      setTimeout(()=>{
+        this.#scoreBlock.getNode().classList.add("move_tablePanel");
+      },800);
+    },0);
+  }
 
+  hideScore(bg){
+    bg.getNode().classList.remove("visible");
+    this.#scoreBlock.getNode().classList.remove("visible");
+    this.#scoreBlock.getNode().classList.remove("move_tablePanel");
+  }
 
 }
 

@@ -55,12 +55,16 @@ export default class Layout{
     this.#secondMenuBlock.addBlock(this.#saveGame);
     this.#secondMenuBlock.addBlock(this.#loadGame);
     this.#secondMenuBlock.addBlock(this.#score);
+    const darkBg=new Block("div","tablePanel_background");
 
     document.body.append(this.#menuBlock.getNode());
     document.body.append(this.#secondMenuBlock.getNode());
     document.body.append(this.#mainBlock.getNode());
+    document.body.append(darkBg.getNode());
     document.body.append(this.popUps.getMsgWindow(),this.popUps.getScoreBlock());
     this.#mainBlock.addListener('contextmenu', function noContext(event){event.preventDefault()});
+    this.#score.addListener('click', ()=>this.popUps.showScore(darkBg));
+    darkBg.addListener('click', ()=>this.popUps.hideScore(darkBg));
   }
 
   createRowsAndColumns(size){
