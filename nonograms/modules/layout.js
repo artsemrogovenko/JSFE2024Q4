@@ -1,4 +1,5 @@
 import Block from "./element.js";
+import Clock from "./clock.js";
 
 export default class Layout{
   #mainBlock= new Block("div","main");
@@ -12,7 +13,18 @@ export default class Layout{
   #solution=new Block("button","solution","Solution");
   #random=new Block("button","random","Random Game");
   #form=new Block("form","form");
+
+  #secondMenuBlock=new Block("div","menu second");
+
   #time=new Block("div","time");
+  #timeDelimiter=new Block("div","delimiter",":");
+  #minutes=new Block("div","minutes","00");
+  #seconds=new Block("div","seconds","00");
+
+  #saveGame=new Block("button","save","Save game");
+  #loadGame=new Block("button","load","Continue last game");
+  #score=new Block("button","load","Score");
+
   #generatedCol=new CustomEvent("filled",{detail: true});
   #changeState=new CustomEvent("cellState",{detail: {idCell:"" , valueCell:""}});
 
@@ -32,7 +44,18 @@ export default class Layout{
     this.#menuBlock.addBlock(this.#form);
     this.#menuBlock.addBlock(this.#random);
 
+    this.#time.addBlock(this.#minutes);
+    this.#time.addBlock(this.#timeDelimiter);
+    this.#time.addBlock(this.#seconds);
+    this.clock = new Clock(this.#minutes,this.#seconds);
+
+    this.#secondMenuBlock.addBlock(this.#time);
+    this.#secondMenuBlock.addBlock(this.#saveGame);
+    this.#secondMenuBlock.addBlock(this.#loadGame);
+    this.#secondMenuBlock.addBlock(this.#score);
+
     document.body.append(this.#menuBlock.getNode());
+    document.body.append(this.#secondMenuBlock.getNode());
     document.body.append(this.#mainBlock.getNode());
     this.#mainBlock.addListener('contextmenu', function noContext(event){event.preventDefault()});
   }

@@ -13,7 +13,7 @@ export default class Game {
   #selectorNonograms;
   #winnerCombination=[];
   #userInput=new Set();
-
+  #isGameStarted=false;
   constructor(size=5){
     this.#currentSize=size;
 
@@ -34,11 +34,15 @@ export default class Game {
   }
 
   resetCells(){
+    this.#isGameStarted=false;
+    this.#gameLayout.clock.stopClock();
+    this.#gameLayout.clock.resetClock();
     this.#userInput.clear();
     this.#gameLayout.resetCells();
   }
 
   nanogramHint(){
+    this.#gameLayout.clock.stopClock();
     const arr = Object.values(this.#template.getTemplate())[0];
     this.#gameLayout.showSolution(arr);
   }
@@ -80,6 +84,10 @@ export default class Game {
   }
 
   handleState(event){
+    if (!this.#isGameStarted){
+      this.#isGameStarted=true;
+      this.#gameLayout.clock.startClock();
+    }
     const obj = event.detail;
 
       if(obj.stateCell.includes("dark_cell")){
@@ -92,7 +100,10 @@ export default class Game {
     if(this.#userInput.size===this.#winnerCombination.length){
       let isWinner = this.#template.calculateWinnerCombination(Array.from(this.#userInput),this.#winnerCombination);
       if(isWinner){
-        console.log("вы выиграли ");
+        this.#isGameStarted=false;
+        this.#gameLayout.clock.stopClock();
+        const [minutes, seconds]=this.#gameLayout.clock.getValue();
+        console.log(`Отлично! Вы решили нонограмму за ${minutes} минут : ${seconds} секунд!`);
       }
     }
   }
