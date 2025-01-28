@@ -1,19 +1,21 @@
 import Layout from "./layout.js";
 const rootStyle = document.querySelector(":root").style;
 
-// import {nonograms} from "../src/nonograms.js";
 import Template from "./template.js";
 
 
 export default class Game {
   #template=new Template();
-  #gameLayout = new Layout();
+  #gameLayout = new Layout(this);
   #currentSize;
   #selectorDifficulty;
   #selectorNonograms;
   #winnerCombination=[];
   #userInput=new Set();
   #isGameStarted=false;
+
+  #difficulty;
+  #nonogram;
   constructor(size=5){
     this.#currentSize=size;
 
@@ -22,7 +24,6 @@ export default class Game {
     this.#selectorDifficulty.addEventListener('change',(event)=>this.#selectDifficulty(event.target));
     this.#selectorNonograms.addEventListener('change',()=>this.#selectNonogram());
     this.#initBlocks("easy",size);
-    this.#selectNonogram();
   }
 
   getSize(){
@@ -69,10 +70,10 @@ export default class Game {
   #selectNonogram(){
     this.#userInput.clear();
     this.resetCells();
-    let difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
-    let nonogram= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
-    this.#selectImage(nonogram);
-    this.#template.selectTemplate(difficulty,this.#selectorNonograms.selectedIndex);
+    this.#difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
+    this.#nonogram= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
+    this.#selectImage(this.#nonogram);
+    this.#template.selectTemplate(this.#difficulty,this.#selectorNonograms.selectedIndex);
 
     const [countsLeft,countsTop,combination] =this.#template.calculateDigitForTip(this.#currentSize);
     this.#winnerCombination=combination;
@@ -104,9 +105,7 @@ export default class Game {
         this.#gameLayout.disableCells();
         this.#gameLayout.clock.stopClock();
         const [minutes, seconds]=this.#gameLayout.clock.getValue();
-        const difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
-        const nonogram= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
-        this.#gameLayout.popUps.saveResult(difficulty,nonogram,[minutes, seconds]);
+        this.#gameLayout.popUps.saveResult(this.#difficulty,this.#nonogram,[minutes, seconds]);
       }
     }
   }
@@ -116,8 +115,18 @@ export default class Game {
     this.#selectorDifficulty.selectedIndex=d;
     this.#selectorNonograms.selectedIndex=t;
 
-    const difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
-    const size = this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].value;
-    this.#initBlocks(difficulty,size);
+    this.#difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
+    this.#currentSize = this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].value;
+    this.#initBlocks(this.#difficulty,this.#currentSize);
+  }
+
+  saveGame(){
+    // {
+    // this.#winnerCombination,
+    // this.#userInput,
+    // this.#isGameStarted,
+    // this.#currentSize
+    // this.#difficulty,
+    // this.#nonogram}
   }
 }
