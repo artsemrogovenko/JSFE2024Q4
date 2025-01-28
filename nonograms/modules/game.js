@@ -101,6 +101,7 @@ export default class Game {
       let isWinner = this.#template.calculateWinnerCombination(Array.from(this.#userInput),this.#winnerCombination);
       if(isWinner){
         this.#isGameStarted=false;
+        this.#gameLayout.disableCells();
         this.#gameLayout.clock.stopClock();
         const [minutes, seconds]=this.#gameLayout.clock.getValue();
         console.log(`Отлично! Вы решили нонограмму за ${minutes} минут : ${seconds} секунд!`);

@@ -164,9 +164,8 @@ export default class Layout{
         this.#toDefaultColor(component);
       }
     });
-    this.#solution.getNode().classList.add("disabled");
-    this.#cells.getNode().style.pointerEvents="none";
-    this.#reset.getNode().classList.remove("disabled");
+    
+    this.disableCells();
   }
 
   fillTips(forLeft, forTop){
@@ -227,5 +226,11 @@ export default class Layout{
 
     this.#form.addBlock(selDifficulty);
     this.#form.addBlock(selNonogram);
+  }
+
+  disableCells(){
+    this.#solution.getNode().classList.add("disabled");
+    this.#cells.getNode().style.pointerEvents="none";
+    this.#reset.getNode().classList.remove("disabled");
   }
 }
