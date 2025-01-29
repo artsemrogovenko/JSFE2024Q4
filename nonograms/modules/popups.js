@@ -1,4 +1,5 @@
 import Block from "./element.js";
+import { storageScore } from "./storage.js";
 
 export default class PopUp{
   #scoreBlock;
@@ -54,7 +55,7 @@ export default class PopUp{
     return tr;
   }
 
-  saveResult(difficulty,nonogram,timeData){
+  greetMsg(difficulty,nonogram,timeData){
     let time =(parseInt(timeData[0])*60) + parseInt(timeData[1]);
     let msg = `Great! You have solved the nonogram in ${time} seconds!`;
     // let msg = "Great! You have solved the nonogram in ";
@@ -64,11 +65,17 @@ export default class PopUp{
     // msg= msg+` ${timeData[1]} seconds!`;
     this.#messageWindow.getComponents()[0].getNode().innerText=msg;
     this.#messageContainer.getNode().classList.add("visible");
-
-    this.#tbody.addBlock(this.#createTR(difficulty,nonogram,timeData.join(":"),"td"));
   }
 
   showScore(bg){
+    this.#clearTable();
+    for (const [difficulty,nonogram,time] of storageScore()) {
+      let timeData=time;
+      if(Array.isArray(timeData)){
+        timeData=timeData.join(":");
+      }
+      this.#tbody.addBlock(this.#createTR(difficulty,nonogram,timeData,"td"));
+    }
     bg.getNode().classList.add("visible");
     setTimeout(()=>{
       this.#scoreBlock.getNode().classList.add("visible");
@@ -76,6 +83,10 @@ export default class PopUp{
         this.#scoreBlock.getNode().classList.add("move_tablePanel");
       },800);
     },0);
+  }
+
+  #clearTable(){
+    this.#tbody.deleteAllBlocks();
   }
 
   hideScore(bg){

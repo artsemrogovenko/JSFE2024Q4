@@ -1,4 +1,5 @@
 import Layout from "./layout.js";
+import { writeScore } from "./storage.js";
 const rootStyle = document.querySelector(":root").style;
 
 import Template from "./template.js";
@@ -105,7 +106,8 @@ export default class Game {
         this.#gameLayout.disableCells();
         this.#gameLayout.clock.stopClock();
         const [minutes, seconds]=this.#gameLayout.clock.getValue();
-        this.#gameLayout.popUps.saveResult(this.#difficulty,this.#nonogram,[minutes, seconds]);
+        this.#gameLayout.popUps.greetMsg(this.#difficulty,this.#nonogram,[minutes, seconds]);
+        writeScore(this.#difficulty,this.#nonogram,[minutes, seconds]);
       }
     }
   }
@@ -120,13 +122,14 @@ export default class Game {
     this.#initBlocks(this.#difficulty,this.#currentSize);
   }
 
-  saveGame(){
-    // {
-    // this.#winnerCombination,
-    // this.#userInput,
-    // this.#isGameStarted,
-    // this.#currentSize
-    // this.#difficulty,
-    // this.#nonogram}
+  get resources(){
+    return [
+      Array.from(this.#userInput),
+      this.#isGameStarted,
+      this.#currentSize,
+      this.#difficulty,
+      this.#nonogram,
+      this.#gameLayout.clock.currentDuration
+    ];
   }
 }

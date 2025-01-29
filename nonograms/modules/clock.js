@@ -5,16 +5,20 @@ export default class Clock{
   #interval;
   #minutesBlock;
   #secondsBlock;
+  #differenceMs;
+  #loadedMs;
 
   constructor(minutes,seconds){
     this.#startTime= new Date();
     this.#minutesBlock=minutes;
     this.#secondsBlock=seconds;
     this.#interval={};
+    this.#loadedMs=0;
+    this.#differenceMs=0;
   }
 
   startClock(){
-    this.#startTime=Date.now();
+    this.#startTime=Date.now() + this.#loadedMs;
     this.#interval.time=setInterval(this.#counting.bind(this),1000);
   }
 
@@ -25,6 +29,8 @@ export default class Clock{
   resetClock(){
     this.#minutesBlock.getNode().innerText="0".padStart(2,"0");
     this.#secondsBlock.getNode().innerText="0".padStart(2,"0");
+    this.#differenceMs=0;
+    this.#loadedMs=0;
   }
 
   getValue(){
@@ -32,11 +38,19 @@ export default class Clock{
   }
 
   #counting(){
-    const differenceMs= Date.now() - this.#startTime;
-    this.#minutesValue= new Date(differenceMs).getMinutes().toString().padStart(2,"0");
-    this.#secondsValue= new Date(differenceMs).getSeconds().toString().padStart(2,"0");
+    this.#differenceMs= (Date.now() + this.#loadedMs) - this.#startTime;
+    this.#minutesValue= new Date(this.#differenceMs).getMinutes().toString().padStart(2,"0");
+    this.#secondsValue= new Date(this.#differenceMs).getSeconds().toString().padStart(2,"0");
 
     this.#minutesBlock.getNode().innerText=this.#minutesValue;
     this.#secondsBlock.getNode().innerText=this.#secondsValue;
+  }
+
+  get currentDuration(){
+    return this.#differenceMs;
+  }
+
+  set gameDuration(ms){
+    this.#loadedMs=ms;
   }
 }

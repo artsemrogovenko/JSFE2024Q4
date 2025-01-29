@@ -1,6 +1,7 @@
 import Block from "./element.js";
 import Clock from "./clock.js";
 import PopUp from "./popups.js";
+import { saveGame ,loadGame } from "./storage.js";
 
 export default class Layout{
   #mainBlock= new Block("div","main");
@@ -29,7 +30,7 @@ export default class Layout{
   #generatedCol=new CustomEvent("filled",{detail: true});
   #changeState=new CustomEvent("cellState",{detail: {idCell:"" , valueCell:""}});
 
-  constructor(){
+  constructor(gameLogic){
     this.#mainBlock.addBlock(this.#imageBlock);
     this.#mainBlock.addBlock(this.#topTips);
     this.#mainBlock.addBlock(this.#leftTips);
@@ -65,6 +66,9 @@ export default class Layout{
     this.#mainBlock.addListener('contextmenu', function noContext(event){event.preventDefault()});
     this.#score.addListener('click', ()=>this.popUps.showScore(darkBg));
     darkBg.addListener('click', ()=>this.popUps.hideScore(darkBg));
+
+    this.#saveGame.addListener('click', ()=>saveGame(gameLogic.resources));
+    this.#loadGame.addListener('click', ()=>loadGame(gameLogic));
   }
 
   createRowsAndColumns(size){
