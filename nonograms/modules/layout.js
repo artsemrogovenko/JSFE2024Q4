@@ -3,6 +3,7 @@ import Clock from "./clock.js";
 import PopUp from "./popups.js";
 import { saveGame ,loadGame } from "./storage.js";
 import {playCross,playRevert,playDark,playWhite, toggleAudio} from "./audio.js";
+import { rootStyle } from "./game.js";
 
 export default class Layout{
   #mainBlock= new Block("div","main");
@@ -28,6 +29,8 @@ export default class Layout{
   #loadGame=new Block("button","load","Continue last game");
   #score=new Block("button","load","Score");
   #soundBtn = new Block("div","sound");
+  #themeBtn = new Block("div","theme");
+  #themesProperties;
 
   #generatedCol=new CustomEvent("filled",{detail: true});
   #changeState=new CustomEvent("cellState",{detail: {idCell:"" , valueCell:""}});
@@ -59,6 +62,8 @@ export default class Layout{
     this.#secondMenuBlock.addBlock(this.#loadGame);
     this.#secondMenuBlock.addBlock(this.#score);
     this.#secondMenuBlock.addBlock(this.#soundBtn);
+    this.#secondMenuBlock.addBlock(this.#themeBtn);
+    this.#initStyles();
     const darkBg=new Block("div","tablePanel_background");
 
     document.body.append(this.#menuBlock.getNode());
@@ -77,6 +82,7 @@ export default class Layout{
     this.#loadGame.addListener('click', ()=>loadGame(gameLogic.loadFromMemory()));
 
     this.#soundBtn.addListener('click', ()=>this.#toggleSound());
+    this.#themeBtn.addListener('click', ()=>this.#changeTheme());
   }
 
   createRowsAndColumns(size){
@@ -278,5 +284,43 @@ export default class Layout{
   #toggleSound(){
     toggleAudio();
     this.#soundBtn.getNode().classList.toggle("muted");
+  }
+
+  #changeTheme(){
+    switch (this.#themesProperties["current"]) {
+      case "light":
+        this.#themesProperties["current"]="dark";
+        break;
+      case "dark":
+        this.#themesProperties["current"]="light";
+        break;
+    }
+    const key =this.#themesProperties["current"];
+    const properties=this.#themesProperties[key];
+     rootStyle.setProperty("--bgColor-main",properties[0]);
+     rootStyle.setProperty("--bg-tips-vontainer",properties[1]);
+     rootStyle.setProperty("--main-bg",properties[2]);
+     rootStyle.setProperty("--buttons-bg",properties[3]);
+    this.#themeBtn.getNode().classList.toggle("dark");
+  }
+
+  #initStyles(){
+    this.#themesProperties={
+      current:"light",
+      light:
+      [
+      "#2871b1",
+      "#aed2f1",
+      "#f0f8ff",
+      "field"
+      ]
+      ,
+      dark:[
+      "#200f40",
+      "#000000",
+      "#000000",
+      "#8692c9"
+      ]
+    }
   }
 }

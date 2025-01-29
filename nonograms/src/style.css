@@ -4,12 +4,16 @@
   --cell-size: 0px;
   --ceils-x: 0px;
   --ceils-y: 0px;
+  --bgColor-main: #2871b1;
+  --bg-tips-vontainer: #aed2f1;
+  --main-bg:#f0f8ff;
+  --buttons-bg: field;
 }
 
 html {
   margin: 0 auto;
   display: flex;
-  background: aliceblue;
+  background: var(--main-bg);
   justify-content: center;
 }
 
@@ -17,6 +21,7 @@ body {
   margin: 0;
   display: flex;
   max-width: 800px;
+  width: 100%;
   gap: 20px;
   flex-direction: column;
   align-items: center;
@@ -24,7 +29,7 @@ body {
 
 .menu {
   display: flex;
-  background: #2871b1;
+  background: var(--bgColor-main) ;
   width: 100%;
   height: 50px;
   padding: 20px 0;
@@ -33,7 +38,7 @@ body {
 
 .main {
   display: flex;
-  background: #2871b1;
+  background: var(--bgColor-main) ;
   max-width: 800px;
   max-height: 800px;
   flex-wrap: wrap;
@@ -52,9 +57,9 @@ body {
   flex-direction: row;
   height: calc(30% - 5px);
   width: 70%;
-  background: #aed2f1;
+  background: var(--bg-tips-vontainer);
   gap: 2px;
-  border-bottom: solid 5px #aed2f1;
+  border-bottom: solid 5px var(--bg-tips-vontainer);
 }
 
 .left_tips {
@@ -62,16 +67,16 @@ body {
   flex-direction: column;
   width: calc(30% - 5px);
   height: 70%;
-  background: #aed2f1;
+  background: var(--bg-tips-vontainer);
   gap: 2px;
-  border-right: solid 5px #aed2f1;
+  border-right: solid 5px var(--bg-tips-vontainer);
 }
 
 .top_tip {
   display: flex;
   height: 100%;
   width: 100%;
-  background: #2871b1;
+  background: var(--bgColor-main) ;
   text-align: end;
   flex-direction: column-reverse;
   justify-content: flex-start;
@@ -82,7 +87,7 @@ body {
   display: flex;
   height: 100%;
   width: 100%;
-  background: #2871b1;
+  background: var(--bgColor-main) ;
   text-align: right;
   align-items: center;
   justify-content: flex-end;
@@ -254,11 +259,30 @@ tbody>tr:nth-of-type(even) {
 .sound{
   height: 50px;
   width: 50px;
-  background-image: url(sound.svg) ;
+  background-image: url('./sound.svg') ;
   background-size: cover;
+  background-color: #ffffff8a;
+  border-radius: 50%;
 }
 
 .muted{
-  background-image: url(sound-off.svg) ;
+  background-image: url('./sound-off.svg') ;
   opacity: 0.2;
+}
+
+.theme{
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background: center / 80% no-repeat url('./light-bulb.svg'), #ffffff8a;
+}
+
+.dark{
+  background-image: url('./bulb.svg') ;
+  opacity: 0.2;
+}
+
+button,select{
+  background-color: var(--buttons-bg);
+  border: none;
 }

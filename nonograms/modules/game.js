@@ -1,6 +1,6 @@
 import Layout from "./layout.js";
 import { loadGame, writeScore } from "./storage.js";
-const rootStyle = document.querySelector(":root").style;
+export const rootStyle = document.querySelector(":root").style;
 
 import Template from "./template.js";
 import {playWin} from "./audio.js";
