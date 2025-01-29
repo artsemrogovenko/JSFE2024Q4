@@ -1,3 +1,5 @@
+import {startTicking,stopTicking } from "./audio.js";
+
 export default class Clock{
   #startTime;
   #minutesValue;
@@ -20,11 +22,13 @@ export default class Clock{
   startClock(){
     this.#startTime=Date.now();
     this.#interval.time=setInterval(this.#counting.bind(this),1000);
+    startTicking();
   }
 
   stopClock(){
     this.#loadedMs=this.#differenceMs;
     clearInterval(this.#interval.time);
+    stopTicking();
   }
 
   resetClock(){

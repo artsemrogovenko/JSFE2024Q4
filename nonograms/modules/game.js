@@ -3,7 +3,7 @@ import { loadGame, writeScore } from "./storage.js";
 const rootStyle = document.querySelector(":root").style;
 
 import Template from "./template.js";
-
+import {playWin} from "./audio.js";
 
 export default class Game {
   #template=new Template();
@@ -108,6 +108,7 @@ export default class Game {
         const [minutes, seconds]=this.#gameLayout.clock.getValue();
         this.#gameLayout.popUps.greetMsg(this.#difficulty,this.#nonogram,[minutes, seconds]);
         writeScore(this.#difficulty,this.#nonogram,[minutes, seconds]);
+        playWin();
       }
     }
   }

@@ -250,3 +250,15 @@ tr{
 tbody>tr:nth-of-type(even) {
   background-color: rgb(237 238 242 / 30%);
 }
+
+.sound{
+  height: 50px;
+  width: 50px;
+  background-image: url(sound.svg) ;
+  background-size: cover;
+}
+
+.muted{
+  background-image: url(sound-off.svg) ;
+  opacity: 0.2;
+}

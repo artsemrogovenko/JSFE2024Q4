@@ -2,6 +2,7 @@ import Block from "./element.js";
 import Clock from "./clock.js";
 import PopUp from "./popups.js";
 import { saveGame ,loadGame } from "./storage.js";
+import {playCross,playRevert,playDark,playWhite, toggleAudio} from "./audio.js";
 
 export default class Layout{
   #mainBlock= new Block("div","main");
@@ -26,6 +27,7 @@ export default class Layout{
   #saveGame=new Block("button","save","Save game");
   #loadGame=new Block("button","load","Continue last game");
   #score=new Block("button","load","Score");
+  #soundBtn = new Block("div","sound");
 
   #generatedCol=new CustomEvent("filled",{detail: true});
   #changeState=new CustomEvent("cellState",{detail: {idCell:"" , valueCell:""}});
@@ -56,6 +58,7 @@ export default class Layout{
     this.#secondMenuBlock.addBlock(this.#saveGame);
     this.#secondMenuBlock.addBlock(this.#loadGame);
     this.#secondMenuBlock.addBlock(this.#score);
+    this.#secondMenuBlock.addBlock(this.#soundBtn);
     const darkBg=new Block("div","tablePanel_background");
 
     document.body.append(this.#menuBlock.getNode());
@@ -72,6 +75,8 @@ export default class Layout{
       gameLogic.pauseGame;
     });
     this.#loadGame.addListener('click', ()=>loadGame(gameLogic.loadFromMemory()));
+
+    this.#soundBtn.addListener('click', ()=>this.#toggleSound());
   }
 
   createRowsAndColumns(size){
@@ -122,6 +127,11 @@ export default class Layout{
         element.setId(`${i},${j}`);
 
         element.addListener('click',()=>{
+          if(element.getNode().classList.value.includes("dark_cell")){
+            playWhite();
+          }else{
+            playDark();
+          }
           this.#toggleDarkColor(element);
           this.#changeState.detail.idCell=element.getNode().id;
           this.#changeState.detail.stateCell=element.getNode().classList.value;
@@ -129,6 +139,12 @@ export default class Layout{
           this.#reset.getNode().classList.remove("disabled");
         });
         element.addListener('contextmenu',()=>{
+          if(element.getNode().classList.value.includes("cross_cell")){
+            playRevert();
+          }else{
+            playCross();
+          }
+
           this.#toggleCrossed(element);
           this.#changeState.detail.idCell=element.getNode().id;
           this.#changeState.detail.stateCell="cross";
@@ -257,5 +273,10 @@ export default class Layout{
       let index = (parseInt(i)*size)+parseInt(j);
       this.#toggleDarkColor(allCells[index]);
     });
+  }
+
+  #toggleSound(){
+    toggleAudio();
+    this.#soundBtn.getNode().classList.toggle("muted");
   }
 }
