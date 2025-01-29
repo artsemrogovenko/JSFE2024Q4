@@ -12,7 +12,7 @@ export default class Game {
   #selectorDifficulty;
   #selectorNonograms;
   #winnerCombination=[];
-  #userInput=new Set();
+  #userInput={dark:new Set(),crossed:new Set()};
   #isGameStarted=false;
 
   #difficulty;
@@ -39,7 +39,8 @@ export default class Game {
     this.#isGameStarted=false;
     this.#gameLayout.clock.stopClock();
     this.#gameLayout.clock.resetClock();
-    this.#userInput.clear();
+    this.#userInput.crossed.clear();
+    this.#userInput.dark.clear();
     this.#gameLayout.resetCells();
   }
 
@@ -69,7 +70,8 @@ export default class Game {
   }
 
   #selectNonogram(){
-    this.#userInput.clear();
+    this.#userInput.dark.clear();
+    this.#userInput.crossed.clear();
     this.resetCells();
     this.#difficulty= this.#selectorDifficulty.options[this.#selectorDifficulty.selectedIndex].text;
     this.#nonogram= this.#selectorNonograms.options[this.#selectorNonograms.selectedIndex].text;
@@ -93,14 +95,28 @@ export default class Game {
     const obj = event.detail;
 
       if(obj.stateCell.includes("dark_cell")){
-        this.#userInput.add(obj.idCell);
-      }else{
-        if(this.#userInput.has(obj.idCell)){
-          this.#userInput.delete(obj.idCell);
+        this.#userInput.dark.add(obj.idCell);
+
+        if(this.#userInput.crossed.has(obj.idCell)){
+          this.#userInput.crossed.delete(obj.idCell);
+        }
+      }else if(obj.stateCell.includes("cross")){
+        this.#userInput.crossed.add(obj.idCell);
+
+        if(this.#userInput.dark.has(obj.idCell)){
+          this.#userInput.dark.delete(obj.idCell);
+        }
+      }else {
+        if(this.#userInput.dark.has(obj.idCell)){
+          this.#userInput.dark.delete(obj.idCell);
+        }
+
+        if(this.#userInput.crossed.has(obj.idCell)){
+          this.#userInput.crossed.delete(obj.idCell);
         }
       }
-    if(this.#userInput.size===this.#winnerCombination.length){
-      let isWinner = this.#template.calculateWinnerCombination(Array.from(this.#userInput),this.#winnerCombination);
+    if(this.#userInput.dark.size===this.#winnerCombination.length){
+      let isWinner = this.#template.calculateWinnerCombination(Array.from(this.#userInput.dark),this.#winnerCombination);
       if(isWinner){
         this.#isGameStarted=false;
         this.#gameLayout.disableCells();
@@ -125,13 +141,14 @@ export default class Game {
 
   get resources(){
     return [
-      Array.from(this.#userInput),
+      Array.from(this.#userInput.dark),
       this.#isGameStarted,
       this.#currentSize,
       this.#difficulty,
       this.#nonogram,
       this.#selectorNonograms.selectedIndex,
-      this.#gameLayout.clock.currentDuration
+      this.#gameLayout.clock.currentDuration,
+      Array.from(this.#userInput.crossed)
     ];
   }
 
@@ -152,10 +169,11 @@ export default class Game {
     this.#gameLayout.clock.stopClock();
     this.#gameLayout.clock.gameDuration= data["currentDuration"];
     this.#nonogram=data["nonogram"];
-    this.#userInput=new Set(data["userInput"]);
+    this.#userInput.dark=new Set(data["dark"]);
+    this.#userInput.crossed=new Set(data["crosses"]);
     this.#isGameStarted=false;
 
-    this.#gameLayout.loadState(data["userInput"],this.#currentSize);
+    this.#gameLayout.loadState(data["dark"],data["crosses"],this.#currentSize);
   }
 
 }

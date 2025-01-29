@@ -45,13 +45,14 @@ export function storageScore() {
 export function saveGame(gamelogic) {
   readStorage();
   nonogramGame["memory"] = {
-      userInput: gamelogic[0],
+      dark: gamelogic[0],
       isGameStarted: gamelogic[1],
       size: gamelogic[2],
       difficulty: gamelogic[3],
       nonogram: gamelogic[4],
       nonogramIndex: gamelogic[5],
-      currentDuration: gamelogic[6]
+      currentDuration: gamelogic[6],
+      crosses: gamelogic[7]
   };
   updateLocalStorage();
 }

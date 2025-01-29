@@ -27,7 +27,7 @@ export default class Layout{
 
   #saveGame=new Block("button","save","Save game");
   #loadGame=new Block("button","load","Continue last game");
-  #score=new Block("button","load","Score");
+  #score=new Block("button","score","Score");
   #soundBtn = new Block("div","sound");
   #themeBtn = new Block("div","theme");
   #themesProperties;
@@ -272,12 +272,17 @@ export default class Layout{
     this.#saveGame.getNode().classList.add("disabled");
   }
 
-  loadState(data,size){
+  loadState(dark,crosses,size){
     const allCells = this.#cells.getComponents();
-    data.forEach((value)=>{
+    dark.forEach((value)=>{
       let [i,j] = value.split(",");
       let index = (parseInt(i)*size)+parseInt(j);
       this.#toggleDarkColor(allCells[index]);
+    });
+    crosses.forEach((value)=>{
+      let [i,j] = value.split(",");
+      let index = (parseInt(i)*size)+parseInt(j);
+      this.#toggleCrossed(allCells[index]);
     });
   }
 
