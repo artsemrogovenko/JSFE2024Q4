@@ -1,5 +1,5 @@
 import Layout from "./layout.js";
-import { writeScore } from "./storage.js";
+import { loadGame, writeScore } from "./storage.js";
 const rootStyle = document.querySelector(":root").style;
 
 import Template from "./template.js";
@@ -129,7 +129,32 @@ export default class Game {
       this.#currentSize,
       this.#difficulty,
       this.#nonogram,
+      this.#selectorNonograms.selectedIndex,
       this.#gameLayout.clock.currentDuration
     ];
   }
+
+  get pauseGame(){
+    this.#isGameStarted=false;
+  }
+
+  loadFromMemory(){
+    const data = loadGame();
+    if(data===false){
+      return;
+    }
+    this.#selectorDifficulty.value=data["size"];
+    this.#selectorNonograms.selectedIndex=data["nonogramIndex"];
+
+    this.#initBlocks(data["difficulty"],data["size"]);
+
+    this.#gameLayout.clock.stopClock();
+    this.#gameLayout.clock.gameDuration= data["currentDuration"];
+    this.#nonogram=data["nonogram"];
+    this.#userInput=new Set(data["userInput"]);
+    this.#isGameStarted=false;
+
+    this.#gameLayout.loadState(data["userInput"],this.#currentSize);
+  }
+
 }

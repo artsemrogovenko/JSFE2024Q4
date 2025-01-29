@@ -18,11 +18,12 @@ export default class Clock{
   }
 
   startClock(){
-    this.#startTime=Date.now() + this.#loadedMs;
+    this.#startTime=Date.now();
     this.#interval.time=setInterval(this.#counting.bind(this),1000);
   }
 
   stopClock(){
+    this.#loadedMs=this.#differenceMs;
     clearInterval(this.#interval.time);
   }
 
@@ -52,5 +53,7 @@ export default class Clock{
 
   set gameDuration(ms){
     this.#loadedMs=ms;
+    this.#minutesBlock.getNode().innerText=new Date(ms).getMinutes().toString().padStart(2,"0");
+    this.#secondsBlock.getNode().innerText=new Date(ms).getSeconds().toString().padStart(2,"0");
   }
 }

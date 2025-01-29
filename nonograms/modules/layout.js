@@ -67,8 +67,11 @@ export default class Layout{
     this.#score.addListener('click', ()=>this.popUps.showScore(darkBg));
     darkBg.addListener('click', ()=>this.popUps.hideScore(darkBg));
 
-    this.#saveGame.addListener('click', ()=>saveGame(gameLogic.resources));
-    this.#loadGame.addListener('click', ()=>loadGame(gameLogic));
+    this.#saveGame.addListener('click', ()=>{ saveGame(gameLogic.resources);
+      this.clock.stopClock();
+      gameLogic.pauseGame;
+    });
+    this.#loadGame.addListener('click', ()=>loadGame(gameLogic.loadFromMemory()));
   }
 
   createRowsAndColumns(size){
@@ -159,6 +162,7 @@ export default class Layout{
     this.#solution.getNode().classList.remove("disabled");
     this.#reset.getNode().classList.add("disabled");
     this.#cells.getNode().style="";
+    this.#saveGame.getNode().classList.remove("disabled");
   }
 
   destroyCells(){
@@ -243,5 +247,15 @@ export default class Layout{
     this.#solution.getNode().classList.add("disabled");
     this.#cells.getNode().style.pointerEvents="none";
     this.#reset.getNode().classList.remove("disabled");
+    this.#saveGame.getNode().classList.add("disabled");
+  }
+
+  loadState(data,size){
+    const allCells = this.#cells.getComponents();
+    data.forEach((value)=>{
+      let [i,j] = value.split(",");
+      let index = (parseInt(i)*size)+parseInt(j);
+      this.#toggleDarkColor(allCells[index]);
+    });
   }
 }

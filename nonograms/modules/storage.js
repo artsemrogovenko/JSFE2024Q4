@@ -1,4 +1,4 @@
-let nonogramGame={score:null};
+let nonogramGame = {  score: null,  memory: null };
 
 export function updateLocalStorage(){
   localStorage.nonogramGame=JSON.stringify(nonogramGame);
@@ -10,8 +10,7 @@ export function readStorage(){
     updateLocalStorage();
     return false;
   }
-  nonogramGame=JSON.parse(localStorage.nonogramGame);
-  return nonogramGame;
+  nonogramGame = JSON.parse(localStorage.nonogramGame);
 }
 
 export function writeScore(...data){
@@ -22,6 +21,15 @@ export function writeScore(...data){
   }
   array.unshift(data);
   nonogramGame["score"]=array;
+  if(nonogramGame["memory"]){
+
+  if( nonogramGame["memory"]["difficulty"]===data[0] &&
+   nonogramGame["memory"]["nonogram"]===data[1] ){
+
+     nonogramGame["memory"]=null;
+    }
+
+  }
   updateLocalStorage();
 }
 
@@ -34,10 +42,24 @@ export function storageScore() {
   return [["no", "results", "yet"]];
 }
 
-export function saveGame(gamelogic){
-console.log(JSON.stringify(gamelogic));
+export function saveGame(gamelogic) {
+  readStorage();
+  nonogramGame["memory"] = {
+      userInput: gamelogic[0],
+      isGameStarted: gamelogic[1],
+      size: gamelogic[2],
+      difficulty: gamelogic[3],
+      nonogram: gamelogic[4],
+      nonogramIndex: gamelogic[5],
+      currentDuration: gamelogic[6]
+  };
+  updateLocalStorage();
 }
 
-export function loadGame(gameLogic){
-
+export function loadGame() {
+  readStorage();
+  if (Boolean(nonogramGame["memory"])){
+    return nonogramGame["memory"];
+  }
+  return false;
 }
