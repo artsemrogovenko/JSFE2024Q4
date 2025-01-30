@@ -348,4 +348,11 @@ export default class Layout {
       ],
     };
   }
+
+  disableSaveBtn(){
+    this.#saveGame.getNode().classList.add('disabled');
+  }
+  enableSaveBtn(){
+    this.#saveGame.getNode().classList.remove('disabled');
+  }
 }

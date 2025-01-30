@@ -46,6 +46,7 @@ export default class Game {
     this.#userInput.crossed.clear();
     this.#userInput.dark.clear();
     this.#gameLayout.resetCells();
+    this.#gameLayout.disableSaveBtn();
   }
 
   nanogramHint() {
@@ -108,6 +109,7 @@ export default class Game {
     if (!this.#isGameStarted) {
       this.#isGameStarted = true;
       this.#gameLayout.clock.startClock();
+      this.#gameLayout.enableSaveBtn();
     }
     const obj = event.detail;
 
@@ -148,6 +150,7 @@ export default class Game {
         ]);
         writeScore(this.#difficulty, this.#nonogram, [minutes, seconds]);
         playWin();
+        this.#gameLayout.disableSaveBtn();
       }
     }
   }
