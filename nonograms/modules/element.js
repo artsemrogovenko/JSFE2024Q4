@@ -8,7 +8,9 @@ export default class Block{
     if(classN){
       element.className = classN;
     }
+    if(text){
     element.textContent = text;
+    }
     this.#element = element;
   }
 

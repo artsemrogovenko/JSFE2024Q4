@@ -84,7 +84,7 @@ export default class Game {
   }
 
   #selectImage(imgName){
-    rootStyle.setProperty("--image-src",`url(../assets/images/${imgName}.jpg)`);
+    rootStyle.setProperty("--image-src",`url(../assets/images/${imgName}.jpg?v=2)`);
   }
 
   handleState(event){

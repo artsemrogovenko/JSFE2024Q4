@@ -6,6 +6,7 @@ import {playCross,playRevert,playDark,playWhite, toggleAudio} from "./audio.js";
 import { rootStyle } from "./game.js";
 
 export default class Layout{
+  #mainContainer= new Block("div","main_container");
   #mainBlock= new Block("div","main");
   #imageBlock=new Block("div","image");
   #menuBlock=new Block("div","menu");
@@ -66,9 +67,11 @@ export default class Layout{
     this.#initStyles();
     const darkBg=new Block("div","tablePanel_background");
 
+    this.#mainContainer.addBlock(this.#mainBlock);
+
     document.body.append(this.#menuBlock.getNode());
     document.body.append(this.#secondMenuBlock.getNode());
-    document.body.append(this.#mainBlock.getNode());
+    document.body.append(this.#mainContainer.getNode());
     document.body.append(darkBg.getNode());
     document.body.append(this.popUps.getMsgWindow(),this.popUps.getScoreBlock());
     this.#mainBlock.addListener('contextmenu', function noContext(event){event.preventDefault()});
@@ -303,7 +306,7 @@ export default class Layout{
     const key =this.#themesProperties["current"];
     const properties=this.#themesProperties[key];
      rootStyle.setProperty("--bgColor-main",properties[0]);
-     rootStyle.setProperty("--bg-tips-vontainer",properties[1]);
+     rootStyle.setProperty("--bg-tips-container",properties[1]);
      rootStyle.setProperty("--main-bg",properties[2]);
      rootStyle.setProperty("--buttons-bg",properties[3]);
     this.#themeBtn.getNode().classList.toggle("dark");
@@ -316,14 +319,16 @@ export default class Layout{
       [
       "#2871b1",
       "#aed2f1",
-      "#f0f8ff",
+      // `#f0f8ffb5 center / cover no-repeat url(${lightImg.src})`,
+      `#f0f8ffb5 center / cover no-repeat url('./backgrounds/light.jpg?v=2')`,
       "field"
       ]
       ,
       dark:[
       "#200f40",
       "#000000",
-      "#000000",
+      // `#04191cb5 center / cover no-repeat url(${darkImg.src})`,
+      `#04191cb5 center / cover no-repeat url('./backgrounds/dark.jpg?v=2')`,
       "#8692c9"
       ]
     }

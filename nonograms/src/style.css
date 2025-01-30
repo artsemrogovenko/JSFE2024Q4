@@ -5,26 +5,29 @@
   --ceils-x: 0px;
   --ceils-y: 0px;
   --bgColor-main: #2871b1;
-  --bg-tips-vontainer: #aed2f1;
-  --main-bg:#f0f8ff;
+  --bg-tips-container: #aed2f1;
+  --main-bg: #f0f8ffb5 center / cover no-repeat url('./backgrounds/light.jpg?v=2');
   --buttons-bg: field;
 }
 
 html {
   margin: 0 auto;
   display: flex;
-  background: var(--main-bg);
   justify-content: center;
+  min-width: 500px;
 }
 
 body {
-  margin: 0;
+  /* margin: 0 auto; */
   display: flex;
   max-width: 800px;
   /* width: 100%; */
-  gap: 20px;
+  /* gap: 20px; */
   flex-direction: column;
   align-items: center;
+  margin: 0 5px;
+  background: var(--main-bg);
+  background-blend-mode: overlay;
 }
 
 .menu {
@@ -34,6 +37,7 @@ body {
   height: 50px;
   padding: 20px 0;
   justify-content: space-around;
+  margin-bottom: 20px;
 }
 
 .second .load{
@@ -44,11 +48,19 @@ body {
 .main {
   display: flex;
   background: var(--bgColor-main) ;
+  flex-wrap: wrap;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  /* /* height: 100vw; */
+  /* width: 100vw; */
+}
+.main_container{
   max-width: 800px;
   max-height: 800px;
-  flex-wrap: wrap;
   height: 100vw;
   width: 100vw;
+  border: solid 5px var(--bgColor-main);
 }
 
 .image {
@@ -62,9 +74,9 @@ body {
   flex-direction: row;
   height: calc(30% - 5px);
   width: 70%;
-  background: var(--bg-tips-vontainer);
+  background: var(--bg-tips-container);
   gap: 2px;
-  border-bottom: solid 5px var(--bg-tips-vontainer);
+  border-bottom: solid 5px var(--bg-tips-container);
 }
 
 .left_tips {
@@ -72,9 +84,9 @@ body {
   flex-direction: column;
   width: calc(30% - 5px);
   height: 70%;
-  background: var(--bg-tips-vontainer);
+  background: var(--bg-tips-container);
   gap: 2px;
-  border-right: solid 5px var(--bg-tips-vontainer);
+  border-right: solid 5px var(--bg-tips-container);
 }
 
 .top_tip {
