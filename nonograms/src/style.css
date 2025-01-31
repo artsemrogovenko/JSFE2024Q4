@@ -136,7 +136,7 @@ body {
 }
 
 .cross_cell {
-  background: center / cover url('./cross.svg');
+  background: center / cover url('./cross.svg'), #ffffff;
 }
 
 .vertical_bold_line {

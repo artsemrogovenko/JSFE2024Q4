@@ -43,6 +43,7 @@ export function playDark() {
 export function playCross() {
   if (turnSound) {
     const cross = new Audio('../nonograms/assets/sounds/cross.mp3');
+    cross.volume = 0.3;
     cross.play();
   }
 }
