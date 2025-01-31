@@ -9,6 +9,7 @@
   --main-bg: #f0f8ffb5 center / cover no-repeat
     url('./backgrounds/light.jpg?v=2');
   --buttons-bg: field;
+  --buttons-gradient: linear-gradient(#efcece, #b8bceb);
 }
 
 html {
@@ -294,9 +295,11 @@ tbody > tr:nth-of-type(even) {
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  background:
-    center / 80% no-repeat url('./light-bulb.svg'),
-    #ffffff8a;
+  background-image: url('./light-bulb.svg');
+  background-color: #ffffff8a;
+  background-size: 80%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .dark {
@@ -308,4 +311,14 @@ button,
 select {
   background-color: var(--buttons-bg);
   border: none;
+}
+
+button:hover,
+select:hover{
+  background: var(--buttons-gradient);
+}
+
+.sound:hover,
+.theme:hover {
+  background-color: unset;
 }

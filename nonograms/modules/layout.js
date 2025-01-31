@@ -326,6 +326,7 @@ export default class Layout {
     rootStyle.setProperty('--bg-tips-container', properties[1]);
     rootStyle.setProperty('--main-bg', properties[2]);
     rootStyle.setProperty('--buttons-bg', properties[3]);
+    rootStyle.setProperty('--buttons-gradient', properties[4]);
     this.#themeBtn.getNode().classList.toggle('dark');
   }
 
@@ -335,16 +336,16 @@ export default class Layout {
       light: [
         '#2871b1',
         '#aed2f1',
-        // `#f0f8ffb5 center / cover no-repeat url(${lightImg.src})`,
         `#f0f8ffb5 center / cover no-repeat url('./backgrounds/light.jpg?v=2')`,
         'field',
+        `linear-gradient(#efcece, #b8bceb)`,
       ],
       dark: [
         '#200f40',
         '#000000',
-        // `#04191cb5 center / cover no-repeat url(${darkImg.src})`,
         `#04191cb5 center / cover no-repeat url('./backgrounds/dark.jpg?v=2')`,
         '#8692c9',
+        `linear-gradient(#e66465, #9198e5)`,
       ],
     };
   }
