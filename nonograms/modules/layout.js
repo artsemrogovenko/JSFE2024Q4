@@ -95,6 +95,7 @@ export default class Layout {
       saveGame(gameLogic.resources);
       this.clock.stopClock();
       gameLogic.pauseGame;
+      this.checkSavedGame();
     });
     this.#loadGame.addListener('click', () =>
       loadGame(gameLogic.loadFromMemory()),
@@ -102,6 +103,8 @@ export default class Layout {
 
     this.#soundBtn.addListener('click', () => this.#toggleSound());
     this.#themeBtn.addListener('click', () => this.#changeTheme());
+
+    this.checkSavedGame();
   }
 
   createRowsAndColumns(size) {
@@ -355,5 +358,14 @@ export default class Layout {
   }
   enableSaveBtn(){
     this.#saveGame.getNode().classList.remove('disabled');
+  }
+
+  checkSavedGame(){
+    if(loadGame()===false){
+      this.#loadGame.getNode().classList.add("disabled");
+      return;
+    }else{
+      this.#loadGame.getNode().classList.remove("disabled");
+    }
   }
 }
