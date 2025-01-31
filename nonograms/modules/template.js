@@ -33,6 +33,10 @@ export default class Template {
     let difficulty = Object.keys(this.#templates)[indexD];
     let indexT = Math.floor(Math.random() * this.#templates[difficulty].length);
     // this.#currentTemplate=this.#templates[difficulty][indexT];
+    const randomTemplate=Object.values(this.#templates[difficulty])[indexT];
+    if(Object.keys(this.#currentTemplate)[0]===Object.keys(randomTemplate)[0]){
+      return this.setRandom();
+    }
     return [indexD, indexT];
   }
 
