@@ -2,30 +2,24 @@ import Game from '../modules/game.js';
 
 let nanogramGame = new Game();
 const rootStyle = nanogramGame.getRootStyles();
+let mainBlock ;
+let tips;
 
 function init() {
-  const mainBlock = document.querySelector('.main');
-  let mainWidth = mainBlock.getBoundingClientRect().width;
+  mainBlock = document.querySelector('.main');
+  tips = document.querySelector('.top_tips');
 
-  const tips = document.querySelector('.top_tips');
-  let tipsWidth = tips.childNodes[0].getBoundingClientRect().width;
+  updateCellSize();
 
   mainBlock.addEventListener('cellState', (event) =>
     nanogramGame.handleState(event),
   );
-  mainBlock.addEventListener('filled', () => updateCellSize(tips));
-
-  rootStyle.setProperty('--cell-size', `${tipsWidth}px`);
-  rootStyle.setProperty('--ceils-x', `${mainWidth * 0.3}px`);
-  rootStyle.setProperty('--ceils-y', `${mainWidth * 0.7}px`);
+  mainBlock.addEventListener('filled', () => {
+    updateCellSize(tips)
+  });
 
   window.onresize = () => {
-    mainWidth = mainBlock.getBoundingClientRect().width;
-
-    tipsWidth = tips.childNodes[0].getBoundingClientRect().width;
-    rootStyle.setProperty('--cell-size', `${tipsWidth}px`);
-    rootStyle.setProperty('--ceils-x', `${mainWidth * 0.3}px`);
-    rootStyle.setProperty('--ceils-y', `${mainWidth * 0.7}px`);
+    updateCellSize();
   };
 }
 
@@ -37,9 +31,13 @@ const randomGame = document.getElementById('random');
 
 resetGame.addEventListener('click', () => nanogramGame.resetCells());
 
-function updateCellSize(tips) {
+function updateCellSize() {
+  let mainWidth = mainBlock.getBoundingClientRect().width;
   let tipsWidth = tips.childNodes[0].getBoundingClientRect().width;
+
   rootStyle.setProperty('--cell-size', `${tipsWidth}px`);
+  rootStyle.setProperty('--ceils-x', `${mainWidth * 0.3}px`);
+  rootStyle.setProperty('--ceils-y', `${mainWidth * 0.7}px`);
 }
 
 solution.addEventListener('click', () => nanogramGame.nanogramHint());

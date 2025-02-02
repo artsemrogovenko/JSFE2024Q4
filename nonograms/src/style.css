@@ -58,10 +58,8 @@ body {
   /* width: 100vw; */
 }
 .main_container {
-  max-width: 800px;
-  max-height: 800px;
-  height: 100vw;
-  width: 100vw;
+  width: min(800px, 100vw - 10px);
+  height: min(800px, 100vw - 10px);
   border: solid 5px var(--bgColor-main);
 }
 
