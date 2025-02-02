@@ -85,7 +85,7 @@ export default class Layout {
       this.popUps.getMsgWindow(),
       this.popUps.getScoreBlock(),
     );
-    this.#mainBlock.addListener('contextmenu', function noContext(event) {
+    document.body.addEventListener('contextmenu', function noContext(event) {
       event.preventDefault();
     });
     this.#score.addListener('click', () => this.popUps.showScore(darkBg));
