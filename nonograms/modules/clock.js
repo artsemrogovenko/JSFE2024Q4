@@ -48,6 +48,7 @@ export default class Clock {
   }
 
   get currentDuration() {
+    this.#differenceMs = Date.now() + this.#loadedMs - this.#startTime;
     return this.#differenceMs;
   }
 
