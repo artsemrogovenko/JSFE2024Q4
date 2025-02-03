@@ -93,12 +93,15 @@ export default class Layout {
 
     this.#saveGame.addListener('click', () => {
       saveGame(gameLogic.resources);
-      this.clock.stopClock();
-      gameLogic.pauseGame;
+      // this.clock.stopClock();
+      // gameLogic.pauseGame;
       this.checkSavedGame();
+      this.disableSaveBtn();
     });
-    this.#loadGame.addListener('click', () =>
-      loadGame(gameLogic.loadFromMemory()),
+    this.#loadGame.addListener('click', () =>{
+      loadGame(gameLogic.loadFromMemory());
+      this.disableLoadBtn();
+    }
     );
 
     this.#soundBtn.addListener('click', () => this.#toggleSound());
@@ -307,6 +310,7 @@ export default class Layout {
       let index = parseInt(i) * size + parseInt(j);
       this.#toggleCrossed(allCells[index]);
     });
+    this.#reset.getNode().classList.remove('disabled');
   }
 
   #toggleSound() {
@@ -358,6 +362,13 @@ export default class Layout {
   }
   enableSaveBtn(){
     this.#saveGame.getNode().classList.remove('disabled');
+  }
+
+  disableLoadBtn(){
+    this.#loadGame.getNode().classList.add('disabled');
+  }
+  enableLoadBtn(){
+    this.#loadGame.getNode().classList.remove('disabled');
   }
 
   checkSavedGame(){

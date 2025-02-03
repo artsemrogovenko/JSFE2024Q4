@@ -1,16 +1,16 @@
 let nonogramGame = { score: null, memory: null };
 
 export function updateLocalStorage() {
-  localStorage.nonogramGame = JSON.stringify(nonogramGame);
+  localStorage.artsemrogovenko = JSON.stringify(nonogramGame);
 }
 
 export function readStorage() {
-  let obj = localStorage.nonogramGame;
+  let obj = localStorage.artsemrogovenko;
   if (obj === undefined) {
     updateLocalStorage();
     return false;
   }
-  nonogramGame = JSON.parse(localStorage.nonogramGame);
+  nonogramGame = JSON.parse(localStorage.artsemrogovenko);
 }
 
 export function writeScore(...data) {
@@ -27,6 +27,8 @@ export function writeScore(...data) {
       nonogramGame['memory']['nonogram'] === data[1]
     ) {
       nonogramGame['memory'] = null;
+      updateLocalStorage();
+      return true;
     }
   }
   updateLocalStorage();

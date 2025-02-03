@@ -47,6 +47,7 @@ export default class Game {
     this.#userInput.dark.clear();
     this.#gameLayout.resetCells();
     this.#gameLayout.disableSaveBtn();
+    this.#gameLayout.checkSavedGame();
   }
 
   nanogramHint() {
@@ -109,8 +110,9 @@ export default class Game {
     if (!this.#isGameStarted) {
       this.#isGameStarted = true;
       this.#gameLayout.clock.startClock();
-      this.#gameLayout.enableSaveBtn();
     }
+    this.#gameLayout.enableSaveBtn();
+    this.#gameLayout.enableLoadBtn();
     const obj = event.detail;
 
     if (obj.stateCell.includes('dark_cell')) {
@@ -148,7 +150,10 @@ export default class Game {
           minutes,
           seconds,
         ]);
-        writeScore(this.#difficulty, this.#nonogram, [minutes, seconds]);
+        const identical= writeScore(this.#difficulty, this.#nonogram, [minutes, seconds]);
+        if(identical){
+          this.#gameLayout.disableLoadBtn();
+        }
         playWin();
         this.#gameLayout.disableSaveBtn();
       }
