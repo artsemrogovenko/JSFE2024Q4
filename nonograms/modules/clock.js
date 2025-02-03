@@ -44,17 +44,7 @@ export default class Clock {
 
   #counting() {
     this.#differenceMs = Date.now() + this.#loadedMs - this.#startTime;
-    this.#minutesValue = new Date(this.#differenceMs)
-      .getMinutes()
-      .toString()
-      .padStart(2, '0');
-    this.#secondsValue = new Date(this.#differenceMs)
-      .getSeconds()
-      .toString()
-      .padStart(2, '0');
-
-    this.#minutesBlock.getNode().innerText = this.#minutesValue;
-    this.#secondsBlock.getNode().innerText = this.#secondsValue;
+    this.#updateFields(this.#differenceMs);
   }
 
   get currentDuration() {
@@ -63,13 +53,20 @@ export default class Clock {
 
   set gameDuration(ms) {
     this.#loadedMs = ms;
-    this.#minutesBlock.getNode().innerText = new Date(ms)
+    this.#updateFields(ms);
+  }
+
+  #updateFields(ms){
+    this.#minutesValue = new Date(ms)
       .getMinutes()
       .toString()
       .padStart(2, '0');
-    this.#secondsBlock.getNode().innerText = new Date(ms)
+    this.#secondsValue = new Date(ms)
       .getSeconds()
       .toString()
       .padStart(2, '0');
+
+    this.#minutesBlock.getNode().innerText = this.#minutesValue;
+    this.#secondsBlock.getNode().innerText = this.#secondsValue;
   }
 }
