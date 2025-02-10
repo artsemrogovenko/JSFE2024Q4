@@ -1,6 +1,6 @@
 # [artsemrogovenko-JSFE2024Q4](https://rolling-scopes-school.github.io/artsemrogovenko-JSFE2024Q4/)
 
-#### Self-introduction [Video]()
+#### Self-introduction [Video](https://youtu.be/cTk0TV_icuI)
 ***
 ##### __About me__
 Hello everyone, my name is Artsem. I am a novice developer. At the time of the creation of this Self-introduction, I am 32 years old.
@@ -13,7 +13,7 @@ Hello everyone, my name is Artsem. I am a novice developer. At the time of the c
 ##### _Why didn't you continue to develop in java?_
   I looked at vacancies and tried to send resumes. In all cases, commercial experience was required and my technology stack was not extensive enough. Sometimes I saw that I needed skills from the frontend. And I decided that I needed to learn something else.
 ##### _Why RS School_
-  After three months of studying at paid courses. In a general interest chat, they post an RSS School link, they write that tuition is free, I had never heard of such a school before. I open it, I look - JavaScript / Front-end Course Pre-school RU. in Russian? interesting. For everyone,Free education is not bad either. I decided to enroll to expand my knowledge. I passed the zero stage successfully and did not regret it. I've added to my knowledge by learning the basics of javascript layout and programming. What was unusual for me was the high activity on the discord server, unlike other schools.
+  After three months of studying at paid courses. In a general interest chat, they post an RS School link, they write that tuition is free, I had never heard of such a school before. I open it, I look - JavaScript / Front-end Course Pre-school RU. in Russian? interesting. For everyone,Free education is not bad either. I decided to enroll to expand my knowledge. I passed the zero stage successfully and did not regret it. I've added to my knowledge by learning the basics of javascript layout and programming. What was unusual for me was the high activity on the discord server, unlike other schools.
 
 * ##### __Tell us about what you want to study, about your professional plans and goals, as well as about your motivation to study programming__
   I am currently on stage1 and will go all the way to learn React and new tools for me. I do not prioritize beauty at the expense of functionality, I try to fulfill all the requirements for the task. What is the motivation for studying?  - the more tools I know, the easier and faster my path to my dream will be. Now I devote time exclusively to studying, there is practically no free time. The desire to develop is still present.
