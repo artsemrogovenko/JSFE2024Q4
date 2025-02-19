@@ -1,3 +1,5 @@
+import { NewsResponse } from '../../types/index';
+
 class Loader {
     private readonly baseLink: string;
     private readonly options: object;
@@ -8,9 +10,8 @@ class Loader {
 
     protected getResp(
         { endpoint = '', options = {} },
-        callback: (data: object) => object | void = (): object => {
+        callback: (data: object) => NewsResponse = (): NewsResponse => {
             console.error('No callback for GET response');
-            return this;
         }
     ): void {
         this.load('GET', endpoint, callback, options);
@@ -36,7 +37,7 @@ class Loader {
         return url.slice(0, -1);
     }
 
-    private load(method: string, endpoint: string, callback: (resp: object) => object | void, options = {}): void {
+    private load(method: string, endpoint: string, callback: (resp: object) => NewsResponse, options = {}): void {
         fetch(this.makeUrl(options, endpoint), { method })
             .then(this.errorHandler)
             .then((res) => res.json())

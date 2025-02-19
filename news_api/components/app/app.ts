@@ -1,12 +1,12 @@
 import AppController from '../controller/controller';
 import { AppView } from '../view/appView';
-import { IResponseObject, IResponseArticle } from '../../types/index';
+import { IResponseObject, IResponseArticle, IRequestParameters } from '../../types/index';
 
 class App {
     private controller: AppController;
     private view: AppView;
-    constructor() {
-        this.controller = new AppController();
+    constructor(params: IRequestParameters) {
+        this.controller = new AppController(params);
         this.view = new AppView();
     }
 

@@ -1,10 +1,9 @@
 import Loader from './loader';
+import { IRequestParameters } from '../../types/index';
 
 class AppLoader extends Loader {
-    constructor() {
-        super(process.env.API_URL as string, {
-            apiKey: process.env.API_KEY,
-        });
+    constructor(params: IRequestParameters) {
+        super(process.env.API_URL as string, params);
     }
 }
 
