@@ -14,7 +14,7 @@ type newsItem = {
     urlToImage: string;
 };
 class News {
-    draw(data: newsItem[]): void {
+    public draw(data: newsItem[]): void {
         const news = data.length >= 10 ? data.filter((_item: newsItem, idx: number) => idx < 10) : data;
 
         const fragment: DocumentFragment = document.createDocumentFragment();

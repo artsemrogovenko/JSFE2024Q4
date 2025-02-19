@@ -4,19 +4,19 @@ import { IResponseObject, source } from '../../types/index';
 import { IResponseArticle, article } from '../../types/index';
 
 export class AppView {
-    news: News;
-    sources: Sources;
+    private news: News;
+    private sources: Sources;
     constructor() {
         this.news = new News();
         this.sources = new Sources();
     }
 
-    drawNews(data: IResponseArticle): void {
+    public drawNews(data: IResponseArticle): void {
         const values: Array<article> = data?.articles ? data?.articles : [];
         this.news.draw(values);
     }
 
-    drawSources(data: IResponseObject): void {
+    public drawSources(data: IResponseObject): void {
         const values: Array<source> = data?.sources ? data?.sources : [];
         this.sources.draw(values);
     }
