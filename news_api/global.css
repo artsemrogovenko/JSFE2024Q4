@@ -18,6 +18,8 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 20px;
+    background: linear-gradient(#30c5ff,#17181c);
 }
 footer .copyright {
     font-size: 14px;
