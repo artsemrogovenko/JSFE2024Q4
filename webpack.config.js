@@ -4,7 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
 const EslintPlugin = require('eslint-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
+const miniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const baseConfig = {
     entry: path.resolve(__dirname, './news_api/index'),
@@ -16,10 +17,34 @@ const baseConfig = {
                 use: ['style-loader', 'css-loader'],
             },
             { test: /\.ts$/i, use: 'ts-loader' },
+            {
+                test: /\.(scss)$/,
+                use: [
+                    miniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sassOptions: {
+                                quietDeps: true,
+                            },
+                        },
+                    },
+                ],
+            },
+            {
+                mimetype: 'image/svg+xml',
+                scheme: 'data',
+                type: 'asset/resource',
+                generator: {
+                    filename: 'icons/[hash].svg',
+                },
+            },
         ],
     },
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.js'],
     },
     output: {
         filename: 'index.js',
@@ -34,10 +59,11 @@ const baseConfig = {
         new CleanWebpackPlugin(),
         new EslintPlugin({ extensions: 'ts' }),
         new CopyPlugin({
-            patterns: [
-              { from: "./news_api/img", to: "./img" },
-            ],
-          }),
+            patterns: [{ from: './news_api/img', to: './img' }],
+        }),
+        new miniCssExtractPlugin({
+            filename: '[name].css',
+        }),
     ],
 };
 

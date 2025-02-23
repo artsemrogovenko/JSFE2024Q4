@@ -1,16 +1,28 @@
+* {
+    user-select: none;
+}
 body {
     color: #fff;
     background: #17181c;
     font-family: sans-serif;
 }
 
-header {
-    padding: 10px 30px;
+body::-webkit-scrollbar {
+    width: 0;
 }
 
 header h1 {
+    padding: 20px;
     font-size: 40px;
     font-weight: 800;
+}
+
+.sources::-webkit-scrollbar {
+    background: #236d8c6b;
+}
+
+.sources::-webkit-scrollbar-thumb {
+    background: #55727c;
 }
 
 footer {
@@ -19,19 +31,27 @@ footer {
     align-items: center;
     justify-content: center;
     gap: 20px;
-    background: linear-gradient(#30c5ff,#17181c);
+    background: linear-gradient(#30c5ff, #17181c);
 }
+
 footer .copyright {
     font-size: 14px;
     color: #333;
     text-align: center;
 }
+
 footer .copyright a {
     color: #444;
 }
+
 footer .copyright a:hover {
     color: #555;
 }
+
 footer .copyright:before {
     content: '©';
+}
+
+footer p {
+    margin: 0;
 }

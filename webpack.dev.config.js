@@ -5,5 +5,7 @@ module.exports = {
     devtool: 'inline-source-map',
     devServer: {
         static: path.resolve(__dirname, './dist'),
+        liveReload: true,
+        hot: false,
     },
 };
