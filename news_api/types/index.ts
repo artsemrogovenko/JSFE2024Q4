@@ -9,6 +9,8 @@ export type source = {
 };
 
 export interface IRequestParameters {
+    endpoint: 'everything' | 'top-headlines' | 'sources';
+    options?: object;
     apiKey: Required<string>;
 }
 
@@ -52,7 +54,7 @@ export interface Headlines extends IRequestParameters {
  */
 export interface Everything extends IRequestParameters {
     q: string;
-    searchIn: searchIn;
+    searchIn: searchIn[];
     sources: Country;
     domains: string;
     excludeDomains: string;
@@ -64,6 +66,14 @@ export interface Everything extends IRequestParameters {
     page: number;
 }
 
+export interface Sources {
+    category: Category;
+    language: Language;
+    country: Country;
+}
+
+export type Endpoint = Partial<Everything> | Partial<Headlines> | Partial<Sources>;
+
 export function pageSize(size: number | undefined): number {
     if (size) {
         if (size > 100 || size <= 0) {
@@ -73,7 +83,7 @@ export function pageSize(size: number | undefined): number {
     return size ?? 100;
 }
 
-enum Category {
+export enum Category {
     business = 'business',
     entertainment = 'entertainment',
     general = 'general',
@@ -83,18 +93,35 @@ enum Category {
     technology = 'technology',
 }
 
-enum sort {
+export enum sort {
     relevancy = 'relevancy',
     popularity = 'popularity',
     publishedAt = 'publishedAt',
 }
-enum searchIn {
+export enum searchIn {
     title = 'title',
     description = 'description',
     content = 'content',
 }
 
-enum Country {
+export enum Language {
+    ar,
+    de,
+    en,
+    es,
+    fr,
+    he,
+    it,
+    nl,
+    no,
+    pt,
+    ru,
+    sv,
+    ud,
+    zh,
+}
+
+export enum Country {
     ae = 'ae',
     ar = 'ar',
     at = 'at',

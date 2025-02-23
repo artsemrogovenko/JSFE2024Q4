@@ -22,6 +22,12 @@ class AppController extends AppLoader {
             target = target.parentNode as HTMLElement;
         }
     }
+    public applyFilter(
+        request: object = { endpoint: 'everything', options: {} },
+        callback: (data: object) => NewsResponse
+    ): void {
+        super.getResp(request, callback);
+    }
 }
 
 export default AppController;

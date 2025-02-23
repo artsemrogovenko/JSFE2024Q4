@@ -17,6 +17,10 @@ class App {
         );
         this.controller.getSources((data: object) => this.view.drawSources(data as IResponseObject));
     }
+
+    public updateNews(request: IRequestParameters): void {
+        this.controller.applyFilter(request, (data: object) => this.view.drawNews(data as IResponseArticle));
+    }
 }
 
 export default App;

@@ -23,28 +23,28 @@
                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                  <form class="form-check mt-3" role="search">
+                  <form class="form-check mt-3" role="search" id="filters">
                     <span>Endpoints</span>
                     <div class="endpoints btn-group" role="group" aria-label="Basic radio toggle button group">
                       <input type="radio" class="btn-check" name="endpoints" id="endpointeverything" value="everything" checked>
                       <label class="btn btn-outline-primary" for="endpointeverything">Everything</label>
-                      <input type="radio" class="btn-check" name="endpoints" id="endpointtop_headlines" value="top_headlines">
+                      <input type="radio" class="btn-check" name="endpoints" id="endpointtop_headlines" value="top-headlines">
                       <label class="btn btn-outline-primary disabled" for="endpointtop_headlines">Top headlines</label>
                       <input type="radio" class="btn-check" name="endpoints" id="endpointsources" value="sources">
                       <label class="btn btn-outline-primary disabled" for="endpointsources">Sources</label>
                     </div>
                     <div class="phrase">
                       <span>Keywords or phrases to search for</span>
-                      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
                     </div>
                     <div class="search-in">
                       <span>Search in</span>
                       <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                        <input class="btn-check" type="checkbox" value="title" id="sortbytitle" name="searchin">
+                        <input class="btn-check" type="checkbox" value="title" id="sortbytitle" name="searchIn">
                         <label class="btn btn-outline-primary" for="sortbytitle">Title</label>
-                        <input class="btn-check" type="checkbox" value="description" id="sortbydescription" name="searchin">
+                        <input class="btn-check" type="checkbox" value="description" id="sortbydescription" name="searchIn">
                         <label class="btn btn-outline-primary" for="sortbydescription">Description</label>
-                        <input class="btn-check" type="checkbox" value="content" id="sortbycontent" name="searchin">
+                        <input class="btn-check" type="checkbox" value="content" id="sortbycontent" name="searchIn">
                         <label class="btn btn-outline-primary" for="sortbycontent">Content</label>
                       </div>
                     </div>
@@ -53,27 +53,27 @@
                         <span>Date from:</span>
                         <span>Date to:</span></div>
                       <div style="display: flex;flex-direction: column;">
-                        <input type="date" id="date_from">
-                        <input type="date" id="date_to">
+                        <input type="date" name="from" id="date_from">
+                        <input type="date" name="to" id="date_to">
                       </div>
                     </div>
                     <div class="page-size input-group mb-3">
                       <span class="input-group-text" id="pagesize">Page size</span>
-                      <input type="number" class="form-control" min="1" max="100" step="1" placeholder="1" aria-describedby="pagesize">
+                      <input type="number" class="form-control" value="1" name="pageSize" min="1" max="100" step="1" placeholder="1" aria-describedby="pagesize">
                     </div>
                     <div class="sort-by">
                       <span>Sort by</span>
                       <div class="btn-group btn-group-sm" role="group" aria-label="Small radio toggle button group">
-                        <input class="btn-check" type="radio" value="relevancy" id="sortbyrelevancy" name="sortby">
+                        <input class="btn-check" type="radio" value="relevancy" id="sortbyrelevancy" name="sortBy">
                         <label class="btn btn-outline-primary" for="sortbyrelevancy">Relevancy</label>
-                        <input class="btn-check" type="radio" value="popularity" id="sortbyopularity" name="sortby">
+                        <input class="btn-check" type="radio" value="popularity" id="sortbyopularity" name="sortBy">
                         <label class="btn btn-outline-primary" for="sortbyopularity">Popularity</label>
-                        <input class="btn-check" type="radio" value="publishedAt" id="sortbypublishedAt" name="sortby">
+                        <input class="btn-check" type="radio" value="publishedAt" id="sortbypublishedAt" name="sortBy">
                         <label class="btn btn-outline-primary" for="sortbypublishedAt">PublishedAt</label>
                       </div>
                     </div>
                     <div class="form_buttons">
-                      <button class="btn btn-success" type="submit">Submit</button>
+                      <button class="btn btn-success" id="submit">Submit</button>
                       <button class="btn btn-dark" type="reset">Reset</button>
                     </div>
                   </form>
