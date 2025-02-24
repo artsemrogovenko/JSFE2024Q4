@@ -1,10 +1,13 @@
 # [artsemrogovenko-JSFE2024Q4](https://rolling-scopes-school.github.io/artsemrogovenko-JSFE2024Q4/)
 
-#### Self-introduction [Video]()
+#### Self-introduction [Video](https://youtu.be/cTk0TV_icuI)
 ***
 ##### __About me__
-Hello everyone, my name is Artsem. I am a novice developer. At the time of the creation of this Self-introduction, I am 32 years old. It so happened that all the time I have been developing myself, not being attached to material wealth. At school age, I got acquainted with amateur radio. By the end of school, my house has an available Internet connection with unlimited internal resources from my ISP. It was a new discovery for me, I started exploring the Internet for the first time. The Internet expanded my knowledge of my existing hobby, electronics. On self-made articles published on the Internet, I increasingly found the words (microcontrollers and programming).I came across an irc chat with people who also had an interest in radio electronics, and could tell me how to solve one or another of my ideas. From that moment on, I have a new interest in programming, which did not have such a hype as it does now. It was very difficult to study by myself in such an obscure field. There were few materials and examples on writing code in russian language. At that time, I had mastered only simple logical operations. After a while, I left studying programming, thinking that I would not return to it again, because it was very difficult and not clear. But as time will show, I will come back to him again.
+Hello everyone, my name is Artsem. I am a novice developer. At the time of the creation of this Self-introduction, I am 32 years old.
+##### _Сareer_
+  My main work remains architectural visualization. But work does not bring stable earnings. Also, thanks to my past hobby, I was able to get a job assembling electrical modules for elevators. After a while, I felt that I had reached the limit and decided to take paid programming courses specializing in web development in java. By the end of the training, the program had become intensive, and it became difficult to combine work and study. So I decided to leave my job as product assembler.
 
+<<<<<<< HEAD
 ##### _Education, courses_
    -  2014 "Design (volumetric design)".Household consumption products design
    -  2024 Developer — Programmer. Java Web Development
@@ -16,6 +19,15 @@ Hello everyone, my name is Artsem. I am a novice developer. At the time of the c
   I looked at vacancies and tried to send resumes. In all cases, commercial experience was required and my technology stack was not extensive enough. Sometimes I saw that I needed skills from the frontend. And I decided that I needed to learn something else.
 ##### _Why RS School_
   After three months of studying at paid courses. In a general interest chat, they post an RSS School link, they write that tuition is free, I had never heard of such a school before. I open it, I look - JavaScript / Front-end Course Pre-school RU. in Russian? interesting. For everyone,Free education is not bad either. I decided to enroll to expand my knowledge. I passed the zero stage successfully and did not regret it. I've added to my knowledge by learning the basics of javascript layout and programming. What was unusual for me was the high activity on the discord server, unlike other schools.
+=======
+***
+  The [final work](https://docs.google.com/document/d/1wDGiCHX6xZ6ycPBtPYfOXS81kUZXJB4uF2UlLIdOllU/edit?usp=sharing) was related specifically to the problems I was familiar with in production. The main difficulty was the implementation of the frontend part. I had to contact my friend to help me with the implementation of my ideas. I didn't know at all how to make a website and work with html and javascript. Everything that was front-end was magic to me. After submitting the final work, I still do not consider it fully completed, since it has not been improved.
+
+##### _Why didn't you continue to develop in java?_
+  I looked at vacancies and tried to send resumes. In all cases, commercial experience was required and my technology stack was not extensive enough. Sometimes I saw that I needed skills from the frontend. And I decided that I needed to learn something else.
+##### _Why RS School_
+  After three months of studying at paid courses. In a general interest chat, they post an RS School link, they write that tuition is free, I had never heard of such a school before. I open it, I look - JavaScript / Front-end Course Pre-school RU. in Russian? interesting. For everyone,Free education is not bad either. I decided to enroll to expand my knowledge. I passed the zero stage successfully and did not regret it. I've added to my knowledge by learning the basics of javascript layout and programming. What was unusual for me was the high activity on the discord server, unlike other schools.
+>>>>>>> 64d6042f6424cab00e58f366d3173f2f74eeaa10
 
 * ##### __Tell us about what you want to study, about your professional plans and goals, as well as about your motivation to study programming__
   I am currently on stage1 and will go all the way to learn React and new tools for me. I do not prioritize beauty at the expense of functionality, I try to fulfill all the requirements for the task. What is the motivation for studying?  - the more tools I know, the easier and faster my path to my dream will be. Now I devote time exclusively to studying, there is practically no free time. The desire to develop is still present.
