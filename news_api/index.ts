@@ -55,3 +55,28 @@ document.addEventListener('DOMContentLoaded', () => {
 function update(request: IRequestParameters) {
     app.updateNews(request);
 }
+
+const toTopButtons = document.querySelectorAll('.toUp') as NodeListOf<HTMLButtonElement>;
+const closeMenu = document.querySelector('[data-bs-dismiss="offcanvas"]') as HTMLButtonElement;
+toTopButtons.forEach((button) => button.addEventListener('click', () => clickElement(closeMenu)));
+
+window.addEventListener('scroll', (): void => {
+    const navbar = document.querySelector('.navbar') as HTMLElement;
+    if (window.scrollY > 300) {
+        navbar.classList.add('fixed-top');
+        toTopButtons.forEach((button) => button.classList.remove('invisible'));
+    } else {
+        toTopButtons.forEach((button) => button.classList.add('invisible'));
+        navbar.classList.remove('fixed-top');
+    }
+});
+
+function clickElement(called: HTMLElement): void {
+    called.click();
+}
+
+window.addEventListener('submit', () => {
+    if (window.innerWidth < 530) {
+        clickElement(closeMenu);
+    }
+});

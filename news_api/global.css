@@ -55,3 +55,11 @@ footer .copyright:before {
 footer p {
     margin: 0;
 }
+
+.news{
+    padding: 0 10px;
+}
+
+.invisible{
+    opacity: 0;
+}
