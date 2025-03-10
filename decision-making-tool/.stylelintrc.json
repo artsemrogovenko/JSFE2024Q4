@@ -1,0 +1,8 @@
+{
+  "extends": ["stylelint-config-standard-scss", "stylelint-config-clean-order"],
+  "rules": {
+    "value-keyword-case": "lower",
+    "selector-class-pattern": null
+  },
+  "ignoreFiles": ["dist/**/*", "node_modules/"]
+}
