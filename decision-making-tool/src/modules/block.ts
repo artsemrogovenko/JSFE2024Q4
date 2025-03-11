@@ -33,10 +33,6 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     return index;
   }
 
-  protected setId(_id: string): void {
-    this.element.id = _id;
-  }
-
   public setText(text: string): void {
     this.element.textContent = text;
   }
@@ -92,6 +88,10 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     this.deleteAllBlocks();
     this.removeAllListeners();
     this.element.remove();
+  }
+
+  protected setId(_id: string): void {
+    this.element.id = _id;
   }
 }
 

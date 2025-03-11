@@ -7,18 +7,40 @@ export class Button extends Block<'button'> {
 }
 
 export class ButtonsCreator {
-  public createButtons(count: number = 1, buttonsText: string[]): Button[] {
+  /**
+   *
+   * @param count count of buttons
+   * @param param1 list of buttons text
+   * @param param2 list of buttons classnames
+   * @returns
+   */
+  public static createButtons(
+    count: number = 1,
+    ...[buttonsText, buttonsClasses]: string[][]
+  ): Button[] {
+    const prefix = '_uiBtn';
     let buttons: Button[] = [];
-    const counts = buttonsText.length ?? count;
+    const counts = Math.max(
+      buttonsText?.length ?? 0,
+      buttonsClasses?.length ?? 0,
+      count,
+    );
     for (let index = 0; index < counts; index++) {
       const text = buttonsText[index] ?? '';
       const button = new Button('', text);
-      if (text === '') {
-        button.getNode().className = '_uiBtn';
+
+      if (buttonsClasses) {
+        console.log('classes not empty');
+        try {
+          button.getNode().className = `${prefix} ${buttonsClasses[index]}`;
+        } catch (error) {
+          button.getNode().className = prefix;
+        }
       } else {
         button.getNode().className =
-          '_uiBtn _' + text.toLowerCase().replaceAll(' ', '_');
+          prefix + ' _' + text.toLowerCase().replaceAll(' ', '_');
       }
+
       buttons.push(button);
     }
     return buttons;
