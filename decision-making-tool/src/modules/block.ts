@@ -14,12 +14,16 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     this.element = element;
   }
 
+  public addBlocks(collection: Block<keyof HTMLElementTagNameMap>[]): void {
+    collection.forEach((block) => this.addBlock(block));
+  }
+
   public addBlock(block: Block<keyof HTMLElementTagNameMap>): void {
     this.components.push(block);
     this.element.append(block.getNode());
   }
 
-  public setId(_id: string): void {
+  protected setId(_id: string): void {
     this.element.id = _id;
   }
 
@@ -74,9 +78,15 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     return this.components;
   }
 
-  private destroy(): void {
+  protected destroy(): void {
     this.deleteAllBlocks();
     this.removeAllListeners();
     this.element.remove();
+  }
+}
+
+export class Container extends Block<'div'> {
+  constructor(className: string) {
+    super('div', className);
   }
 }
