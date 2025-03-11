@@ -23,6 +23,16 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     this.element.append(block.getNode());
   }
 
+  public deleteBlock(block: Block<keyof HTMLElementTagNameMap>): number {
+    const index = this.components.indexOf(block);
+    if (index !== -1) {
+      const element = this.components[index];
+      this.components.slice(index, 1);
+      element.destroy();
+    }
+    return index;
+  }
+
   protected setId(_id: string): void {
     this.element.id = _id;
   }

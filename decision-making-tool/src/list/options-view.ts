@@ -1,9 +1,9 @@
 import Block from '../modules/block';
 import { ButtonsCreator } from '../modules/buttons';
-import { Option, Options } from '../modules/form';
+import {  Options } from '../modules/form';
 
 export default class OptionsView extends Block<'main'> {
-  private optionList = new Options();
+  private optionList = new Options("optionsList");
   constructor() {
     super('main', 'mainOptions');
     this.addContent();
@@ -28,9 +28,8 @@ export default class OptionsView extends Block<'main'> {
       'Start',
     ];
     const buttons = new ButtonsCreator().createButtons(6, buttonsText);
-    buttons[0].addListener('click', () =>
-      this.optionList.addOption(new Option())
-    );
+    buttons[0].addListener('click', () => this.optionList.addOption());
+    buttons[2].addListener('click', () => this.optionList.clearList());
     this.addBlocks(buttons);
   }
 }

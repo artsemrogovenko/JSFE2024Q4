@@ -35,28 +35,31 @@ export class Options extends Block<'ul'> {
   constructor(classN: string = '') {
     super('ul', classN, '');
   }
-  public addOption(option: Option): void {
-    super.addBlock(option);
+  public addOption(): void {
+    const option = new Option(this);
+    this.addBlock(option);
   }
   public deleteOption(option: Option): void {
-    super.addBlock(option);
+    const index = this.deleteBlock(option);
+    this.components.splice(index, 1);
     this.checkEmpty();
-
   }
   public clearList(): void {
-    super.deleteAllBlocks();
+    this.deleteAllBlocks();
     this.checkEmpty();
   }
   private checkEmpty(): void {
+    console.log(this.components);
     if (this.components.length === 0) {
-      Option.resetCounter;
+      Option.resetCounter();
     }
   }
 }
 
 export class Option extends Block<'li'> {
   private static uid: number = 0;
-  constructor() {
+  private parentContainer: Options;
+  constructor(options: Options) {
     Option.uid += 1;
     const idName = `option_${Option.uid}`;
     const labelText = `#${Option.uid}`;
@@ -78,13 +81,19 @@ export class Option extends Block<'li'> {
       'weight',
     );
     const button = new Button('deleteOption', 'delete');
-    button.addListener('click', () => this.destroy());
+    button.addListener('click', () => {
+      this.parentContainer.deleteOption(this);
+    });
 
     super('li', 'option');
     super.addBlocks([idLabel, titleInput, weightInput, button]);
+    this.parentContainer = options;
   }
 
+  // public destroy(): void {
+  //   super.destroy();
+  // }
   public static resetCounter(): void {
-   this.uid=0;
+    Option.uid = 0;
   }
 }
