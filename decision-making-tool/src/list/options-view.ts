@@ -5,7 +5,7 @@ import OptionsUtils from '../modules/list-utils';
 
 export default class OptionsView extends Block<'main'> {
   private optionList = new Options('optionsList');
-  private listUtil = new OptionsUtils();
+  private listUtil = new OptionsUtils(this);
   constructor() {
     super('main', 'mainOptions');
     this.addContent();
@@ -33,6 +33,11 @@ export default class OptionsView extends Block<'main'> {
     buttons[0].addListener('click', () => this.optionList.addOption());
     buttons[2].addListener('click', () => this.optionList.clearList());
     buttons[1].addListener('click', () => this.listUtil.parseCSV());
+    buttons[4].addListener('click', () => this.listUtil.loadFile());
     this.addBlocks(buttons);
+  }
+  public getOptionData(lines: string[][]) {
+    //TODO
+    console.log('todo');
   }
 }

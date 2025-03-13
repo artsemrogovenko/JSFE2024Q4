@@ -5,8 +5,11 @@
 }
 
 .csv_dialog {
+  position:fixed;
+
   display: flex;
   flex-direction: column;
+  align-self: anchor-center;
 
   width: 600px;
   height: 300px;
