@@ -1,5 +1,6 @@
 import Block from './block';
 import { Button } from './buttons';
+import type { DataList, OptionData } from './types';
 
 export class Input extends Block<'input'> {
   constructor(
@@ -32,15 +33,26 @@ export class Label extends Block<'label'> {
 }
 
 export class Options extends Block<'ul'> {
+  private listData: Record<string, object> = {};
+  private lastId;
   constructor(classN: string = '') {
     super('ul', classN, '');
+    this.lastId = 0;
   }
-  public addOption(): void {
-    const option = new Option(this);
+  public addOption(args: OptionData | null): void {
+    const option = new Option(this, args);
+    const idTag = option.getTagId;
+    this.listData[idTag] = option.getData();
+    this.lastId = Option.currentId();
+    option.addListener('updated', () => {
+      this.getValues(option);
+    });
     this.addBlock(option);
   }
   public deleteOption(option: Option): void {
     const index = this.deleteBlock(option);
+    const optionTag = option.getTagId;
+    delete this.listData[optionTag];
     this.components.splice(index, 1);
     this.checkEmpty();
   }
@@ -48,34 +60,77 @@ export class Options extends Block<'ul'> {
     this.deleteAllBlocks();
     this.checkEmpty();
   }
+
+  public getList(): object {
+    const arrayValues = Object.values(this.listData);
+    const result = { list: arrayValues, last: this.lastId };
+    return result;
+  }
+
+  public importData(object: DataList): void {
+    console.log(object);
+    const dataValues = object.list;
+    this.clearList();
+    Option.resetCounter();
+    dataValues.forEach((value) => {
+      const id = value.id;
+      const title = value.title;
+      const weight = value.weight;
+      this.addOption({ id, title, weight });
+    });
+    this.lastId = object.last;
+    Option.setLastId(object.last);
+  }
   private checkEmpty(): void {
     console.log(this.components);
     if (this.components.length === 0) {
       Option.resetCounter();
     }
   }
+  private getValues(option: Option): void {
+    const element = option.getData();
+    const id = element.id;
+    this.listData[id] = element;
+  }
 }
 
 export class Option extends Block<'li'> {
   private static uid: number = 0;
   private parentContainer: Options;
-  constructor(options: Options) {
-    Option.uid += 1;
+  private titleInput: Input;
+  private weightInput: Input;
+  private optionData: Record<string, string> = {
+    id: '',
+    title: '',
+    weight: '',
+  };
+  private idTag: string;
+
+  constructor(container: Options, args: OptionData | null) {
+    super('li', 'option');
+    if (args !== null) {
+      Option.uid = Number(args.id.replace('#', ''));
+      this.optionData.title = args.title;
+      this.optionData.weight = args.weight;
+    } else {
+      Option.uid += 1;
+    }
+
     const idName = `option_${Option.uid}`;
     const labelText = `#${Option.uid}`;
     const idLabel = new Label('option_id', idName, labelText);
-    const titleInput = new Input(
+    this.titleInput = new Input(
       'option_title',
       'text',
-      '',
+      args?.title ?? '',
       idName,
       'title',
       'title',
     );
-    const weightInput = new Input(
+    this.weightInput = new Input(
       'option_weight',
       'number',
-      '',
+      args?.weight ?? '',
       '',
       'weight',
       'weight',
@@ -85,15 +140,39 @@ export class Option extends Block<'li'> {
       this.parentContainer.deleteOption(this);
     });
 
-    super('li', 'option');
-    super.addBlocks([idLabel, titleInput, weightInput, button]);
-    this.parentContainer = options;
-  }
+    this.addBlocks([idLabel, this.titleInput, this.weightInput, button]);
+    this.parentContainer = container;
+    this.optionData['id'] = labelText;
+    this.idTag = labelText;
 
-  // public destroy(): void {
-  //   super.destroy();
-  // }
+    this.titleInput.addListener('change', (e) => this.updateData(e));
+    this.weightInput.addListener('change', (e) => this.updateData(e));
+  }
+  public get getTagId(): string {
+    return this.idTag;
+  }
+  public static currentId(): number {
+    return Option.uid;
+  }
+  public static setLastId(value: number): void {
+    Option.uid = value;
+  }
   public static resetCounter(): void {
     Option.uid = 0;
+  }
+  public getData(): Record<string, string> {
+    return this.optionData;
+  }
+
+  private updateData(event: Event): void {
+    const element = event.target;
+    if (element instanceof HTMLInputElement) {
+      const value: string = element.value;
+      const name: string = element.name;
+      this.optionData[name] = value;
+      element.dispatchEvent(
+        new Event('updated', { bubbles: true, cancelable: false }),
+      );
+    }
   }
 }

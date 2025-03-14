@@ -13,7 +13,9 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     }
     this.element = element;
   }
-
+  public get getId(): string {
+    return this.element.id;
+  }
   public addBlocks(collection: Block<keyof HTMLElementTagNameMap>[]): void {
     collection.forEach((block) => this.addBlock(block));
   }

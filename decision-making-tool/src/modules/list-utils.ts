@@ -1,6 +1,7 @@
 import type OptionsView from '../list/options-view';
 import type { Button } from './buttons';
 import { ButtonsCreator } from './buttons';
+import type { DataList } from './types';
 
 export default class OptionsUtils {
   private dialog: HTMLDialogElement;
@@ -9,6 +10,7 @@ export default class OptionsUtils {
   private buttonOk: Button;
   private buttonCancel: Button;
   private filePicker = document.createElement('input');
+  private saveLink = document.createElement('a');
 
   constructor(member: OptionsView) {
     this.filePicker.type = 'file';
@@ -28,7 +30,20 @@ export default class OptionsUtils {
   public parseCSV(): void {
     this.openWindow();
   }
+  public loadFile(): void {
+    this.filePicker.click();
+  }
 
+  public saveJson(data: object): void {
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    this.saveLink.href = url;
+    this.saveLink.download = 'decision-list.json';
+    this.saveLink.click();
+    URL.revokeObjectURL(url);
+  }
   private openWindow(): void {
     document.body.appendChild(this.dialog);
   }
@@ -63,8 +78,8 @@ export default class OptionsUtils {
     );
 
     this.filePicker.addEventListener('change', (event) => {
-      const target = event.target as HTMLInputElement;
-      if (target) {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
         this.parseJsonData(target.files);
       }
     });
@@ -83,12 +98,24 @@ export default class OptionsUtils {
         ];
       });
     console.log(lines);
-    this.view.getOptionData(lines);
+    this.formatData(lines);
   }
 
-  public loadFile() {
-    this.filePicker.click();
+  private formatData(array: string[][]): void {
+    const length = array.length;
+    const listData = array.map((line, index) => {
+      const [title, weight] = line;
+      return {
+        id: `#${index + 1}`,
+        title: title,
+        weight: weight,
+      };
+    });
+    const object: DataList = { list: listData, last: length };
+    console.log(object);
+    this.view.getOptionData(object);
   }
+
   private parseJsonData(files: FileList | null): void {
     if (!files || files.length === 0) {
       console.error('No file selected');
@@ -103,20 +130,20 @@ export default class OptionsUtils {
 
     const reader = new FileReader();
 
-    reader.onload = (event) => {
+    reader.onload = (event): void => {
       try {
         const result = event.target?.result;
         if (typeof result !== 'string') {
           throw new Error('File content is not a string');
         }
         const jsonData = JSON.parse(result);
-        console.log(jsonData);
+        this.view.getOptionData(jsonData);
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }
     };
 
-    reader.onerror = () => {
+    reader.onerror = (): void => {
       console.error('Error reading the file');
     };
 

@@ -30,7 +30,6 @@ export class ButtonsCreator {
       const button = new Button('', text);
 
       if (buttonsClasses) {
-        console.log('classes not empty');
         try {
           button.getNode().className = `${prefix} ${buttonsClasses[index]}`;
         } catch (error) {
