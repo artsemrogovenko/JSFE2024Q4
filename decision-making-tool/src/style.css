@@ -1,5 +1,8 @@
 @import 'list/options.css';
+@import 'picker/picker.css';
 
 body {
+  display: flex;
+  justify-content: center;
   background: rgb(113 91 121);
 }

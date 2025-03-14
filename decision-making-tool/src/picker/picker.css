@@ -1,0 +1,13 @@
+.pickerScreen {
+  display: flex;
+}
+
+.canvas-wheel {
+  background: rgb(82 75 104);
+}
+
+.panel {
+  width: 200px;
+  height: 200px;
+  background: rgb(104 98 75);
+}
