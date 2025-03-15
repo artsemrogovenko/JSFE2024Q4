@@ -18,7 +18,7 @@ export class ButtonsCreator {
     count: number = 1,
     ...[buttonsText, buttonsClasses]: string[][]
   ): Button[] {
-    const prefix = '_uiBtn';
+    const prefix = 'ui-Btn';
     let buttons: Button[] = [];
     const counts = Math.max(
       buttonsText?.length ?? 0,
@@ -31,7 +31,7 @@ export class ButtonsCreator {
 
       if (buttonsClasses) {
         try {
-          button.getNode().className = `${prefix} ${buttonsClasses[index]}`;
+          button.getNode().className = `${buttonsClasses[index]}`;
         } catch (error) {
           button.getNode().className = prefix;
         }

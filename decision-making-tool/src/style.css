@@ -1,8 +1,38 @@
 @import 'list/options.css';
 @import 'picker/picker.css';
+@import 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap';
+
+* {
+  margin: 0;
+  padding: 0;
+}
 
 body {
   display: flex;
   justify-content: center;
   background: rgb(113 91 121);
+}
+
+.ui-Btn {
+  min-width: 50px;
+  min-height: 50px;
+  background: linear-gradient(#6e658d, #5d5b79);
+}
+
+.ui-Btn,
+.option,
+.panel button,
+.info-area {
+  border-radius: 5px;
+
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-variation-settings: 400;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.ui-Btn:hover {
+  background-color: #2feaff;
+  background-blend-mode: darken;
 }

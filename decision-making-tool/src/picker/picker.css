@@ -1,13 +1,81 @@
 .pickerScreen {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.panel {
+  display: grid;
+  grid-template-columns: 20% 5% 20% 5% 20% 30%;
+  grid-template-rows: 25% 10% 25% 10% 25%;
+
+  width: 250px;
+  height: 200px;
+
+  background: rgb(104 98 75);
+}
+
+.back {
+  grid-column: 1;
+  grid-row: 1;
+  background:
+    url('./icons/back-square.svg') center / cover no-repeat,
+    linear-gradient(#6e658d, #5d5b79);
+}
+
+.sound {
+  grid-column: 3;
+  grid-row: 1;
+  background:
+    url('./icons/sound-loud-filled.svg') center / contain no-repeat,
+    linear-gradient(#6e658d, #5d5b79);
+}
+
+.sound-off {
+  background:
+    url('./icons/sound-off-filled.svg') center / contain no-repeat,
+    linear-gradient(#6e658d, #5d5b79);
+}
+
+.clock {
+  grid-column: 5;
+  grid-row: 1;
+  background:
+    url('./icons/alarm-clock-filled.svg') center / 70% auto no-repeat,
+    linear-gradient(#6e658d, #5d5b79);
+}
+
+.duration {
+  grid-column: 6;
+  grid-row: 1;
+}
+
+.spin {
+  grid-column: 1/7;
+  grid-row: 3;
+  font-size: 18px;
+  background:
+    url('icons/circle-play-filled.svg') 70% / 10% auto no-repeat,
+    linear-gradient(#6e658d, #5d5b79);
+}
+
+.info-area {
+  display: flex;
+  grid-column: 1 / 7;
+  grid-row: 5;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  border: 2px solid;
+  border-radius: 5px;
+
+  text-align: center;
+
+  background-color: aliceblue;
 }
 
 .canvas-wheel {
   background: rgb(82 75 104);
-}
-
-.panel {
-  width: 200px;
-  height: 200px;
-  background: rgb(104 98 75);
 }

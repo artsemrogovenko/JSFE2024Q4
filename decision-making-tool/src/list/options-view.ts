@@ -1,4 +1,4 @@
-import Block from '../modules/block';
+import Block, { Container } from '../modules/block';
 import { ButtonsCreator } from '../modules/buttons';
 import { Options } from '../modules/form';
 import OptionsUtils from '../modules/list-utils';
@@ -44,6 +44,8 @@ export default class OptionsView extends Block<'main'> {
       const data = this.optionList.getList();
       this.listUtil.saveJson(data);
     });
-    this.addBlocks(buttons);
+    const buttonsContainer = new Container('btn-container');
+    buttonsContainer.addBlocks(buttons);
+    this.addBlock(buttonsContainer);
   }
 }
