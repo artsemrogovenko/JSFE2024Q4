@@ -1,5 +1,6 @@
 import Block from '../modules/block';
 import type { OptionData } from '../modules/types';
+import type PickerView from './picker-view';
 
 export class Wheel extends Block<'canvas'> {
   private ctx: CanvasRenderingContext2D | null;
@@ -7,11 +8,14 @@ export class Wheel extends Block<'canvas'> {
   private pointY: number = 0;
   private radius: number = 0;
   private currentRotate: number;
-  constructor(classname: string) {
+  private parent: PickerView;
+  private optionsData: OptionData[] = [];
+
+  constructor(classname: string, parent: PickerView) {
     super('canvas', classname);
     this.ctx = null;
     this.currentRotate = 0;
-
+    this.parent = parent;
     const canvas = this.getNode();
     if (canvas instanceof HTMLCanvasElement) {
       canvas.width = 500;
@@ -27,10 +31,23 @@ export class Wheel extends Block<'canvas'> {
       }
     }
   }
+  public prepare(data: OptionData[]): void {
+    this.optionsData = data;
+  }
+  public spin(duration: number): void {
+    console.log(duration);
+    this.showWinner();
+  }
 
-  public draw(data: OptionData[]): void {
+  public showWinner(): void {
+    const value = this.calculateTitle();
+    this.parent.showInfo(value);
+  }
+
+  public draw(): void {
+    const data = this.optionsData;
     const canvas = this.getNode();
-    if (this.ctx && canvas instanceof HTMLCanvasElement) {
+    if (this.ctx && canvas instanceof HTMLCanvasElement && data.length > 2) {
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const totalWeight = data.reduce<number>(
@@ -98,8 +115,29 @@ export class Wheel extends Block<'canvas'> {
       this.ctx.stroke();
     }
   }
-}
+  private calculateTitle(): string {
+    const angle = (360 - (this.currentRotate % 360)) % 360;
+    let startDeg = 0;
+    const totalWeight = this.optionsData.reduce(
+      (sum, item) => sum + Number(item.weight),
+      0,
+    );
 
+    for (const item of this.optionsData) {
+      const step = (parseInt(item.weight) / totalWeight) * 360;
+      const endDeg = startDeg + step;
+
+      if (angle >= startDeg && angle < endDeg) {
+        return item.title;
+      }
+      startDeg = endDeg;
+    }
+    return '';
+  }
+}
+function sine(x: number): number {
+  return Math.sin((x * Math.PI) / 2);
+}
 function randomNumber(): number {
   return Math.floor(Math.random() * 255);
 }

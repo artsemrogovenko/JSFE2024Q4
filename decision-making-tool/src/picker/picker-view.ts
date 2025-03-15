@@ -1,45 +1,69 @@
 import Block from '../modules/block';
 import { Container } from '../modules/block';
+import { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
 import { Input, Label } from '../modules/form';
 import type { OptionData } from '../modules/types';
 import { Wheel } from './canvas';
 
 export default class PickerView extends Block<'main'> {
-  private canvas = new Wheel('canvas-wheel');
-  private panel = new Container('panel');
+  private canvas: Wheel;
+  private panel: Container;
+  private infoArea: Container;
+
+  private back: Button = new Button();
+  private sound: Button = new Button();
+  private spin: Button = new Button();
   constructor() {
     super('main', 'pickerScreen');
+    this.canvas = new Wheel('canvas-wheel', this);
+    this.panel = new Container('panel');
+    this.infoArea = new Container('info-area');
     this.addBlock(this.panel);
     this.getNode().appendChild(this.canvas.getNode());
     this.init();
-    this.canvas.draw(testData);
+    this.canvas.prepare(testData);
+    this.canvas.draw();
   }
 
   public draw(data: OptionData[]): void {
-    this.canvas.draw(data);
+    this.canvas.prepare(data);
+  }
+  public showInfo(msg: string): void {
+    this.infoArea.setText(msg);
   }
 
   private init(): void {
-    const [back, sound, spin] = ButtonsCreator.createButtons(
-      3,
-      ['', '', 'Start'],
-      ['back', 'sound', 'spin'],
-    );
-    back.addListener('click', () => {});
-    sound.addListener('click', () => {});
-    spin.addListener('click', () => {});
-
     const label = new Label('clock', 'duration');
     const input = new Input('duration', 'number', '5', '', 'sec', 'duration');
 
     input.getNode().setAttribute('min', '5');
     input.getNode().setAttribute('min', '5');
     input.getNode().setAttribute('required', 'true');
+    const buttons = ButtonsCreator.createButtons(
+      3,
+      ['', '', 'Start'],
+      ['back', 'sound', 'spin'],
+    );
+    this.back = buttons[0];
+    this.sound = buttons[1];
+    this.spin = buttons[2];
+    this.back.addListener('click', () => {});
+    this.sound.addListener('click', () => {});
+    this.spin.addListener('click', () => {
+      const value = Number(input.getNode().ariaValueNow) || 0;
+      this.canvas.spin(value);
+    });
 
-    const infoArea = new Container('info-area');
-    infoArea.setText('Press button to start');
-    this.panel.addBlocks([back, sound, label, input, spin, infoArea]);
+    this.infoArea.setText('Press button to start');
+    this.panel.addBlocks([
+      this.back,
+      this.sound,
+      label,
+      input,
+      this.spin,
+      this.infoArea,
+    ]);
   }
 }
 const testData = [
