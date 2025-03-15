@@ -48,7 +48,10 @@ export default class PickerView extends Block<'main'> {
     this.back = buttons[0];
     this.sound = buttons[1];
     this.spin = buttons[2];
-    this.back.addListener('click', () => {});
+    this.back.addListener('click', () => {
+      window.history.pushState({}, '', '/options');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
     this.sound.addListener('click', () => {});
     this.spin.addListener('click', () => {
       const value = Number(input.getNode().ariaValueNow) || 0;

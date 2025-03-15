@@ -62,6 +62,7 @@ export default class OptionsUtils {
     this.buttonCancel.addListener('click', () => this.closeWindow());
     this.buttonOk.addListener('click', () => {
       this.getText();
+      this.closeWindow();
     });
 
     const placeholder =
@@ -98,7 +99,10 @@ export default class OptionsUtils {
         ];
       });
     console.log(lines);
-    this.formatData(lines);
+    if (lines.length > 0) {
+      this.formatData(lines);
+    }
+    return;
   }
 
   private formatData(array: string[][]): void {

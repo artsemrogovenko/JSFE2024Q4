@@ -47,7 +47,10 @@ export default class OptionsView extends Block<'main'> {
       const data = this.optionList.getList();
       this.listUtil.saveJson(data);
     });
-    start.addListener('click', () => {});
+    start.addListener('click', () => {
+      window.history.pushState({}, '', '/picker');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
 
     const buttonsContainer = new Container('btn-container');
     buttonsContainer.addBlocks([add, csv, clear, save, load, start]);
