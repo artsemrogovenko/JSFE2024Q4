@@ -1,19 +1,19 @@
-import State from '../application/state';
-import type OptionsView from '../list/options-view';
+import type State from '../application/state';
+import OptionsView from '../list/options-view';
+import type PickerView from '../picker/picker-view';
 import type { Button } from './buttons';
 import { ButtonsCreator } from './buttons';
 import type { DataList } from './types';
 
 export default class OptionsUtils {
   private dialog: HTMLDialogElement;
-  private view: OptionsView;
+  private view: OptionsView | PickerView;
   private textArea = document.createElement('textarea');
   private buttonOk: Button;
   private buttonCancel: Button;
   private filePicker = document.createElement('input');
   private saveLink = document.createElement('a');
-
-  constructor(member: OptionsView) {
+  constructor(member: OptionsView | PickerView) {
     this.filePicker.type = 'file';
     this.filePicker.accept = '.json';
     this.dialog = document.createElement('dialog');
@@ -140,7 +140,9 @@ export default class OptionsUtils {
     });
     const object: DataList = { list: listData, last: length };
     console.log(object);
-    this.view.getOptionData(object);
+    if (this.view instanceof OptionsView) {
+      this.view.getOptionData(object);
+    }
   }
 
   private parseJsonData(files: FileList | null): void {
@@ -164,7 +166,9 @@ export default class OptionsUtils {
           throw new Error('File content is not a string');
         }
         const jsonData = JSON.parse(result);
-        this.view.getOptionData(jsonData);
+        if (this.view instanceof OptionsView) {
+          this.view.getOptionData(jsonData);
+        }
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }
@@ -178,21 +182,24 @@ export default class OptionsUtils {
   }
 }
 
-
-export  function isAccepted(state:State): boolean {
-  const dataList: DataList = JSON.parse(state.getValue('listData'));
-  const options = dataList.list;
-  let count = 0;
-  if (options) {
-    for (let i = 0; i < options.length; i += 1) {
-      const option = options[i];
-      if (option.title !== '' && option.weight !== '') {
-        count += 1;
-      }
-      if (count >= 2) {
-        return true;
+export function correctAmount(state: State): boolean {
+  try {
+    const dataList: DataList = JSON.parse(state.getValue('listData'));
+    const options = dataList.list;
+    let count = 0;
+    if (options) {
+      for (let i = 0; i < options.length; i += 1) {
+        const option = options[i];
+        if (option.title !== '' && option.weight !== '') {
+          count += 1;
+        }
+        if (count >= 2) {
+          return true;
+        }
       }
     }
+  } catch (error) {
+    return false;
   }
   return false;
 }

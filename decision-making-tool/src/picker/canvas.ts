@@ -10,11 +10,13 @@ export class Wheel extends Block<'canvas'> {
   private currentRotate: number;
   private parent: PickerView;
   private optionsData: OptionData[] = [];
+  private generated: boolean = false;
+  private generatedColors: number[][] = [];
 
   constructor(classname: string, parent: PickerView) {
     super('canvas', classname);
     this.ctx = null;
-    this.currentRotate = 0;
+    this.currentRotate = randomAngle();
     this.parent = parent;
     const canvas = this.getNode();
     if (canvas instanceof HTMLCanvasElement) {
@@ -30,13 +32,16 @@ export class Wheel extends Block<'canvas'> {
         this.ctx = context;
       }
     }
+    this.generatedColors = [];
   }
   public prepare(data: OptionData[]): void {
     this.optionsData = data;
+    this.generated = false;
+    this.draw();
   }
   public spin(duration: number): void {
-    console.log(duration);
-    this.showWinner();
+    this.draw();
+    window.requestAnimationFrame(() => this.draw());
   }
 
   public showWinner(): void {
@@ -47,14 +52,13 @@ export class Wheel extends Block<'canvas'> {
   public draw(): void {
     const data = this.optionsData;
     const canvas = this.getNode();
-    if (this.ctx && canvas instanceof HTMLCanvasElement && data.length > 2) {
+    if (this.ctx && canvas instanceof HTMLCanvasElement && data.length >= 2) {
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const totalWeight = data.reduce<number>(
         (sum, item) => sum + Number(item.weight),
         0,
       );
-
       let startDeg: number = this.currentRotate;
 
       for (let i = 0; i < data.length; i++) {
@@ -62,8 +66,13 @@ export class Wheel extends Block<'canvas'> {
         const weight: number = parseInt(item.weight);
         const step: number = (weight / totalWeight) * 360;
         const endDeg: number = startDeg + step;
-
-        const [red, green, blue] = generateColor();
+        let [red, green, blue] = [0, 0, 0];
+        if (!this.generated) {
+          [red, green, blue] = generateColor();
+          this.generatedColors.push([red, green, blue]);
+        } else {
+          [red, green, blue] = this.generatedColors[i];
+        }
         const colorStyle: string = `rgb(${red},${green},${blue})`;
 
         this.ctx.beginPath();
@@ -105,12 +114,31 @@ export class Wheel extends Block<'canvas'> {
         this.ctx.fill();
 
         startDeg = endDeg;
+
+        this.ctx.translate(this.radius * 2 + 30, this.radius - 2);
+        this.ctx.rotate(toRadians(90));
+        const [x, y, base, height] = [0, 0, 30, 50];
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y + height * 2);
+        this.ctx.lineTo(x - base / 2, y + height / 2);
+        this.ctx.lineTo(x + base / 2, y + height / 2);
+        this.ctx.closePath();
+        this.ctx.fillStyle = '#ddd';
+        this.ctx.fill();
+        this.outline('#000');
+        this.ctx.rotate(toRadians(-90));
+        this.ctx.translate(this.radius * 2 * -1 - 30, this.radius * -1 + 2);
       }
+      this.generated = true;
+      this.currentRotate += 1;
+      this.time = new Date();
+      this.showWinner();
+      this.ctx.restore();
     }
   }
-  private outline(): void {
+  private outline(color: string = ''): void {
     if (this.ctx) {
-      this.ctx.strokeStyle = '#fff';
+      this.ctx.strokeStyle = color !== '' ? color : '#fff';
       this.ctx.lineWidth = 2;
       this.ctx.stroke();
     }
@@ -153,4 +181,7 @@ function generateColor(): number[] {
     }
   }
   return values;
+}
+function randomAngle(min: number = 0, max: number = 360): number {
+  return Math.floor(min + Math.random() * (max + 1 - min));
 }

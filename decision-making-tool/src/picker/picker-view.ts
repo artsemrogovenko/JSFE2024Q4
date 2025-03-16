@@ -4,14 +4,15 @@ import { Container } from '../modules/block';
 import { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
 import { Input, Label } from '../modules/form';
-import type { OptionData } from '../modules/types';
+import OptionsUtils, { correctAmount } from '../modules/list-utils';
+import type { DataList, OptionData } from '../modules/types';
 import { Wheel } from './canvas';
 
 export default class PickerView extends Block<'main'> {
   private canvas: Wheel;
   private panel: Container;
   private infoArea: Container;
-
+  private listUtil = new OptionsUtils(this);
   private back: Button = new Button();
   private sound: Button = new Button();
   private spin: Button = new Button();
@@ -23,14 +24,25 @@ export default class PickerView extends Block<'main'> {
     this.infoArea = new Container('info-area');
     this.addBlock(this.panel);
     this.getNode().appendChild(this.canvas.getNode());
-    this.init();
     this.state = state;
-    this.canvas.prepare(testData);
-    this.canvas.draw();
+    this.init();
   }
+  public draw(data: OptionData[] | null): void {
+    if (correctAmount(this.state)) {
+      const dataList: DataList = JSON.parse(this.state.getValue('listData'));
+      const options =
+        data ||
+        dataList.list.filter((option) => {
+          return option.title !== '' && option.weight !== '';
+        });
 
-  public draw(data: OptionData[]): void {
-    this.canvas.prepare(data);
+      this.canvas.prepare(options);
+    } else {
+      this.listUtil.showError(
+        'List of Options are less than two valid options to display.\nGo back to the list of options and add data.',
+      );
+      return;
+    }
   }
   public showInfo(msg: string): void {
     this.infoArea.setText(msg);
@@ -41,7 +53,8 @@ export default class PickerView extends Block<'main'> {
     const input = new Input('duration', 'number', '5', '', 'sec', 'duration');
 
     input.getNode().setAttribute('min', '5');
-    input.getNode().setAttribute('min', '5');
+    input.getNode().setAttribute('max', '30');
+    input.getNode().setAttribute('value', '5');
     input.getNode().setAttribute('required', 'true');
     const buttons = ButtonsCreator.createButtons(
       3,
@@ -57,8 +70,11 @@ export default class PickerView extends Block<'main'> {
     });
     this.sound.addListener('click', () => {});
     this.spin.addListener('click', () => {
-      const value = Number(input.getNode().ariaValueNow) || 0;
-      this.canvas.spin(value);
+      const element = input.getNode();
+      if (element instanceof HTMLInputElement) {
+        const value = Number(element.value) || 0;
+        this.canvas.spin(value);
+      }
     });
 
     this.infoArea.setText('Press button to start');
@@ -70,6 +86,7 @@ export default class PickerView extends Block<'main'> {
       this.spin,
       this.infoArea,
     ]);
+    this.draw(null);
   }
 }
 const testData = [

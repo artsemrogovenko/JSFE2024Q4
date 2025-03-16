@@ -2,8 +2,9 @@ import type State from '../application/state';
 import Block, { Container } from '../modules/block';
 import { ButtonsCreator } from '../modules/buttons';
 import { Options } from '../modules/form';
-import OptionsUtils, { isAccepted as correctAmount } from '../modules/list-utils';
+import OptionsUtils from '../modules/list-utils';
 import type { DataList } from '../modules/types';
+import { correctAmount } from '../modules/list-utils';
 
 export default class OptionsView extends Block<'main'> {
   private optionList = new Options('optionsList');
@@ -64,6 +65,4 @@ export default class OptionsView extends Block<'main'> {
     buttonsContainer.addBlocks([add, csv, clear, save, load, start]);
     this.addBlock(buttonsContainer);
   }
-
-
 }
