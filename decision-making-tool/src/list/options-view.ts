@@ -2,7 +2,7 @@ import type State from '../application/state';
 import Block, { Container } from '../modules/block';
 import { ButtonsCreator } from '../modules/buttons';
 import { Options } from '../modules/form';
-import OptionsUtils from '../modules/list-utils';
+import OptionsUtils, { isAccepted as correctAmount } from '../modules/list-utils';
 import type { DataList } from '../modules/types';
 
 export default class OptionsView extends Block<'main'> {
@@ -52,8 +52,12 @@ export default class OptionsView extends Block<'main'> {
       this.listUtil.saveJson(data);
     });
     start.addListener('click', () => {
-      window.history.pushState({}, '', '/picker');
-      window.dispatchEvent(new PopStateEvent('popstate'));
+      if (correctAmount(this.state)) {
+        window.history.pushState({}, '', '/picker');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      } else {
+        this.listUtil.showError();
+      }
     });
 
     const buttonsContainer = new Container('btn-container');
@@ -61,8 +65,5 @@ export default class OptionsView extends Block<'main'> {
     this.addBlock(buttonsContainer);
   }
 
-  private verifyData() {
-    const listdata = JSON.parse(this.state.getValue('listData'));
-    // this.importData(oldState);
-  }
+
 }

@@ -44,3 +44,22 @@
 .btn-container {
   display: flex;
 }
+
+.error_dialog {
+  position: fixed;
+
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  align-self: anchor-center;
+
+  width: 600px;
+  height: 100px;
+  margin: 0 auto;
+
+  background: gray;
+}
+
+.dialog-textarea {
+  resize: none;
+}

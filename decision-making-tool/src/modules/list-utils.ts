@@ -1,3 +1,4 @@
+import State from '../application/state';
 import type OptionsView from '../list/options-view';
 import type { Button } from './buttons';
 import { ButtonsCreator } from './buttons';
@@ -28,6 +29,7 @@ export default class OptionsUtils {
   }
 
   public parseCSV(): void {
+    this.csvDialog();
     this.openWindow();
   }
   public loadFile(): void {
@@ -44,6 +46,23 @@ export default class OptionsUtils {
     this.saveLink.click();
     URL.revokeObjectURL(url);
   }
+
+  public showError(message: string = ''): void {
+    this.dialog.className = 'error_dialog';
+    const placeholder =
+      message !== ''
+        ? message
+        : `A minimum of 2 completed options are required.\nEach option must have a title and weight`;
+    this.textArea.placeholder = placeholder;
+    this.textArea.rows = 4;
+    this.buttonCancel.setText('OK');
+    this.textArea.setAttribute('disabled', 'disabled');
+    this.dialog.replaceChildren();
+    this.dialog.append(this.textArea, this.buttonCancel.getNode());
+
+    this.openWindow();
+  }
+
   private openWindow(): void {
     document.body.appendChild(this.dialog);
   }
@@ -56,27 +75,31 @@ export default class OptionsUtils {
     this.textArea.value = '';
   }
 
-  private init(): void {
+  private csvDialog(): void {
     this.dialog.className = 'csv_dialog';
-
-    this.buttonCancel.addListener('click', () => this.closeWindow());
-    this.buttonOk.addListener('click', () => {
-      this.getText();
-      this.closeWindow();
-    });
-
     const placeholder =
       'Insert new options data as text in a CSV-like format\nExample: title,weight';
     this.textArea.placeholder = placeholder;
     this.textArea.rows = 12;
-    this.textArea.autocomplete = 'off';
-    this.textArea.spellcheck = false;
-
+    this.buttonCancel.setText('Cancel');
+    this.textArea.removeAttribute('disabled');
+    this.dialog.replaceChildren();
     this.dialog.append(
       this.textArea,
       this.buttonCancel.getNode(),
       this.buttonOk.getNode(),
     );
+  }
+
+  private init(): void {
+    this.textArea.autocomplete = 'off';
+    this.textArea.spellcheck = false;
+    this.textArea.className = 'dialog-textarea';
+    this.buttonCancel.addListener('click', () => this.closeWindow());
+    this.buttonOk.addListener('click', () => {
+      this.getText();
+      this.closeWindow();
+    });
 
     this.filePicker.addEventListener('change', (event) => {
       const target = event.target;
@@ -153,4 +176,23 @@ export default class OptionsUtils {
 
     reader.readAsText(jsonFile);
   }
+}
+
+
+export  function isAccepted(state:State): boolean {
+  const dataList: DataList = JSON.parse(state.getValue('listData'));
+  const options = dataList.list;
+  let count = 0;
+  if (options) {
+    for (let i = 0; i < options.length; i += 1) {
+      const option = options[i];
+      if (option.title !== '' && option.weight !== '') {
+        count += 1;
+      }
+      if (count >= 2) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

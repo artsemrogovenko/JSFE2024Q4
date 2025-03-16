@@ -1,4 +1,4 @@
-import type State from '../application/state';
+import State from '../application/state';
 import Block from './block';
 import { Button } from './buttons';
 import type { DataList, OptionData } from './types';
@@ -48,6 +48,7 @@ export class Options extends Block<'ul'> {
     this.lastId = Option.currentId();
     option.addListener('updated', () => {
       this.getValues(option);
+      this.saveState();
     });
     this.addBlock(option);
     this.saveState();
@@ -93,17 +94,18 @@ export class Options extends Block<'ul'> {
     }
   }
   public saveState(): void {
-    if (this.state) {
+    if (this.state instanceof State) {
       const value = JSON.stringify(this.getList());
       this.state.setValue('listData', value);
     }
   }
   private checkEmpty(): void {
-    console.log(this.components);
+    // console.log(this.components);
     if (this.components.length === 0) {
       Option.resetCounter();
-      this.saveState();
+      this.listData = {};
     }
+    this.saveState();
   }
   private getValues(option: Option): void {
     const element = option.getData();
