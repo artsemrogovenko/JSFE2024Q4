@@ -16,7 +16,7 @@ export class Wheel extends Block<'canvas'> {
   constructor(classname: string, parent: PickerView) {
     super('canvas', classname);
     this.ctx = null;
-    this.currentRotate = randomAngle();
+    this.currentRotate = randomRange();
     this.parent = parent;
     const canvas = this.getNode();
     if (canvas instanceof HTMLCanvasElement) {
@@ -40,8 +40,34 @@ export class Wheel extends Block<'canvas'> {
     this.draw();
   }
   public spin(duration: number): void {
-    this.draw();
-    window.requestAnimationFrame(() => this.draw());
+    const timeStart = Date.now();
+    const endTime = timeStart + duration * 1000;
+    const middleTime = timeStart + (duration * 1000) / 2;
+    const stepBegin = 360 * randomRange(3, 20);
+    const stepEnd = 360 * randomRange(2, 20);
+
+    const randomPosition = randomNumber(360);
+    const animations = (): void => {
+      const currentTime = Date.now();
+      const passedTime = currentTime - timeStart;
+      // const progress = passedTime / (duration * 1000);
+      let progress = 0;
+      let angle = 0;
+      if (currentTime <= middleTime) {
+        progress = passedTime / (middleTime - timeStart);
+        angle = circ(progress) * stepBegin;
+      } else {
+        progress = (currentTime - middleTime) / (endTime - middleTime);
+        angle = stepEnd + circInverse(progress) * stepEnd;
+      }
+      angle += randomPosition;
+      this.currentRotate = angle;
+      if (currentTime <= endTime) {
+        this.draw(angle);
+        window.requestAnimationFrame(animations);
+      }
+    };
+    window.requestAnimationFrame(animations);
   }
 
   public showWinner(): void {
@@ -49,7 +75,7 @@ export class Wheel extends Block<'canvas'> {
     this.parent.showInfo(value);
   }
 
-  public draw(): void {
+  public draw(angle?: number): void {
     const data = this.optionsData;
     const canvas = this.getNode();
     if (this.ctx && canvas instanceof HTMLCanvasElement && data.length >= 2) {
@@ -59,7 +85,7 @@ export class Wheel extends Block<'canvas'> {
         (sum, item) => sum + Number(item.weight),
         0,
       );
-      let startDeg: number = this.currentRotate;
+      let startDeg: number = angle || this.currentRotate;
 
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
@@ -130,8 +156,6 @@ export class Wheel extends Block<'canvas'> {
         this.ctx.translate(this.radius * 2 * -1 - 30, this.radius * -1 + 2);
       }
       this.generated = true;
-      this.currentRotate += 1;
-      this.time = new Date();
       this.showWinner();
       this.ctx.restore();
     }
@@ -163,11 +187,9 @@ export class Wheel extends Block<'canvas'> {
     return '';
   }
 }
-function sine(x: number): number {
-  return Math.sin((x * Math.PI) / 2);
-}
-function randomNumber(): number {
-  return Math.floor(Math.random() * 255);
+
+function randomNumber(v: number): number {
+  return Math.floor(Math.random() * v);
 }
 function toRadians(deg: number): number {
   return deg * (Math.PI / 180);
@@ -175,13 +197,21 @@ function toRadians(deg: number): number {
 function generateColor(): number[] {
   const values: number[] = [];
   while (values.length !== 3) {
-    let value = randomNumber();
+    let value = randomNumber(255);
     if (!values.includes(value)) {
       values.push(value);
     }
   }
   return values;
 }
-function randomAngle(min: number = 0, max: number = 360): number {
+function randomRange(min: number = 0, max: number = 360): number {
   return Math.floor(min + Math.random() * (max + 1 - min));
+}
+
+function circ(timeFraction: number): number {
+  return 1 - Math.sin(Math.acos(timeFraction));
+}
+
+function circInverse(timeFraction: number): number {
+  return Math.cos(Math.asin(1 - timeFraction));
 }
