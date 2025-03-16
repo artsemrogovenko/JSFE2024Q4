@@ -1,3 +1,4 @@
+import type State from '../application/state';
 import Block from './block';
 import { Button } from './buttons';
 import type { DataList, OptionData } from './types';
@@ -35,6 +36,7 @@ export class Label extends Block<'label'> {
 export class Options extends Block<'ul'> {
   private listData: Record<string, object> = {};
   private lastId;
+  private state: State | undefined;
   constructor(classN: string = '') {
     super('ul', classN, '');
     this.lastId = 0;
@@ -48,6 +50,7 @@ export class Options extends Block<'ul'> {
       this.getValues(option);
     });
     this.addBlock(option);
+    this.saveState();
   }
   public deleteOption(option: Option): void {
     const index = this.deleteBlock(option);
@@ -68,7 +71,7 @@ export class Options extends Block<'ul'> {
   }
 
   public importData(object: DataList): void {
-    console.log(object);
+    // console.log(object);
     const dataValues = object.list;
     this.clearList();
     Option.resetCounter();
@@ -80,11 +83,26 @@ export class Options extends Block<'ul'> {
     });
     this.lastId = object.last;
     Option.setLastId(object.last);
+    this.saveState();
+  }
+  public setState(state: State): void {
+    this.state = state;
+    if (state.getValue('listData')) {
+      const oldState = JSON.parse(state.getValue('listData'));
+      this.importData(oldState);
+    }
+  }
+  public saveState(): void {
+    if (this.state) {
+      const value = JSON.stringify(this.getList());
+      this.state.setValue('listData', value);
+    }
   }
   private checkEmpty(): void {
     console.log(this.components);
     if (this.components.length === 0) {
       Option.resetCounter();
+      this.saveState();
     }
   }
   private getValues(option: Option): void {

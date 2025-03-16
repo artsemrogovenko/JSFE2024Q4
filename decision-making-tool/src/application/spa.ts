@@ -1,6 +1,7 @@
 import OptionsView from '../list/options-view';
 import type Block from '../modules/block';
 import { Router } from './router';
+import State from './state';
 
 export default class App {
   private body: HTMLElement;
@@ -8,8 +9,9 @@ export default class App {
   private router: Router;
   constructor() {
     this.body = document.body;
-    this.main = new OptionsView();
-    this.router = new Router(this.setContent.bind(this));
+    const state = new State();
+    this.main = new OptionsView(state);
+    this.router = new Router(this.setContent.bind(this), state);
   }
 
   private setContent(view: Block<'main'>): void {

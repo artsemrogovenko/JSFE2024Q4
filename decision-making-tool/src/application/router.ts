@@ -2,6 +2,7 @@ import OptionsView from '../list/options-view';
 import type Block from '../modules/block';
 import PickerView from '../picker/picker-view';
 import NotFound from './not-found';
+import type State from './state';
 declare global {
   interface Window {
     route: (event: Event) => void;
@@ -10,10 +11,10 @@ declare global {
 
 export class Router {
   private setContent: Function;
-
-  constructor(changer: Function) {
+  private state: State;
+  constructor(changer: Function, state: State) {
     this.setContent = changer;
-
+    this.state = state;
     window.addEventListener('popstate', () => {
       this.handleLocation();
     });
@@ -21,22 +22,22 @@ export class Router {
     window.route = this.route;
     this.handleLocation();
   }
-  
-  private static routes(path: string): Block<'main'> {
+
+  private routes(path: string): Block<'main'> {
     switch (path) {
       case '/':
-        return new OptionsView();
+        return new OptionsView(this.state);
       case '/picker':
-        return new PickerView();
+        return new PickerView(this.state);
       case '/options':
-        return new OptionsView();
+        return new OptionsView(this.state);
       default:
         break;
     }
     return new NotFound();
   }
 
-  public route = (event: Event): void => {
+  private route = (event: Event): void => {
     event.preventDefault();
     if (event.target instanceof HTMLElement) {
       const target = event.target;
@@ -49,7 +50,7 @@ export class Router {
 
   private handleLocation(): void {
     const path = window.location.pathname;
-    const route = Router.routes(path);
+    const route = this.routes(path);
     this.setContent(route);
   }
 }

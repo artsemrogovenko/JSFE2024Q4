@@ -1,3 +1,4 @@
+import type State from '../application/state';
 import Block from '../modules/block';
 import { Container } from '../modules/block';
 import { Button } from '../modules/buttons';
@@ -14,7 +15,8 @@ export default class PickerView extends Block<'main'> {
   private back: Button = new Button();
   private sound: Button = new Button();
   private spin: Button = new Button();
-  constructor() {
+  private state: State;
+  constructor(state: State) {
     super('main', 'pickerScreen');
     this.canvas = new Wheel('canvas-wheel', this);
     this.panel = new Container('panel');
@@ -22,6 +24,7 @@ export default class PickerView extends Block<'main'> {
     this.addBlock(this.panel);
     this.getNode().appendChild(this.canvas.getNode());
     this.init();
+    this.state = state;
     this.canvas.prepare(testData);
     this.canvas.draw();
   }

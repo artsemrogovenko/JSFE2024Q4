@@ -1,3 +1,4 @@
+import type State from '../application/state';
 import Block, { Container } from '../modules/block';
 import { ButtonsCreator } from '../modules/buttons';
 import { Options } from '../modules/form';
@@ -7,9 +8,12 @@ import type { DataList } from '../modules/types';
 export default class OptionsView extends Block<'main'> {
   private optionList = new Options('optionsList');
   private listUtil = new OptionsUtils(this);
-  constructor() {
+  private state: State;
+  constructor(state: State) {
     super('main', 'mainOptions');
     this.addContent();
+    this.optionList.setState(state);
+    this.state = state;
   }
 
   public getOptionData(data: DataList): void {
@@ -55,5 +59,10 @@ export default class OptionsView extends Block<'main'> {
     const buttonsContainer = new Container('btn-container');
     buttonsContainer.addBlocks([add, csv, clear, save, load, start]);
     this.addBlock(buttonsContainer);
+  }
+
+  private verifyData() {
+    const listdata = JSON.parse(this.state.getValue('listData'));
+    // this.importData(oldState);
   }
 }
