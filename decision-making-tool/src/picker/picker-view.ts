@@ -5,16 +5,18 @@ import { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
 import { Input, Label } from '../modules/form';
 import { correctAmount } from '../modules/list-utils';
+import { Sound } from '../modules/sound';
 import type { DataList, OptionData } from '../modules/types';
 import { Wheel } from './canvas';
 
 export default class PickerView extends Block<'main'> {
+  private audio: Sound;
   private canvas: Wheel;
   private panel: Container;
   private infoArea: Container;
   // private listUtil = new OptionsUtils(this);
   private back: Button = new Button();
-  private sound: Button = new Button();
+  private soundButton: Button = new Button();
   private spin: Button = new Button();
   private state: State;
   private wheelIsSpinning: boolean;
@@ -31,6 +33,8 @@ export default class PickerView extends Block<'main'> {
     this.wheelIsSpinning = false;
     this.input = new Input('duration', 'number', '5', '', 'sec', 'duration');
     this.init();
+    this.audio = new Sound(state);
+    this.initSound();
   }
 
   public set wheelSpin(v: boolean) {
@@ -56,6 +60,7 @@ export default class PickerView extends Block<'main'> {
     this.infoArea.setText(msg);
   }
   public congratulate(): void {
+    this.audio.playFanfare();
     this.panel.getNode().classList.remove('inactive');
     this.infoArea.getNode().classList.add('winner');
   }
@@ -73,15 +78,15 @@ export default class PickerView extends Block<'main'> {
       ['back', 'sound', 'spin'],
     );
     this.back = buttons[0];
-    this.sound = buttons[1];
+    this.soundButton = buttons[1];
     this.spin = buttons[2];
     this.back.addListener('click', (e) => this.checkWheelState(e, this));
-    this.sound.addListener('click', () => {});
+    this.soundButton.addListener('click', (e) => this.toggleSound(e, this));
     this.spin.addListener('click', (e) => this.checkWheelState(e, this));
 
     this.panel.addBlocks([
       this.back,
-      this.sound,
+      this.soundButton,
       label,
       this.input,
       this.spin,
@@ -89,6 +94,28 @@ export default class PickerView extends Block<'main'> {
     ]);
     this.panel.addListener('click', (e) => this.checkWheelState(e, this));
     this.drawWheel(null);
+  }
+
+  private initSound(): void {
+    const mode = this.audio.getSoundState();
+    if (mode) {
+      this.soundButton.getNode().classList.remove('sound-off');
+    } else {
+      this.soundButton.getNode().classList.add('sound-off');
+    }
+  }
+
+  private toggleSound(event: Event, context: PickerView): void {
+    const target = event.target;
+    if (target instanceof HTMLButtonElement) {
+      if (target.classList.contains('sound-off')) {
+        this.audio.unMute();
+        target.classList.remove('sound-off');
+      } else {
+        this.audio.mute();
+        target.classList.add('sound-off');
+      }
+    }
   }
 
   private checkWheelState(event: Event, context: PickerView): void {

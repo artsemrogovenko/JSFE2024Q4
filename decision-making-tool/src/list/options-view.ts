@@ -2,7 +2,7 @@ import type State from '../application/state';
 import Block, { Container } from '../modules/block';
 import { ButtonsCreator } from '../modules/buttons';
 import { Options } from '../modules/form';
-import OptionsUtils, { closeDialog } from '../modules/list-utils';
+import OptionsUtils from '../modules/list-utils';
 import type { DataList } from '../modules/types';
 import { correctAmount } from '../modules/list-utils';
 

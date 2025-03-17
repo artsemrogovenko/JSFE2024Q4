@@ -12,7 +12,7 @@ export default defineConfig({
     minify: false,
     // sourcemap: 'inline',
     outDir: "../dist",
-    assetsDir: '',
+    assetsDir: './assets/',
   },
   base: './',
 })

@@ -1,6 +1,7 @@
 import OptionsView from '../list/options-view';
 import type Block from '../modules/block';
-import OptionsUtils, { closeDialog } from '../modules/list-utils';
+import { closeDialog } from '../modules/list-utils';
+import { Sound } from '../modules/sound';
 import { Router } from './router';
 import State from './state';
 

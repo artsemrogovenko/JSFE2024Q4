@@ -11,7 +11,6 @@
     "@commitlint/config-conventional": "^19.8.0",
     "@commitlint/format": "^19.8.0",
     "@eslint/js": "^9.22.0",
-    "bezier-easing": "^2.1.0",
     "conventional-changelog-atom": "^5.0.0",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
