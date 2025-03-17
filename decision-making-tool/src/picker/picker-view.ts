@@ -44,10 +44,10 @@ export default class PickerView extends Block<'main'> {
         dataList.list.filter((option) => {
           return option.title !== '' && option.weight !== '';
         });
-
+      this.infoArea.setText('Press button to start');
       this.canvas.prepare(options);
     } else {
-      this.listUtil.showError(
+      this.infoArea.setText(
         'List of Options are less than two valid options to display.\nGo back to the list of options and add data.',
       );
     }
@@ -79,7 +79,6 @@ export default class PickerView extends Block<'main'> {
     this.sound.addListener('click', () => {});
     this.spin.addListener('click', (e) => this.checkWheelState(e, this));
 
-    this.infoArea.setText('Press button to start');
     this.panel.addBlocks([
       this.back,
       this.sound,
@@ -109,7 +108,10 @@ export default class PickerView extends Block<'main'> {
         }
         if (target.classList.value === 'spin') {
           const element = context.input.getNode();
-          if (element instanceof HTMLInputElement) {
+          if (
+            element instanceof HTMLInputElement &&
+            correctAmount(this.state)
+          ) {
             const value = Number(element.value);
             context.infoArea.getNode().classList.remove('winner');
             context.panel.getNode().classList.add('inactive');

@@ -118,7 +118,7 @@ export class Wheel extends Block<'canvas'> {
         this.ctx.arc(
           this.pointX,
           this.pointY,
-          this.radius,
+          this.radius - 10,
           toRadians(startDeg),
           toRadians(endDeg),
         );
@@ -131,11 +131,27 @@ export class Wheel extends Block<'canvas'> {
         this.ctx.translate(this.pointX, this.pointY);
         const midDeg: number = (startDeg + endDeg) / 2;
         this.ctx.rotate(toRadians(midDeg));
-        this.ctx.textAlign = 'center';
+        this.ctx.textAlign = 'left';
         this.ctx.fillStyle =
           red > 150 || green > 150 || blue > 150 ? '#000' : '#fff';
-        this.ctx.font = 'bold 16px Arial';
-        this.ctx.fillText(item.title, this.radius - 120, 10);
+        const fontSize = 16;
+        this.ctx.font = `bold ${fontSize}px Arial`;
+
+        const textMaxWidth = this.radius - 50;
+        const fontMaxHeight = 30;
+        const sectorAngle = endDeg - startDeg;
+        const text = formatTitle(
+          this.ctx,
+          item.title,
+          textMaxWidth,
+          fontMaxHeight,
+          fontSize,
+          sectorAngle,
+        );
+        if (text) {
+          this.ctx.fillText(text, 30, fontSize / 4);
+        }
+        // this.ctx.fillText(item.title, 80, fontSize / 4);
         this.ctx.restore();
         this.ctx.closePath();
 
@@ -229,4 +245,27 @@ function circInverse(timeFraction: number): number {
 }
 function normalizeAngle(angle: number): number {
   return angle % 360;
+}
+
+function formatTitle(
+  ctx: CanvasRenderingContext2D,
+  title: string,
+  maxWidth: number,
+  maxHeight: number,
+  fontSize: number,
+  sectorAngle: number,
+): string | null {
+  ctx.font = `bold ${fontSize}px Arial`;
+  if (sectorAngle < 10) {
+    return null;
+  }
+  let result = title;
+  while (ctx.measureText(result + '…').width > maxWidth && result.length > 0) {
+    result = result.slice(0, -1);
+  }
+  const textHeight = fontSize * 0.2;
+  if (textHeight > maxHeight) {
+    return null;
+  }
+  return result.length < title.length ? result + '…' : result;
 }
