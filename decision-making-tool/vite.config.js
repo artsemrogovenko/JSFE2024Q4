@@ -10,7 +10,9 @@ export default defineConfig({
   root: './src/',
   build: {
     minify: false,
-    sourcemap: 'inline',
+    // sourcemap: 'inline',
     outDir: "../dist",
+    assetsDir: '',
   },
+  base: './',
 })

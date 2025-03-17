@@ -2,7 +2,7 @@ import type State from '../application/state';
 import Block, { Container } from '../modules/block';
 import { ButtonsCreator } from '../modules/buttons';
 import { Options } from '../modules/form';
-import OptionsUtils from '../modules/list-utils';
+import OptionsUtils, { closeDialog } from '../modules/list-utils';
 import type { DataList } from '../modules/types';
 import { correctAmount } from '../modules/list-utils';
 
@@ -16,15 +16,17 @@ export default class OptionsView extends Block<'main'> {
     this.optionList.setState(state);
     this.state = state;
   }
-
+  public getUtils(): OptionsUtils {
+    return this.listUtil;
+  }
   public getOptionData(data: DataList): void {
     this.optionList.importData(data);
   }
 
   private addContent(): void {
-    const title = document.createElement('h1');
-    title.textContent = 'Decision Making Tool';
-    this.getNode().append(title);
+    // const title = document.createElement('h1');
+    // title.textContent = 'Decision Making Tool';
+    // this.getNode().append(title);
     this.addBlock(this.optionList);
     this.addButtons();
   }

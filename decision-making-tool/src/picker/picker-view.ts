@@ -4,7 +4,7 @@ import { Container } from '../modules/block';
 import { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
 import { Input, Label } from '../modules/form';
-import OptionsUtils, { correctAmount } from '../modules/list-utils';
+import { correctAmount } from '../modules/list-utils';
 import type { DataList, OptionData } from '../modules/types';
 import { Wheel } from './canvas';
 
@@ -12,7 +12,7 @@ export default class PickerView extends Block<'main'> {
   private canvas: Wheel;
   private panel: Container;
   private infoArea: Container;
-  private listUtil = new OptionsUtils(this);
+  // private listUtil = new OptionsUtils(this);
   private back: Button = new Button();
   private sound: Button = new Button();
   private spin: Button = new Button();
@@ -132,20 +132,3 @@ function normalizeInput(time: number): number {
   }
   return time;
 }
-const testData = [
-  {
-    id: '#1',
-    title: 'abc',
-    weight: '1',
-  },
-  {
-    id: '#2',
-    title: 'qwe',
-    weight: '3',
-  },
-  {
-    id: '#3',
-    title: 'rty',
-    weight: '2',
-  },
-];

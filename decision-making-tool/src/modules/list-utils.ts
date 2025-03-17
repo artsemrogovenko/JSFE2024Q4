@@ -1,12 +1,14 @@
 import type State from '../application/state';
 import OptionsView from '../list/options-view';
 import type PickerView from '../picker/picker-view';
+import { Container } from './block';
 import type { Button } from './buttons';
 import { ButtonsCreator } from './buttons';
 import type { DataList } from './types';
 
 export default class OptionsUtils {
   private dialog: HTMLDialogElement;
+  private dialogBackdrop: Container;
   private view: OptionsView | PickerView;
   private textArea = document.createElement('textarea');
   private buttonOk: Button;
@@ -24,6 +26,7 @@ export default class OptionsUtils {
     );
     this.buttonCancel = buttons[0];
     this.buttonOk = buttons[1];
+    this.dialogBackdrop = new Container('backdrop');
     this.init();
     this.view = member;
   }
@@ -62,13 +65,20 @@ export default class OptionsUtils {
 
     this.openWindow();
   }
-
-  private openWindow(): void {
-    document.body.appendChild(this.dialog);
+  public applyCSV(): void {
+    this.getText();
   }
-  private closeWindow(): void {
+
+  public closeWindow(): void {
     this.clearArea();
-    document.body.removeChild(this.dialog);
+    const node = this.dialogBackdrop.getNode();
+    if (node && document.body.contains(node)) {
+      document.body.removeChild(node);
+    }
+  }
+  private openWindow(): void {
+    document.addEventListener('keyup', (e) => closeDialog(e, this));
+    document.body.appendChild(this.dialogBackdrop.getNode());
   }
 
   private clearArea(): void {
@@ -76,7 +86,7 @@ export default class OptionsUtils {
   }
 
   private csvDialog(): void {
-    this.dialog.className = 'csv_dialog';
+    this.dialog.className = 'dialog csv_dialog';
     const placeholder =
       'Insert new options data as text in a CSV-like format\nExample: title,weight';
     this.textArea.placeholder = placeholder;
@@ -92,14 +102,15 @@ export default class OptionsUtils {
   }
 
   private init(): void {
+    this.dialogBackdrop.getNode().appendChild(this.dialog);
+    this.dialogBackdrop.addListener('click', (e) => closeDialog(e, this));
+
     this.textArea.autocomplete = 'off';
     this.textArea.spellcheck = false;
     this.textArea.className = 'dialog-textarea';
-    this.buttonCancel.addListener('click', () => this.closeWindow());
-    this.buttonOk.addListener('click', () => {
-      this.getText();
-      this.closeWindow();
-    });
+    this.buttonCancel.addListener('click', (e) => closeDialog(e, this));
+    this.buttonOk.addListener('click', (e) => closeDialog(e, this));
+    this.dialog.addEventListener('click', (e) => closeDialog(e, this));
 
     this.filePicker.addEventListener('change', (event) => {
       const target = event.target;
@@ -202,4 +213,28 @@ export function correctAmount(state: State): boolean {
     return false;
   }
   return false;
+}
+
+export function closeDialog(event: Event, cls: OptionsUtils): void {
+  const target = event.target;
+  if (target instanceof HTMLElement && event.type === 'click') {
+    if (target.className.includes('_form-csv-ok')) {
+      cls.applyCSV();
+      cls.closeWindow();
+      return;
+    }
+    if (
+      target.className.includes('_form-csv-cancel') ||
+      target.className.includes('backdrop')
+    ) {
+      cls.closeWindow();
+      return;
+    }
+  }
+  if (event instanceof KeyboardEvent) {
+    const key = event.key;
+    if (key === 'Escape') {
+      cls.closeWindow();
+    }
+  }
 }

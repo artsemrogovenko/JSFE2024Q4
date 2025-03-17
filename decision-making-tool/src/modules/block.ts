@@ -86,7 +86,7 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     return this.components;
   }
 
-  protected destroy(): void {
+  public destroy(): void {
     this.deleteAllBlocks();
     this.removeAllListeners();
     this.element.remove();
