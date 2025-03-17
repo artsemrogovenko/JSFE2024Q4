@@ -1,18 +1,21 @@
 .pickerScreen {
   display: flex;
   flex-direction: column;
+  row-gap: 20px;
   align-items: center;
 }
 
 .panel {
   display: grid;
   grid-template-columns: 20% 5% 20% 5% 20% 30%;
-  grid-template-rows: 25% 10% 25% 10% 25%;
+
+  /* grid-template-rows: 25% 10% 25% 10% 25%; */
+  grid-template-rows: 50px 20px 50px;
 
   width: 250px;
-  height: 200px;
+  height: 120px;
 
-  background: rgb(104 98 75);
+  /* background: rgb(104 98 75); */
 }
 
 .back {
@@ -67,7 +70,9 @@
   align-items: center;
   justify-content: center;
 
+  width: 100%;
   height: 100%;
+  height: 50px;
   border: 2px solid;
   border-radius: 5px;
 
@@ -77,5 +82,14 @@
 }
 
 .canvas-wheel {
-  background: rgb(82 75 104);
+  /* background: rgb(82 75 104); */
+}
+
+.winner {
+  background-color: #a6ffa5;
+  box-shadow: inset 0 0 12px 0 #ffeb00;
+}
+
+.inactive {
+  opacity: 0.2;
 }

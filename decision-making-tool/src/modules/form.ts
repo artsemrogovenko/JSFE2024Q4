@@ -46,7 +46,7 @@ export class Options extends Block<'ul'> {
     const idTag = option.getTagId;
     this.listData[idTag] = option.getData();
     this.lastId = Option.currentId();
-    option.addListener('updated', () => {
+    option.getNode().addEventListener('updated', () => {
       this.getValues(option);
       this.saveState();
     });

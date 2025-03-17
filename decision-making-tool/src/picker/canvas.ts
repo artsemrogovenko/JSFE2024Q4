@@ -12,11 +12,13 @@ export class Wheel extends Block<'canvas'> {
   private optionsData: OptionData[] = [];
   private generated: boolean = false;
   private generatedColors: number[][] = [];
+  private oldAngle: number;
 
   constructor(classname: string, parent: PickerView) {
     super('canvas', classname);
     this.ctx = null;
     this.currentRotate = randomRange();
+    this.oldAngle = this.currentRotate;
     this.parent = parent;
     const canvas = this.getNode();
     if (canvas instanceof HTMLCanvasElement) {
@@ -39,12 +41,15 @@ export class Wheel extends Block<'canvas'> {
     this.generated = false;
     this.draw();
   }
+
   public spin(duration: number): void {
+    this.parent.wheelSpin = true;
+    const miliseconds = (duration + 1) * 1000;
     const timeStart = Date.now();
-    const endTime = timeStart + duration * 1000;
-    const middleTime = timeStart + (duration * 1000) / 2;
-    const stepBegin = 360 * randomRange(3, 20);
-    const stepEnd = 360 * randomRange(2, 20);
+    const endTime = timeStart + miliseconds;
+    const middleTime = timeStart + miliseconds / 2;
+    const stepBegin = 360 * 5;
+    // const stepEnd = 360 * randomRange(2, 20);
 
     const randomPosition = randomNumber(360);
     const animations = (): void => {
@@ -55,16 +60,22 @@ export class Wheel extends Block<'canvas'> {
       let angle = 0;
       if (currentTime <= middleTime) {
         progress = passedTime / (middleTime - timeStart);
-        angle = circ(progress) * stepBegin;
+        angle = this.oldAngle + circ(progress) * stepBegin;
       } else {
         progress = (currentTime - middleTime) / (endTime - middleTime);
-        angle = stepEnd + circInverse(progress) * stepEnd;
+        angle = this.oldAngle + stepBegin + circInverse(progress) * stepBegin;
       }
       angle += randomPosition;
+      angle = normalizeAngle(angle);
       this.currentRotate = angle;
       if (currentTime <= endTime) {
         this.draw(angle);
+        this.showWinner();
         window.requestAnimationFrame(animations);
+      } else {
+        this.oldAngle = this.currentRotate;
+        this.parent.wheelSpin = false;
+        this.parent.congratulate();
       }
     };
     window.requestAnimationFrame(animations);
@@ -80,6 +91,7 @@ export class Wheel extends Block<'canvas'> {
     const canvas = this.getNode();
     if (this.ctx && canvas instanceof HTMLCanvasElement && data.length >= 2) {
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+      this.ctx.save();
 
       const totalWeight = data.reduce<number>(
         (sum, item) => sum + Number(item.weight),
@@ -141,7 +153,7 @@ export class Wheel extends Block<'canvas'> {
 
         startDeg = endDeg;
 
-        this.ctx.translate(this.radius * 2 + 30, this.radius - 2);
+        this.ctx.translate(this.radius * 2 + 30, this.radius + 2);
         this.ctx.rotate(toRadians(90));
         const [x, y, base, height] = [0, 0, 30, 50];
         this.ctx.beginPath();
@@ -153,10 +165,10 @@ export class Wheel extends Block<'canvas'> {
         this.ctx.fill();
         this.outline('#000');
         this.ctx.rotate(toRadians(-90));
-        this.ctx.translate(this.radius * 2 * -1 - 30, this.radius * -1 + 2);
+        this.ctx.translate(this.radius * 2 * -1 - 30, this.radius * -1 - 2);
       }
       this.generated = true;
-      this.showWinner();
+      // this.showWinner();
       this.ctx.restore();
     }
   }
@@ -214,4 +226,7 @@ function circ(timeFraction: number): number {
 
 function circInverse(timeFraction: number): number {
   return Math.cos(Math.asin(1 - timeFraction));
+}
+function normalizeAngle(angle: number): number {
+  return angle % 360;
 }
