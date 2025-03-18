@@ -5,6 +5,7 @@ import { Options } from '../modules/form';
 import OptionsUtils from '../modules/list-utils';
 import type { DataList } from '../modules/types';
 import { correctAmount } from '../modules/list-utils';
+import { pushState } from '../application/router';
 
 export default class OptionsView extends Block<'main'> {
   private optionList = new Options('optionsList');
@@ -56,8 +57,7 @@ export default class OptionsView extends Block<'main'> {
     });
     start.addListener('click', () => {
       if (correctAmount(this.state)) {
-        window.history.pushState({}, '', '/picker');
-        window.dispatchEvent(new PopStateEvent('popstate'));
+        pushState('/picker');
       } else {
         this.listUtil.showError();
       }

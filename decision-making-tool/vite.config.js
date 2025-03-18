@@ -1,18 +1,23 @@
-import { defineConfig } from 'vite'
+import { defineConfig ,loadEnv} from 'vite'
 import dns from 'node:dns'
 
 dns.setDefaultResultOrder('verbatim')
 
+const env = loadEnv(process.env.NODE_ENV, process.cwd(), '');
+
 export default defineConfig({
+  base: env.VITE_BASE || '/',
+  define: {
+    'import.meta.env.VITE_BASE': JSON.stringify(env.VITE_BASE),
+  },
   server: {
-    open: '/src/index.html',
+    open: '/src/',
   },
   root: './src/',
   build: {
     minify: false,
-    // sourcemap: 'inline',
-    outDir: "../dist",
+    outDir: '../dist',
     assetsDir: './assets/',
+    assetsInclude: ['**/*.*'],
   },
-  base: './',
-})
+});

@@ -1,3 +1,4 @@
+import { pushState } from '../application/router';
 import type State from '../application/state';
 import Block from '../modules/block';
 import { Container } from '../modules/block';
@@ -81,7 +82,7 @@ export default class PickerView extends Block<'main'> {
     this.soundButton = buttons[1];
     this.spin = buttons[2];
     this.back.addListener('click', (e) => this.checkWheelState(e, this));
-    this.soundButton.addListener('click', (e) => this.toggleSound(e, this));
+    this.soundButton.addListener('click', (e) => this.toggleSound(e));
     this.spin.addListener('click', (e) => this.checkWheelState(e, this));
 
     this.panel.addBlocks([
@@ -105,7 +106,7 @@ export default class PickerView extends Block<'main'> {
     }
   }
 
-  private toggleSound(event: Event, context: PickerView): void {
+  private toggleSound(event: Event): void {
     const target = event.target;
     if (target instanceof HTMLButtonElement) {
       if (target.classList.contains('sound-off')) {
@@ -130,8 +131,7 @@ export default class PickerView extends Block<'main'> {
 
       if (target instanceof HTMLButtonElement) {
         if (target.classList.value === 'back') {
-          window.history.pushState({}, '', '/options');
-          window.dispatchEvent(new PopStateEvent('popstate'));
+          pushState('/options');
         }
         if (target.classList.value === 'spin') {
           const element = context.input.getNode();

@@ -1,5 +1,6 @@
 import Block from '../modules/block';
 import { Button } from '../modules/buttons';
+import { pushState } from './router';
 
 export default class NotFound extends Block<'main'> {
   private button: Button;
@@ -16,9 +17,8 @@ export default class NotFound extends Block<'main'> {
     this.getNode().appendChild(heading);
     this.addBlock(this.button);
     this.button.addListener('click', () => {
-      window.history.pushState({}, '', '/options');
       window.history.replaceState({}, '', '/options');
-      window.dispatchEvent(new PopStateEvent('popstate'));
+      pushState('/options');
     });
   }
 }

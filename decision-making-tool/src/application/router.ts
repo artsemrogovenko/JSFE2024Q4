@@ -8,7 +8,7 @@ declare global {
     route: (event: Event) => void;
   }
 }
-
+const base = import.meta.env.VITE_BASE;
 export class Router {
   private setContent: Function;
   private state: State;
@@ -26,6 +26,7 @@ export class Router {
   private routes(path: string): Block<'main'> {
     switch (path) {
       case '/':
+      case '':
         return new OptionsView(this.state);
       case '/picker':
         return new PickerView(this.state);
@@ -49,8 +50,12 @@ export class Router {
   };
 
   private handleLocation(): void {
-    const path = window.location.pathname;
+    const path = window.location.pathname.replace(`${base}`, '');
     const route = this.routes(path);
     this.setContent(route);
   }
+}
+export function pushState(path: string): void {
+  window.history.pushState({}, '', base + path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
 }

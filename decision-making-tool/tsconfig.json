@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "types": ["vite/client"],
 
     /* Linting */
     "strict": true,
@@ -28,5 +29,5 @@
     "noImplicitThis": true,
     "useUnknownInCatchVariables": true,
   },
-  "include": ["src", "typings"]
+  "include": ["src", "typings","types.ts"],
 }

@@ -1,6 +1,6 @@
 import type State from '../application/state';
-
-const winnerAudio = new Audio('../assets/win.mp3');
+import pathFile from '../assets/win.mp3';
+const winnerAudio = new Audio(pathFile);
 
 export class Sound {
   private state: State;

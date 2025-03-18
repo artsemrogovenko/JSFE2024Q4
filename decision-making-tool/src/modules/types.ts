@@ -8,3 +8,10 @@ export type OptionData = {
   title: string;
   weight: string;
 };
+export interface ImportMetaEnv {
+  readonly VITE_BASE: string;
+}
+
+export interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
