@@ -20,10 +20,12 @@ export class Sound {
 
   public mute(): void {
     this.fanfare.volume = 0;
+    this.state.setValue('sound', 'false');
   }
 
   public unMute(): void {
     this.fanfare.volume = 1;
+    this.state.setValue('sound', 'true');
   }
   private init(): void {
     const value = this.state.getValue('sound');
@@ -31,7 +33,7 @@ export class Sound {
       this.state.setValue('sound', JSON.stringify(true));
       this.fanfare.volume = 1;
     } else {
-      value ? (this.fanfare.volume = 1) : (this.fanfare.volume = 0);
+      JSON.parse(value) ? (this.fanfare.volume = 1) : (this.fanfare.volume = 0);
     }
   }
 }
