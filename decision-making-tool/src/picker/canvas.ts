@@ -2,8 +2,32 @@ import Block from '../modules/block';
 import type { OptionData } from '../modules/types';
 import type PickerView from './picker-view';
 
-export class Wheel extends Block<'canvas'> {
-  private ctx: CanvasRenderingContext2D | null;
+class Canvas extends Block<'canvas'> {
+  protected ctx: CanvasRenderingContext2D | null;
+  constructor() {
+    super('canvas', 'canvas-wheel');
+    this.ctx = null;
+    const canvas = this.getNode();
+    if (canvas instanceof HTMLCanvasElement) {
+      canvas.width = 500;
+      canvas.height = 500;
+      const context = canvas.getContext('2d');
+      if (context instanceof CanvasRenderingContext2D) {
+        this.ctx = context;
+      }
+    }
+  }
+  public measureText(text: string, font: string): number {
+    if (font !== null && this.ctx) {
+      this.ctx.font = font;
+      return this.ctx.measureText(text).width;
+    }
+    return 0;
+  }
+}
+
+export class Wheel extends Canvas {
+  // private ctx: CanvasRenderingContext2D | null;
   private pointX: number = 0;
   private pointY: number = 0;
   private radius: number = 0;
@@ -14,16 +38,17 @@ export class Wheel extends Block<'canvas'> {
   private generatedColors: number[][] = [];
   private oldAngle: number;
 
-  constructor(classname: string, parent: PickerView) {
-    super('canvas', classname);
+  constructor(parent: PickerView) {
+    // super( classname);
+    super();
     this.ctx = null;
     this.currentRotate = randomRange();
     this.oldAngle = this.currentRotate;
     this.parent = parent;
     const canvas = this.getNode();
     if (canvas instanceof HTMLCanvasElement) {
-      canvas.width = 500;
-      canvas.height = 500;
+      //   canvas.width = 500;
+      //   canvas.height = 500;
 
       this.pointX = canvas.width / 2;
       this.pointY = canvas.height / 2;
@@ -141,7 +166,7 @@ export class Wheel extends Block<'canvas'> {
         const fontMaxHeight = 30;
         const sectorAngle = endDeg - startDeg;
         const text = formatTitle(
-          this.ctx,
+          // this.ctx,
           item.title,
           textMaxWidth,
           fontMaxHeight,
@@ -248,19 +273,22 @@ function normalizeAngle(angle: number): number {
 }
 
 function formatTitle(
-  ctx: CanvasRenderingContext2D,
+  // ctx: CanvasRenderingContext2D,
   title: string,
   maxWidth: number,
   maxHeight: number,
   fontSize: number,
   sectorAngle: number,
 ): string | null {
-  ctx.font = `bold ${fontSize}px Arial`;
+  // ctx.font = `bold ${fontSize}px Arial`;
   if (sectorAngle < 10) {
     return null;
   }
   let result = title;
-  while (ctx.measureText(result + '…').width > maxWidth && result.length > 0) {
+  while (
+    myCanvas.measureText(result + '…', `bold ${fontSize}px Arial`) > maxWidth &&
+    result.length > 0
+  ) {
     result = result.slice(0, -1);
   }
   const textHeight = fontSize * 0.2;
@@ -269,3 +297,5 @@ function formatTitle(
   }
   return result.length < title.length ? result + '…' : result;
 }
+
+export const myCanvas = new Canvas();

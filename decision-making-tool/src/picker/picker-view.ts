@@ -24,7 +24,7 @@ export default class PickerView extends Block<'main'> {
   private input: Input;
   constructor(state: State) {
     super('main', 'pickerScreen');
-    this.canvas = new Wheel('canvas-wheel', this);
+    this.canvas = new Wheel(this);
     this.panel = new Container('panel');
     this.infoArea = new Container('info-area');
     this.addBlock(this.panel);
@@ -52,9 +52,12 @@ export default class PickerView extends Block<'main'> {
       this.infoArea.setText('Press button to start');
       this.canvas.prepare(options);
     } else {
-      this.infoArea.setText(
-        'List of Options are less than two valid options to display.\nGo back to the list of options and add data.',
-      );
+      window.location.pathname = `${base}/`;
+      // pushState('/options');
+
+      // this.infoArea.setText(
+      //   'List of Options are less than two valid options to display.\nGo back to the list of options and add data.',
+      // );
     }
   }
   public showInfo(msg: string): void {
@@ -67,7 +70,7 @@ export default class PickerView extends Block<'main'> {
   }
 
   private init(): void {
-    const label = new Label('clock', 'duration');
+    const label = new Label('clock', 'duration', '');
     this.input.addListener('change', (e) => this.checkWheelState(e, this));
     this.input.getNode().setAttribute('min', '5');
     this.input.getNode().setAttribute('max', '30');
@@ -159,3 +162,4 @@ function normalizeInput(time: number): number {
   }
   return time;
 }
+const base = import.meta.env.VITE_BASE;
