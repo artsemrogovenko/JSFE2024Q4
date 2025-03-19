@@ -4,7 +4,7 @@ import type PickerView from '../picker/picker-view';
 import { Container } from './block';
 import type { Button } from './buttons';
 import { ButtonsCreator } from './buttons';
-import type { DataList } from './types';
+import { ModeImportOptions, type DataList } from './types';
 
 export default class OptionsUtils {
   private dialog: HTMLDialogElement;
@@ -55,7 +55,7 @@ export default class OptionsUtils {
     const placeholder =
       message !== ''
         ? message
-        : `A minimum of 2 completed options are required.\nEach option must have a title and weight`;
+        : `A minimum of 2 completed options are required.\nEach option must have a title and weight > 0`;
     this.textArea.placeholder = placeholder;
     this.textArea.rows = 4;
     this.buttonCancel.setText('OK');
@@ -75,8 +75,10 @@ export default class OptionsUtils {
     if (node && document.body.contains(node)) {
       document.body.removeChild(node);
     }
+    document.body.classList.remove('no-scroll');
   }
   private openWindow(): void {
+    document.body.classList.add('no-scroll');
     document.addEventListener('keyup', (e) => closeDialog(e, this));
     document.body.appendChild(this.dialogBackdrop.getNode());
   }
@@ -132,7 +134,7 @@ export default class OptionsUtils {
           line.slice(lastComma + 1, line.length),
         ];
       });
-    console.log(lines);
+    // console.log(lines);
     if (lines.length > 0) {
       this.formatData(lines);
     }
@@ -145,14 +147,14 @@ export default class OptionsUtils {
       const [title, weight] = line;
       return {
         id: `#${index + 1}`,
-        title: title,
-        weight: weight,
+        title: title.trim(),
+        weight: weight.trim(),
       };
     });
     const object: DataList = { list: listData, last: length };
-    console.log(object);
+    // console.log(object);
     if (this.view instanceof OptionsView) {
-      this.view.getOptionData(object);
+      this.view.getOptionData(object, ModeImportOptions.CSV);
     }
   }
 
@@ -178,7 +180,7 @@ export default class OptionsUtils {
         }
         const jsonData = JSON.parse(result);
         if (this.view instanceof OptionsView) {
-          this.view.getOptionData(jsonData);
+          this.view.getOptionData(jsonData, ModeImportOptions.JSON);
         }
       } catch (error) {
         console.error('Error parsing JSON:', error);
@@ -201,7 +203,11 @@ export function correctAmount(state: State): boolean {
     if (options) {
       for (let i = 0; i < options.length; i += 1) {
         const option = options[i];
-        if (option.title !== '' && option.weight !== '') {
+        if (
+          option.title !== '' &&
+          option.weight !== '' &&
+          Number(option.weight) > 0
+        ) {
           count += 1;
         }
         if (count >= 2) {

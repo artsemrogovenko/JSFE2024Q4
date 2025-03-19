@@ -8,6 +8,12 @@ export type OptionData = {
   title: string;
   weight: string;
 };
+
+export enum ModeImportOptions {
+  CSV = 'CSV',
+  JSON = 'JSON',
+}
+
 export interface ImportMetaEnv {
   readonly VITE_BASE: string;
 }

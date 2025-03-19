@@ -1,7 +1,7 @@
 import State from '../application/state';
 import Block from './block';
 import { Button } from './buttons';
-import type { DataList, OptionData } from './types';
+import { ModeImportOptions, type DataList, type OptionData } from './types';
 
 export class Input extends Block<'input'> {
   constructor(
@@ -61,6 +61,7 @@ export class Options extends Block<'ul'> {
     this.checkEmpty();
   }
   public clearList(): void {
+    this.lastId = 0;
     this.deleteAllBlocks();
     this.checkEmpty();
   }
@@ -71,26 +72,33 @@ export class Options extends Block<'ul'> {
     return result;
   }
 
-  public importData(object: DataList): void {
+  public importData(object: DataList, mode: ModeImportOptions): void {
     // console.log(object);
     const dataValues = object.list;
-    this.clearList();
-    Option.resetCounter();
+    if (mode === ModeImportOptions.JSON) {
+      this.clearList();
+      Option.resetCounter();
+    } else {
+      Option.setLastId(this.lastId + 1);
+    }
     dataValues.forEach((value) => {
-      const id = value.id;
+      const id =
+        mode === ModeImportOptions.JSON ? value.id : `${Option.currentId()}`;
       const title = value.title;
       const weight = value.weight;
       this.addOption({ id, title, weight });
     });
-    this.lastId = object.last;
-    Option.setLastId(object.last);
+    if (mode === ModeImportOptions.JSON) {
+      this.lastId = object.last;
+      Option.setLastId(object.last);
+    }
     this.saveState();
   }
   public setState(state: State): void {
     this.state = state;
     if (state.getValue('listData')) {
       const oldState = JSON.parse(state.getValue('listData'));
-      this.importData(oldState);
+      this.importData(oldState, ModeImportOptions.JSON);
     }
   }
   public saveState(): void {
@@ -167,6 +175,7 @@ export class Option extends Block<'li'> {
 
     this.titleInput.addListener('change', (e) => this.updateData(e));
     this.weightInput.addListener('change', (e) => this.updateData(e));
+    this.weightInput.getNode().ariaValueMin = '0';
   }
   public get getTagId(): string {
     return this.idTag;

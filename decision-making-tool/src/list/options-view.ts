@@ -3,7 +3,7 @@ import Block, { Container } from '../modules/block';
 import { ButtonsCreator } from '../modules/buttons';
 import { Options } from '../modules/form';
 import OptionsUtils from '../modules/list-utils';
-import type { DataList } from '../modules/types';
+import type { DataList, ModeImportOptions } from '../modules/types';
 import { correctAmount } from '../modules/list-utils';
 import { pushState } from '../application/router';
 
@@ -20,8 +20,8 @@ export default class OptionsView extends Block<'main'> {
   public getUtils(): OptionsUtils {
     return this.listUtil;
   }
-  public getOptionData(data: DataList): void {
-    this.optionList.importData(data);
+  public getOptionData(data: DataList, mode: ModeImportOptions): void {
+    this.optionList.importData(data, mode);
   }
 
   private addContent(): void {
