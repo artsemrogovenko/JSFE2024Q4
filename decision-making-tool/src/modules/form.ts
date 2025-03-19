@@ -1,4 +1,5 @@
 import State from '../application/state';
+import { myCanvas } from '../picker/canvas';
 import Block from './block';
 import { Button } from './buttons';
 import { ModeImportOptions, type DataList, type OptionData } from './types';
@@ -176,6 +177,7 @@ export class Option extends Block<'li'> {
     this.titleInput.addListener('change', (e) => this.updateData(e));
     this.weightInput.addListener('change', (e) => this.updateData(e));
     this.weightInput.getNode().ariaValueMin = '0';
+    setCellWidth(labelText);
   }
   public get getTagId(): string {
     return this.idTag;
@@ -204,4 +206,10 @@ export class Option extends Block<'li'> {
       );
     }
   }
+}
+
+function setCellWidth(elementText: string): void {
+  const font = '500 16px Roboto, Arial, Helvetica, sans-serif';
+  const textWidth = myCanvas.measureText(elementText, font);
+  document.documentElement.style.setProperty('--cell-width', `${textWidth}px`);
 }

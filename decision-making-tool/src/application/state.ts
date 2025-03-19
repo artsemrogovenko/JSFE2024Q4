@@ -17,7 +17,9 @@ export default class State {
     }
     return '';
   }
-
+  public storageEmpty(): boolean {
+    return Boolean(localStorage.getItem(this.keyStorage));
+  }
   private saveState(): void {
     const obj = Object.fromEntries(this.state.entries());
     localStorage.setItem(this.keyStorage, JSON.stringify(obj));

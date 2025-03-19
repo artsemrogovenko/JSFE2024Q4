@@ -1,3 +1,7 @@
+:root {
+  --cell-width: 20px;
+}
+
 .mainOptions {
   display: flex;
   flex-direction: column;
@@ -39,6 +43,21 @@
   border-radius: 10px;
 
   background: linear-gradient(#6e658d, #5d5b79);
+}
+
+.option_id {
+  flex-shrink: 0;
+  width: var(--cell-width);
+}
+
+.option_title {
+  flex-shrink: 1;
+  width: 100%;
+}
+
+.option_weight {
+  flex-shrink: 1;
+  width: 100%;
 }
 
 .btn-container {
