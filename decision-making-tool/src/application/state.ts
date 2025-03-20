@@ -17,8 +17,12 @@ export default class State {
     }
     return '';
   }
-  public storageEmpty(): boolean {
-    return Boolean(localStorage.getItem(this.keyStorage));
+  public storageData(): string | null {
+    const storageData = localStorage.getItem(this.keyStorage);
+    if (storageData) {
+      return JSON.parse(storageData);
+    }
+    return null;
   }
   private saveState(): void {
     const obj = Object.fromEntries(this.state.entries());
@@ -26,10 +30,10 @@ export default class State {
   }
 
   private readStorage(): Map<string, string> {
-    const storageData = localStorage.getItem(this.keyStorage);
+    const storageData = this.storageData();
     if (storageData) {
-      const parsedObj = JSON.parse(storageData);
-      return new Map(Object.entries(parsedObj));
+      // const parsedObj = JSON.parse(storageData);
+      return new Map(Object.entries(storageData));
     }
     return new Map();
   }

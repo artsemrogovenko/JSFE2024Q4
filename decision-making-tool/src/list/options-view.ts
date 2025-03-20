@@ -13,9 +13,9 @@ export default class OptionsView extends Block<'main'> {
   private state: State;
   constructor(state: State) {
     super('main', 'mainOptions');
-    this.addContent();
     this.optionList.setState(state);
     this.state = state;
+    this.addContent();
   }
   public getUtils(): OptionsUtils {
     return this.listUtil;
@@ -25,6 +25,15 @@ export default class OptionsView extends Block<'main'> {
   }
 
   private addContent(): void {
+    const storageData = this.state.storageData();
+    const obj = Object.assign({}, storageData);
+    if (
+      Object.keys(obj).length === 0 &&
+      this.state.getValue('listData') === ''
+    ) {
+      this.optionList.addOption(null);
+    }
+    // console.log(Object.get storageData instanceof Object);
     // const title = document.createElement('h1');
     // title.textContent = 'Decision Making Tool';
     // this.getNode().append(title);

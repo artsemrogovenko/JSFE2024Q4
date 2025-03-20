@@ -40,6 +40,12 @@ export default class PickerView extends Block<'main'> {
 
   public set wheelSpin(v: boolean) {
     this.wheelIsSpinning = v;
+    const inputNode = this.input.getNode();
+    if (this.wheelIsSpinning) {
+      if (inputNode instanceof HTMLInputElement) inputNode.readOnly = true;
+    } else {
+      if (inputNode instanceof HTMLInputElement) inputNode.readOnly = false;
+    }
   }
   public drawWheel(data: OptionData[] | null): void {
     if (correctAmount(this.state)) {
@@ -111,7 +117,7 @@ export default class PickerView extends Block<'main'> {
 
   private toggleSound(event: Event): void {
     const target = event.target;
-    if (target instanceof HTMLButtonElement) {
+    if (target instanceof HTMLButtonElement && !this.wheelIsSpinning) {
       if (target.classList.contains('sound-off')) {
         this.audio.unMute();
         target.classList.remove('sound-off');

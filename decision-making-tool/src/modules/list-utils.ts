@@ -124,7 +124,7 @@ export default class OptionsUtils {
 
   private getText(): void {
     const values = this.textArea.value.split(/\n/);
-    console.log(values);
+    // console.log(values);
     const lines = values
       .filter((line) => line.includes(','))
       .map((line) => {

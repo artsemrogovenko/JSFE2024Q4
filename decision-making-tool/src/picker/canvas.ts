@@ -191,6 +191,8 @@ export class Wheel extends Canvas {
         );
         this.ctx.fillStyle = '#fff';
         this.ctx.fill();
+        this.ctx.closePath();
+        this.outline('white');
 
         startDeg = endDeg;
 
