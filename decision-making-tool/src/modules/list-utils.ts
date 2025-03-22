@@ -124,7 +124,6 @@ export default class OptionsUtils {
 
   private getText(): void {
     const values = this.textArea.value.split(/\n/);
-    // console.log(values);
     const lines = values
       .filter((line) => line.includes(','))
       .map((line) => {
@@ -134,7 +133,6 @@ export default class OptionsUtils {
           line.slice(lastComma + 1, line.length),
         ];
       });
-    // console.log(lines);
     if (lines.length > 0) {
       this.formatData(lines);
     }
@@ -152,7 +150,6 @@ export default class OptionsUtils {
       };
     });
     const object: DataList = { list: listData, last: length };
-    // console.log(object);
     if (this.view instanceof OptionsView) {
       this.view.getOptionData(object, ModeImportOptions.CSV);
     }

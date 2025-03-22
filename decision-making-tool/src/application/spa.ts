@@ -7,7 +7,6 @@ import State from './state';
 export default class App {
   private body: HTMLElement;
   private main: Block<'main'>;
-  // private router: Router;
   constructor() {
     this.body = document.body;
     const state = new State();

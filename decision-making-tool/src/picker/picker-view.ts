@@ -15,7 +15,6 @@ export default class PickerView extends Block<'main'> {
   private canvas: Wheel;
   private panel: Container;
   private infoArea: Container;
-  // private listUtil = new OptionsUtils(this);
   private back: Button = new Button();
   private soundButton: Button = new Button();
   private spin: Button = new Button();
@@ -59,11 +58,6 @@ export default class PickerView extends Block<'main'> {
       this.canvas.prepare(options);
     } else {
       window.location.pathname = `${base}/`;
-      // pushState('/options');
-
-      // this.infoArea.setText(
-      //   'List of Options are less than two valid options to display.\nGo back to the list of options and add data.',
-      // );
     }
   }
   public showInfo(msg: string): void {
@@ -100,7 +94,6 @@ export default class PickerView extends Block<'main'> {
       label,
       this.input,
       this.spin,
-      // this.infoArea,
     ]);
     this.panel.addListener('click', (e) => this.checkWheelState(e, this));
     this.drawWheel(null);

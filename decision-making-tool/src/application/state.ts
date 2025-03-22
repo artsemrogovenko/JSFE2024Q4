@@ -32,7 +32,6 @@ export default class State {
   private readStorage(): Map<string, string> {
     const storageData = this.storageData();
     if (storageData) {
-      // const parsedObj = JSON.parse(storageData);
       return new Map(Object.entries(storageData));
     }
     return new Map();

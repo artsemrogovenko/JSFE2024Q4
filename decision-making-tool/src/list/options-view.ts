@@ -33,10 +33,6 @@ export default class OptionsView extends Block<'main'> {
     ) {
       this.optionList.addOption(null);
     }
-    // console.log(Object.get storageData instanceof Object);
-    // const title = document.createElement('h1');
-    // title.textContent = 'Decision Making Tool';
-    // this.getNode().append(title);
     this.addBlock(this.optionList);
     this.addButtons();
   }

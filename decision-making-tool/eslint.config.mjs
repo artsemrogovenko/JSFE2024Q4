@@ -2,6 +2,7 @@ import eslintPluginTypescript from '@typescript-eslint/eslint-plugin'
 import eslintParserTypescript from '@typescript-eslint/parser'
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 import eslintPluginPrettier from 'eslint-plugin-prettier'
+import stylisticJs from '@stylistic/eslint-plugin-js'
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -17,6 +18,7 @@ export default [
       '@typescript-eslint': eslintPluginTypescript,
       unicorn: eslintPluginUnicorn,
       prettier: eslintPluginPrettier,
+      '@stylistic/js': stylisticJs
     },
     rules: {
       '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
@@ -32,6 +34,7 @@ export default [
       '@typescript-eslint/member-ordering': 'error',
       'class-methods-use-this': 'error',
       'prettier/prettier': 'error',
+      // '@stylistic/js/line-comment-position': ["error", { "position": "beside" }]
     },
   },
 ]

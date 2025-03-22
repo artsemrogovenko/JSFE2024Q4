@@ -74,7 +74,6 @@ export class Options extends Block<'ul'> {
   }
 
   public importData(object: DataList, mode: ModeImportOptions): void {
-    // console.log(object);
     const dataValues = object.list;
     if (mode === ModeImportOptions.JSON) {
       this.clearList();
@@ -109,7 +108,6 @@ export class Options extends Block<'ul'> {
     }
   }
   private checkEmpty(): void {
-    // console.log(this.components);
     if (this.components.length === 0) {
       Option.resetCounter();
       this.listData = {};

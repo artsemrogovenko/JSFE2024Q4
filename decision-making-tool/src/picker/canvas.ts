@@ -27,7 +27,6 @@ class Canvas extends Block<'canvas'> {
 }
 
 export class Wheel extends Canvas {
-  // private ctx: CanvasRenderingContext2D | null;
   private pointX: number = 0;
   private pointY: number = 0;
   private radius: number = 0;
@@ -39,7 +38,6 @@ export class Wheel extends Canvas {
   private oldAngle: number;
 
   constructor(parent: PickerView) {
-    // super( classname);
     super();
     this.ctx = null;
     this.currentRotate = randomRange();
@@ -47,9 +45,6 @@ export class Wheel extends Canvas {
     this.parent = parent;
     const canvas = this.getNode();
     if (canvas instanceof HTMLCanvasElement) {
-      //   canvas.width = 500;
-      //   canvas.height = 500;
-
       this.pointX = canvas.width / 2;
       this.pointY = canvas.height / 2;
       this.radius = canvas.width / 2;
@@ -74,13 +69,11 @@ export class Wheel extends Canvas {
     const endTime = timeStart + miliseconds;
     const middleTime = timeStart + miliseconds / 2;
     const stepBegin = 360 * 5;
-    // const stepEnd = 360 * randomRange(2, 20);
 
     const randomPosition = randomNumber(360);
     const animations = (): void => {
       const currentTime = Date.now();
       const passedTime = currentTime - timeStart;
-      // const progress = passedTime / (duration * 1000);
       let progress = 0;
       let angle = 0;
       if (currentTime <= middleTime) {
@@ -166,7 +159,6 @@ export class Wheel extends Canvas {
         const fontMaxHeight = 30;
         const sectorAngle = endDeg - startDeg;
         const text = formatTitle(
-          // this.ctx,
           item.title,
           textMaxWidth,
           fontMaxHeight,
@@ -176,7 +168,6 @@ export class Wheel extends Canvas {
         if (text) {
           this.ctx.fillText(text, 30, fontSize / 4);
         }
-        // this.ctx.fillText(item.title, 80, fontSize / 4);
         this.ctx.restore();
         this.ctx.closePath();
 
@@ -211,7 +202,6 @@ export class Wheel extends Canvas {
         this.ctx.translate(this.radius * 2 * -1 - 30, this.radius * -1 - 2);
       }
       this.generated = true;
-      // this.showWinner();
       this.ctx.restore();
     }
   }
@@ -275,14 +265,12 @@ function normalizeAngle(angle: number): number {
 }
 
 function formatTitle(
-  // ctx: CanvasRenderingContext2D,
   title: string,
   maxWidth: number,
   maxHeight: number,
   fontSize: number,
   sectorAngle: number,
 ): string | null {
-  // ctx.font = `bold ${fontSize}px Arial`;
   if (sectorAngle < 10) {
     return null;
   }
