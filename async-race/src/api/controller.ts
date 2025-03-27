@@ -1,10 +1,19 @@
+import type { Engine, EngineResponse } from '../modules/types';
 import {
   HttpСode,
+  Status,
   type Car,
   type CarParam,
   type ResponseData,
 } from '../modules/types';
-import { createCar, deleteCar, getCars, updateCar } from './requests';
+import {
+  createCar,
+  deleteCar,
+  driveCarEngine,
+  getCars,
+  startStopEngine,
+  updateCar,
+} from './requests';
 
 export class Controller {
   public static async getCarsList(): Promise<Car[] | null> {
@@ -46,6 +55,30 @@ export class Controller {
         return result;
       }
     } catch (error) {}
+    return { code: 0, body: {} };
+  }
+
+  public static async ignition(engine: Engine): Promise<ResponseData> {
+    try {
+      const result = await startStopEngine(engine);
+      if (result.code === HttpСode.OK) {
+        return result;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return { code: 0, body: {} };
+  }
+
+  public static async drive(id: number): Promise<ResponseData> {
+    try {
+      const result = await driveCarEngine(id);
+      if (result.code === HttpСode.OK) {
+        return result;
+      }
+    } catch (error) {
+      console.log(error);
+    }
     return { code: 0, body: {} };
   }
 }

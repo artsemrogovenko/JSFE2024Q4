@@ -52,6 +52,10 @@ export enum FormAction {
   UPDATE,
 }
 
+export type EngineResponse = {
+  velocity: number;
+  distance: number;
+};
 //#endregion Garage
 
 export enum HttpСode {

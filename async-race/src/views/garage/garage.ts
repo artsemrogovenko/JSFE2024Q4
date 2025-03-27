@@ -3,7 +3,16 @@ import type State from '../../application/state';
 import Block, { Container } from '../../modules/block';
 import { Button, ButtonsCreator } from '../../modules/buttons';
 import { Input } from '../../modules/form';
-import type { Car, CarParam, FormsData, FormType } from '../../modules/types';
+import type {
+  Car,
+  CarParam,
+  Engine,
+  EngineResponse,
+  FormsData,
+  FormType,
+  ResponseData,
+} from '../../modules/types';
+import { Status } from '../../modules/types';
 import { FormAction } from '../../modules/types';
 
 function isCar(obj: object): obj is Car {
@@ -178,6 +187,13 @@ class Participant extends Container {
   private carId: number;
   private color: string;
   private name: string;
+  private engine: Engine;
+  private garage: GarageView;
+  private speedParameters: EngineResponse = {
+    velocity: 0,
+    distance: 0,
+  };
+
   constructor(garage: GarageView, params: Car) {
     super('participant');
     const buttons = ['edit-car', 'remove-car', 'engine', 'drive-state'];
@@ -206,8 +222,10 @@ class Participant extends Container {
     this.addBlock(this.carPanel);
     this.addBlock(this.imgContainer);
 
-    edit.addListener('click', () => garage.editCar(this));
-    remove.addListener('click', () => garage.removeCar(this));
+    this.garage = garage;
+    this.engine = { id: params.id, status: Status.stopped };
+
+    this.applyListeners([edit, remove, engine, state]);
   }
 
   public get parameters(): Car {
@@ -225,7 +243,57 @@ class Participant extends Container {
     this.carTag.setText(param.name);
     this.image.setAttribute('fill', param.color);
   }
+
+  private applyListeners(buttons: Button[]): void {
+    buttons.forEach((button) =>
+      button.addListener('click', this.panelListener.bind(this)),
+    );
+  }
+
+  private panelListener(event: Event): void {
+    const target = event.target;
+    if (target instanceof HTMLButtonElement) {
+      const buttonText = target.innerText;
+      console.log(buttonText);
+      switch (buttonText) {
+        case 'Ignition':
+          this.toggleDrive();
+          break;
+        case 'Mode':
+          this.toggleStop();
+          break;
+        case 'Edit':
+          this.garage.editCar(this);
+          break;
+        case 'Remove':
+          this.garage.removeCar(this);
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  private async toggleStop(): Promise<void> {
+    this.engine.status = Status.stopped;
+    const response = await Controller.ignition(this.engine);
+    if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+    }
+  }
+
+  private async toggleDrive(): Promise<void> {
+    this.engine.status = Status.started;
+    const response = await Controller.ignition(this.engine);
+    if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+      this.speedParameters = response.body;
+      const sprintResult = await Controller.drive(this.carId);
+    }
+  }
 }
 
 import svgCar from '../../assets/car.svg?raw';
 const parser = new DOMParser();
+
+function isEngineResponse(obj: object): obj is EngineResponse {
+  return obj.hasOwnProperty('velocity') && obj.hasOwnProperty('distance');
+}
