@@ -14,14 +14,14 @@ const path = {
   winners: '/winners',
 };
 
-async function getCars(attributes?: GetCars): Promise<CarsResponse> {
+export async function getCars(attributes?: GetCars): Promise<CarsResponse> {
   let url = `${serverUrl}${path.garage}`;
   if (attributes) {
     const params = new URLSearchParams();
     if (attributes._page) params.append('_page', attributes._page.toString());
     if (attributes._limit)
       params.append('_limit', attributes._limit.toString());
-    url = `${url}?${params.toString()}`;
+    url = `${url}/?${params.toString()}`;
   }
 
   const response = await fetch(url);
@@ -33,7 +33,7 @@ async function getCars(attributes?: GetCars): Promise<CarsResponse> {
   return { code: code, count: count, body: body };
 }
 
-async function getCar(id: number): Promise<ResponseData> {
+export async function getCar(id: number): Promise<ResponseData> {
   const response = await fetch(`${serverUrl}${path.garage}/${id}`);
   const code = response.status;
   const body = await response.json();
@@ -41,7 +41,7 @@ async function getCar(id: number): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function createCar(data: CarParam): Promise<ResponseData> {
+export async function createCar(data: CarParam): Promise<ResponseData> {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
   const param = JSON.stringify({
@@ -59,7 +59,7 @@ async function createCar(data: CarParam): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function deleteCar(id: number): Promise<ResponseData> {
+export async function deleteCar(id: number): Promise<ResponseData> {
   const response = await fetch(`${serverUrl}${path.garage}/${id}`, {
     method: 'DELETE',
   });
@@ -69,7 +69,7 @@ async function deleteCar(id: number): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function updateCar(
+export async function updateCar(
   id: number,
   attributes: CarParam,
 ): Promise<ResponseData> {
@@ -91,7 +91,9 @@ async function updateCar(
   return { code: code, body: body };
 }
 
-async function startStopEngine(attributes: Engine): Promise<ResponseData> {
+export async function startStopEngine(
+  attributes: Engine,
+): Promise<ResponseData> {
   const params = new URLSearchParams({
     id: `${attributes.id}`,
     status: `${attributes.status}`,
@@ -105,7 +107,7 @@ async function startStopEngine(attributes: Engine): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function driveCarEngine(id: number): Promise<ResponseData> {
+export async function driveCarEngine(id: number): Promise<ResponseData> {
   const params = new URLSearchParams({
     id: `${id}`,
     status: `${Status.drive}`,
@@ -119,7 +121,7 @@ async function driveCarEngine(id: number): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function getWinners(): Promise<ResponseData> {
+export async function getWinners(): Promise<ResponseData> {
   const response = await fetch(`${serverUrl}/winners`);
   const code = response.status;
   const body = await response.json();
@@ -127,7 +129,7 @@ async function getWinners(): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function getWinner(id: number): Promise<ResponseData> {
+export async function getWinner(id: number): Promise<ResponseData> {
   const response = await fetch(`${serverUrl}${path.winners}/${id}`);
   const code = response.status;
   const body = await response.json();
@@ -135,7 +137,7 @@ async function getWinner(id: number): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function createWinner(data: Winner): Promise<ResponseData> {
+export async function createWinner(data: Winner): Promise<ResponseData> {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
 
@@ -155,7 +157,7 @@ async function createWinner(data: Winner): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function deleteWinner(id: number): Promise<ResponseData> {
+export async function deleteWinner(id: number): Promise<ResponseData> {
   const response = await fetch(`${serverUrl}${path.winners}/${id}`, {
     method: 'DELETE',
   });
@@ -165,7 +167,10 @@ async function deleteWinner(id: number): Promise<ResponseData> {
   return { code: code, body: body };
 }
 
-async function updateWinner(id: number, data: Winner): Promise<ResponseData> {
+export async function updateWinner(
+  id: number,
+  data: Winner,
+): Promise<ResponseData> {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
   const params = JSON.stringify({

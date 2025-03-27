@@ -53,3 +53,12 @@ export enum FormAction {
 }
 
 //#endregion Garage
+
+export enum HttpСode {
+  OK = 200,
+  Created = 201,
+  BadRequest = 400,
+  ManyRequests = 429,
+  NotFound = 404,
+  ServerError = 500,
+}
