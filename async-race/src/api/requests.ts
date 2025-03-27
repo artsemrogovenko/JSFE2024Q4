@@ -1,43 +1,19 @@
+import type {
+  GetCars,
+  CarsResponse,
+  ResponseData,
+  CarParam,
+  Engine,
+  Winner,
+} from '../modules/types';
+import { Status } from '../modules/types';
+
 const serverUrl = 'http://127.0.0.1:3000';
 const path = {
   garage: '/garage',
   winners: '/winners',
 };
 
-type CarParam = {
-  name: string;
-  color: string;
-};
-type Car = CarParam & { id: number };
-
-type GetCars = {
-  _page: number;
-  _limit?: number;
-};
-type CarsResponse = {
-  code: number;
-  count: string | null;
-  body: Car[];
-};
-
-type Engine = {
-  id: number;
-  status: Status;
-};
-enum Status {
-  started = 'started',
-  drive = 'drive',
-  stopped = 'stopped',
-}
-type Winner = {
-  id: number;
-  wins: number;
-  time: number;
-};
-type ResponseData = {
-  code: number;
-  body: object;
-};
 async function getCars(attributes?: GetCars): Promise<CarsResponse> {
   let url = `${serverUrl}${path.garage}`;
   if (attributes) {

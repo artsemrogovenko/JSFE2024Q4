@@ -2,19 +2,9 @@ import type State from '../../application/state';
 import Block, { Container } from '../../modules/block';
 import { Button, ButtonsCreator } from '../../modules/buttons';
 import { Input } from '../../modules/form';
+import type { FormsData, FormType } from '../../modules/types';
+import { FormAction } from '../../modules/types';
 
-type FormsData = {
-  create: FormType;
-  update: FormType;
-};
-type FormType = {
-  name: string;
-  color: string;
-};
-enum FormAction {
-  CREATE,
-  UPDATE,
-}
 export default class GarageView extends Block<'main'> {
   private create: Form;
   private update: Form;
