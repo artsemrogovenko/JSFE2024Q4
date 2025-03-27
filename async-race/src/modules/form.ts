@@ -29,6 +29,13 @@ export class Input extends Block<'input'> {
     }
     return '';
   }
+
+  public setValue(newValue: string): void {
+    const input = this.getNode();
+    if (input instanceof HTMLInputElement) {
+      input.value = newValue;
+    }
+  }
 }
 
 export class Label extends Block<'label'> {

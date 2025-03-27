@@ -41,7 +41,7 @@ export type ResponseData = {
 
 export type FormsData = {
   create: FormType;
-  update: FormType;
+  update: Car;
 };
 export type FormType = {
   name: string;

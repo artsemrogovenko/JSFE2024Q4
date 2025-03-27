@@ -1,4 +1,4 @@
-import { Controller as ApiController } from '../../api/controller';
+import { Controller as ApiController, Controller } from '../../api/controller';
 import type State from '../../application/state';
 import Block, { Container } from '../../modules/block';
 import { Button, ButtonsCreator } from '../../modules/buttons';
@@ -20,9 +20,10 @@ export default class GarageView extends Block<'main'> {
   private topContainer = new Container('top-container');
   private raceContainer = new Container('race-container');
   private state: State;
+  private editingCar: Participant | null = null;
   private formsData: FormsData = {
     create: { name: '', color: '' },
-    update: { name: '', color: '' },
+    update: { name: '', color: '', id: -1 },
   };
   constructor(state: State) {
     super('main', 'garage');
@@ -44,6 +45,19 @@ export default class GarageView extends Block<'main'> {
   public async getForm(className: string, values: CarParam): Promise<void> {
     switch (className) {
       case 'form-edit':
+        if (this.editingCar instanceof Participant) {
+          const id = this.formsData.update.id;
+          const data = {
+            color: this.formsData.update.color,
+            name: this.formsData.update.name,
+          };
+          const result = await Controller.update(id, data);
+          if (!Object.is({}, result.body) && isCar(result.body)) {
+            const data = result.body;
+            const newParam = { color: data.color, name: data.name };
+            this.editingCar.setParameters(newParam);
+          }
+        }
         break;
       case 'form-create':
         const result = await ApiController.newCar(values);
@@ -57,10 +71,27 @@ export default class GarageView extends Block<'main'> {
     }
   }
 
+  public editCar(part: Participant): void {
+    this.editingCar = part;
+    this.formsData.update = part.parameters;
+    const newData = {
+      name: part.parameters.name,
+      color: part.parameters.color,
+    };
+    this.update.setValues(newData);
+  }
+
+  public async removeCar(part: Participant): Promise<void> {
+    const carId = part.parameters.id;
+    const success = await Controller.remove(carId);
+    if (success) {
+      this.deleteBlock(part);
+      part.destroy();
+    }
+  }
+
   private init(): void {
     this.initRace();
-    const updateCar = this.update.getButton;
-    // updateCar.addListener('click', () => );
   }
 
   private async initRace(): Promise<void> {
@@ -83,7 +114,8 @@ export default class GarageView extends Block<'main'> {
       this.formsData.create = formData;
     } else {
       const formData = form.params;
-      this.formsData.update = formData;
+      this.formsData.update.color = formData.color;
+      this.formsData.update.name = formData.name;
     }
   }
 }
@@ -100,8 +132,8 @@ class Form extends Container {
     this.button = new Button(submitClass, submitClass);
     this.addBlocks([this.nameInput, this.colorInput, this.button]);
     this.button.addListener('click', () => this.submitForm(view));
-    this.colorInput.addListener('change', this.changeValues.bind(this));
-    this.nameInput.addListener('change', this.changeValues.bind(this));
+    this.colorInput.addListener('change', this.updateValues.bind(this));
+    this.nameInput.addListener('change', this.updateValues.bind(this));
   }
 
   public get getButton(): Button {
@@ -111,7 +143,17 @@ class Form extends Container {
   public get params(): FormType {
     return this.values;
   }
-  private changeValues(): void {
+
+  public setValues(data: CarParam): void {
+    if (this.colorInput.getNode() instanceof HTMLInputElement) {
+      this.colorInput.setValue(data.color);
+    }
+    if (this.nameInput.getNode() instanceof HTMLInputElement) {
+      this.nameInput.setValue(data.name);
+    }
+  }
+
+  private updateValues(): void {
     if (this.colorInput.getNode() instanceof HTMLInputElement) {
       this.values.color = this.colorInput.getValue();
     }
@@ -132,6 +174,8 @@ class Participant extends Container {
   private image: HTMLElement;
   private carPanel: Container;
   private carId: number;
+  private color: string;
+  private name: string;
   constructor(garage: GarageView, params: Car) {
     super('participant');
     const buttons = ['edit-car', 'remove-car', 'engine', 'drive-state'];
@@ -141,6 +185,8 @@ class Participant extends Container {
       buttonsText,
       buttons,
     );
+    this.name = params.name;
+    this.color = params.color;
     this.carId = params.id;
     this.carTag = new Container('car-tag');
     this.carTag.setText(params.name);
@@ -157,11 +203,25 @@ class Participant extends Container {
     this.image.setAttribute('fill', params.color);
     this.addBlock(this.carPanel);
     this.addBlock(this.imgContainer);
+
+    edit.addListener('click', () => garage.editCar(this));
+    remove.addListener('click', () => garage.removeCar(this));
   }
 
-  public changeData(params: CarParam): void {
-    this.carTag.setText(params.name);
-    this.image.setAttribute('fill', params.color);
+  public get parameters(): Car {
+    const params = {
+      name: this.name,
+      color: this.color,
+      id: this.carId,
+    };
+    return params;
+  }
+
+  public setParameters(param: CarParam): void {
+    this.name = param.name;
+    this.color = param.color;
+    this.carTag.setText(param.name);
+    this.image.setAttribute('fill', param.color);
   }
 }
 
