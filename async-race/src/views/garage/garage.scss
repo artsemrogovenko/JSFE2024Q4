@@ -1,0 +1,33 @@
+.garage {
+  display: flex;
+  justify-content: space-between;
+}
+
+.top-container {
+  display: flex;
+  flex-direction: column;
+
+  .form-create,
+  .form-edit {
+    display: flex;
+    column-gap: 10px;
+    height: min-content;
+    margin-bottom: 5px;
+
+    button {
+      width: 70px;
+    }
+  }
+}
+
+.participant {
+  width: 100vw;
+  height: 80px;
+  border-bottom: 2px dashed darkgoldenrod;
+
+  background-color: bisque;
+  background-image: url('../../assets/flag.svg');
+  background-repeat: no-repeat;
+  background-position: 80vw;
+  background-size: contain;
+}

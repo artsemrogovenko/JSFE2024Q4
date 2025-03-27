@@ -1,4 +1,6 @@
+@import 'views/garage/garage';
+
 * {
-  margin: 0 auto;
+  /* margin: 0 auto; */
   padding: 0;
 }

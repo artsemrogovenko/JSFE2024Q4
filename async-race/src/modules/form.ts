@@ -21,6 +21,14 @@ export class Input extends Block<'input'> {
       input.name = name;
     }
   }
+
+  public getValue(): string {
+    const input = this.getNode();
+    if (input instanceof HTMLInputElement) {
+      return input.value;
+    }
+    return '';
+  }
 }
 
 export class Label extends Block<'label'> {

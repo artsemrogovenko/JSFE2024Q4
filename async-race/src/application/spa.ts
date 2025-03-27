@@ -13,8 +13,8 @@ export default class App {
   }
 
   private setContent(view: Block<'main'>): void {
-    if (this.body && this.main) {
-      this.main.destroy();
+    if (this.body) {
+      if (this.main !== null) this.main.destroy();
       this.main = view;
       try {
         this.body.replaceChild(view.getNode(), this.main.getNode());
