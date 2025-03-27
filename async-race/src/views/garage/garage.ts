@@ -60,10 +60,12 @@ export default class GarageView extends Block<'main'> {
         }
         break;
       case 'form-create':
-        const result = await ApiController.newCar(values);
-        if (!Object.is({}, result.body) && isCar(result.body)) {
-          const data = result.body;
-          this.addParticipant(data);
+        if (values.name.trim() !== '') {
+          const result = await ApiController.newCar(values);
+          if (!Object.is({}, result.body) && isCar(result.body)) {
+            const data = result.body;
+            this.addParticipant(data);
+          }
         }
         break;
       default:
