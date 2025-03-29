@@ -56,6 +56,11 @@ export type EngineResponse = {
   velocity: number;
   distance: number;
 };
+
+export type CarInfo = {
+  id: number;
+  info: string;
+};
 //#endregion Garage
 
 export enum HttpСode {

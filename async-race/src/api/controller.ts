@@ -11,6 +11,7 @@ import {
   createCar,
   deleteCar,
   driveCarEngine,
+  getCar,
   getCars,
   startStopEngine,
   updateCar,
@@ -79,5 +80,15 @@ export class Controller {
     //   console.log(error);
     // }
     // return { code: 0, body: {} };
+  }
+
+  public static async getCarById(id: number): Promise<ResponseData> {
+    try {
+      const result = await getCar(id);
+      if (result.code === HttpСode.OK) {
+        return result;
+      }
+    } catch (error) {}
+    return { code: 0, body: {} };
   }
 }

@@ -10,7 +10,7 @@ import type {
   EngineResponse,
   FormsData,
   FormType,
-  ResponseData,
+  CarInfo,
 } from '../../modules/types';
 import { HttpСode, Status } from '../../modules/types';
 import { FormAction } from '../../modules/types';
@@ -103,6 +103,15 @@ export default class GarageView extends Block<'main'> {
 
   private init(): void {
     this.initRace();
+    const racePanel = new Container('dispatcher');
+    const buttons = ['race', 'reset', 'generate cars'];
+    const operatorButtons = ButtonsCreator.createButtons(
+      buttons.length,
+      buttons,
+    );
+    racePanel.addBlocks(operatorButtons);
+    racePanel.addListener('click', this.operate.bind(this));
+    this.topContainer.addBlock(racePanel);
   }
 
   private async initRace(): Promise<void> {
@@ -127,6 +136,37 @@ export default class GarageView extends Block<'main'> {
       const formData = form.params;
       this.formsData.update.color = formData.color;
       this.formsData.update.name = formData.name;
+    }
+  }
+
+  private async operate(event: Event): Promise<void> {
+    const target = event.target;
+    if (target instanceof HTMLButtonElement) {
+      const buttonText = target.textContent;
+      const components = this.raceContainer.getComponents();
+      switch (buttonText) {
+        case 'race':
+          let promiseArray: Promise<CarInfo>[] = [];
+          if (components.every((element) => element instanceof Participant)) {
+            components.forEach((part) => promiseArray.push(part.racing));
+            try {
+              const result = await Promise.any(promiseArray);
+              const winner = await Controller.getCarById(result.id);
+              if (isCarResponse(winner.body)) {
+                carFormatter(winner.body);
+              }
+            } catch (error) {}
+          }
+          break;
+        case 'reset':
+          if (components.every((element) => element instanceof Participant))
+            components.forEach((part) => part.reset);
+          break;
+        case 'generate cars':
+          break;
+        default:
+          break;
+      }
     }
   }
 }
@@ -227,7 +267,13 @@ class Participant extends Container {
 
     this.addListener('click', this.panelListener.bind(this));
   }
+  public get racing(): Promise<CarInfo> {
+    return this.toggleDrive();
+  }
 
+  public get reset(): Promise<Boolean> {
+    return this.toggleStop();
+  }
   public get parameters(): Car {
     const params = {
       name: this.name,
@@ -268,32 +314,52 @@ class Participant extends Container {
     }
   }
 
-  private async toggleStop(): Promise<void> {
+  private async toggleStop(): Promise<Boolean> {
     this.engine.status = Status.stopped;
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
-      resetCar(this.imgContainer, this.carId);
+      if (response.code === HttpСode.OK) {
+        resetCar(this.imgContainer, this.carId);
+        return true;
+      }
     }
+    return false;
   }
 
-  private async toggleDrive(): Promise<void> {
+  private async toggleDrive(): Promise<CarInfo> {
     this.engine.status = Status.started;
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
       this.speedParameters = response.body;
-      moveCar(this.speedParameters, this.imgContainer, this.carId);
-      const sprintResult = await Controller.drive(this.carId);
-      if (sprintResult.code === HttpСode.ServerError) {
-        stopCar(this.imgContainer, this.carId);
-      }
     }
+    moveCar(this.speedParameters, this.imgContainer, this.carId);
+    const sprintResult = await Controller.drive(this.carId);
+    const code = sprintResult.code;
+    const body = sprintResult.body;
+    switch (code) {
+      case HttpСode.ServerError:
+        stopCar(this.imgContainer, this.carId);
+        if ('message' in body && typeof body?.message === 'string') {
+          throw { id: this.carId, info: body.message };
+        }
+        break;
+    }
+    return { id: this.carId, info: JSON.stringify(body) };
   }
 }
 
 import svgCar from '../../assets/car.svg?raw';
 import { moveCar, resetCar, stopCar } from './animation';
+import { carFormatter, showInfo } from './dialog';
 const parser = new DOMParser();
 
 function isEngineResponse(obj: object): obj is EngineResponse {
   return obj.hasOwnProperty('velocity') && obj.hasOwnProperty('distance');
+}
+function isCarResponse(obj: object): obj is Car {
+  return (
+    obj.hasOwnProperty('name') &&
+    obj.hasOwnProperty('color') &&
+    obj.hasOwnProperty('id')
+  );
 }

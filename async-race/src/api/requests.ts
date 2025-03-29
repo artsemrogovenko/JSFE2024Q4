@@ -34,11 +34,15 @@ export async function getCars(attributes?: GetCars): Promise<CarsResponse> {
 }
 
 export async function getCar(id: number): Promise<ResponseData> {
-  const response = await fetch(`${serverUrl}${path.garage}/${id}`);
-  const code = response.status;
-  const body = await response.json();
+  try {
+    const response = await fetch(`${serverUrl}${path.garage}/${id}`);
+    const code = response.status;
+    const body = await response.json();
 
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function createCar(data: CarParam): Promise<ResponseData> {
