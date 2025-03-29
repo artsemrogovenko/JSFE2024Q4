@@ -5,6 +5,7 @@ import {
   type Car,
   type CarParam,
   type ResponseData,
+  type GetCars,
 } from '../modules/types';
 import {
   createCar,
@@ -16,9 +17,9 @@ import {
 } from './requests';
 
 export class Controller {
-  public static async getCarsList(): Promise<Car[] | null> {
+  public static async getCarsList(args?: GetCars): Promise<Car[] | null> {
     try {
-      const result = await getCars();
+      const result = await getCars(args);
       return result.code === HttpСode.OK ? result.body : null;
     } catch (error) {
       return null;
@@ -71,14 +72,12 @@ export class Controller {
   }
 
   public static async drive(id: number): Promise<ResponseData> {
-    try {
-      const result = await driveCarEngine(id);
-      if (result.code === HttpСode.OK) {
-        return result;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    return { code: 0, body: {} };
+    // try {
+    const result = await driveCarEngine(id);
+    return result;
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    // return { code: 0, body: {} };
   }
 }

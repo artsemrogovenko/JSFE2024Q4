@@ -112,13 +112,24 @@ export async function driveCarEngine(id: number): Promise<ResponseData> {
     id: `${id}`,
     status: `${Status.drive}`,
   });
-  const response = await fetch(`${serverUrl}/engine?${params}`, {
+  let response;
+  response = await fetch(`${serverUrl}/engine?${params}`, {
     method: 'PATCH',
   });
-  const code = response.status;
-  const body = await response.json();
-
-  return { code: code, body: body };
+  try {
+    if (!response.ok) {
+      throw new Error();
+    }
+    const code = response.status;
+    const body = await response.json();
+    return { code: code, body: body };
+  } catch (error) {
+    const message = await response.text();
+    return {
+      code: response.status,
+      body: { message: message },
+    };
+  }
 }
 
 export async function getWinners(): Promise<ResponseData> {

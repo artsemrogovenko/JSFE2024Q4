@@ -12,7 +12,7 @@ import type {
   FormType,
   ResponseData,
 } from '../../modules/types';
-import { Status } from '../../modules/types';
+import { HttpСode, Status } from '../../modules/types';
 import { FormAction } from '../../modules/types';
 
 function isCar(obj: object): obj is Car {
@@ -120,7 +120,7 @@ export default class GarageView extends Block<'main'> {
   }
 
   private changeValues(form: Form, action: FormAction): void {
-    if ((action = FormAction.CREATE)) {
+    if (action === FormAction.CREATE) {
       const formData = form.params;
       this.formsData.create = formData;
     } else {
@@ -197,7 +197,7 @@ class Participant extends Container {
   constructor(garage: GarageView, params: Car) {
     super('participant');
     const buttons = ['edit-car', 'remove-car', 'engine', 'drive-state'];
-    const buttonsText = ['edit', 'remove', 'ignition', 'mode'];
+    const buttonsText = ['edit', 'remove', 'race', 'home'];
     const [edit, remove, engine, state] = ButtonsCreator.createButtons(
       buttons.length,
       buttonsText,
@@ -225,7 +225,7 @@ class Participant extends Container {
     this.garage = garage;
     this.engine = { id: params.id, status: Status.stopped };
 
-    this.applyListeners([edit, remove, engine, state]);
+    this.addListener('click', this.panelListener.bind(this));
   }
 
   public get parameters(): Car {
@@ -244,22 +244,16 @@ class Participant extends Container {
     this.image.setAttribute('fill', param.color);
   }
 
-  private applyListeners(buttons: Button[]): void {
-    buttons.forEach((button) =>
-      button.addListener('click', this.panelListener.bind(this)),
-    );
-  }
-
   private panelListener(event: Event): void {
     const target = event.target;
     if (target instanceof HTMLButtonElement) {
       const buttonText = target.innerText;
       console.log(buttonText);
       switch (buttonText) {
-        case 'Ignition':
+        case 'Race':
           this.toggleDrive();
           break;
-        case 'Mode':
+        case 'Home':
           this.toggleStop();
           break;
         case 'Edit':
@@ -278,6 +272,7 @@ class Participant extends Container {
     this.engine.status = Status.stopped;
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+      resetCar(this.imgContainer, this.carId);
     }
   }
 
@@ -286,12 +281,17 @@ class Participant extends Container {
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
       this.speedParameters = response.body;
+      moveCar(this.speedParameters, this.imgContainer, this.carId);
       const sprintResult = await Controller.drive(this.carId);
+      if (sprintResult.code === HttpСode.ServerError) {
+        stopCar(this.imgContainer, this.carId);
+      }
     }
   }
 }
 
 import svgCar from '../../assets/car.svg?raw';
+import { moveCar, resetCar, stopCar } from './animation';
 const parser = new DOMParser();
 
 function isEngineResponse(obj: object): obj is EngineResponse {
