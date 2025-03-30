@@ -5,6 +5,7 @@ import type {
   Car,
   CarInfo,
   ResponseData,
+  CarsResponse,
 } from '../../modules/types';
 import { addHundredCars } from './cars-generate';
 import { carFormatter, showInfo } from './dialog';
@@ -14,15 +15,21 @@ export function isResponseData(data: object): data is ResponseData {
   const obj = Object.assign({}, data);
   return obj.hasOwnProperty('code') && obj.hasOwnProperty('body');
 }
-export function isEngineResponse(obj: object): obj is EngineResponse {
+export function isEngineResponse(data: object): data is EngineResponse {
+  const obj = Object.assign({}, data);
   return obj.hasOwnProperty('velocity') && obj.hasOwnProperty('distance');
 }
-export function isCarResponse(obj: object): obj is Car {
+export function isCarResponse(data: object): data is Car {
+  const obj = Object.assign({}, data);
   return (
     obj.hasOwnProperty('name') &&
     obj.hasOwnProperty('color') &&
     obj.hasOwnProperty('id')
   );
+}
+export function isCarsResponse(data: object): data is CarsResponse {
+  const obj = Object.assign({}, data);
+  return obj.hasOwnProperty('code') && obj.hasOwnProperty('body');
 }
 
 export async function raceHandler(

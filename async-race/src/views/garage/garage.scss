@@ -142,3 +142,31 @@
 .no-scroll {
   overflow: hidden;
 }
+
+.cars-and-page {
+  display: flex;
+  flex-direction: column;
+
+  width: fit-content;
+  height: fit-content;
+
+  color: aliceblue;
+  text-transform: capitalize;
+
+  .title-database,
+  .title-page {
+    margin: 5px 10px;
+  }
+}
+
+.ui-Btn {
+  min-width: 70px;
+  min-height: max-content;
+  margin: 5px;
+  padding: 5px 10px;
+
+  color: white;
+  text-transform: uppercase;
+
+  background-color: rgb(90 63 24);
+}

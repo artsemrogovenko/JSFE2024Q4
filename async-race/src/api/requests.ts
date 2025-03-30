@@ -141,7 +141,7 @@ export async function driveCarEngine(id: number): Promise<ResponseData> {
     });
     try {
       if (!response.ok) {
-        throw new Error();
+        throw response;
       }
       const code = response.status;
       const body = await response.json();

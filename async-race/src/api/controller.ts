@@ -1,4 +1,4 @@
-import type { Engine } from '../modules/types';
+import type { CarsResponse, Engine } from '../modules/types';
 import {
   HttpСode,
   type Car,
@@ -18,14 +18,13 @@ import {
 } from './requests';
 
 export default class Controller {
-  public static async getCarsList(args?: GetCars): Promise<Car[] | null> {
+  public static async getCarsList(args?: GetCars): Promise<CarsResponse> {
     try {
       const result = await getCars(args);
-      return result.code === HttpСode.OK ? result.body : null;
+      return result;
     } catch (error) {
       showInfo('Потеряна связь с сервером');
-      console.log('network error');
-      return null;
+      throw error;
     }
   }
 

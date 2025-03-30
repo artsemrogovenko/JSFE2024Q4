@@ -3,6 +3,7 @@ import GarageView from '../views/garage/garage';
 import NotFound from '../views/not-found';
 import WinnersView from '../views/winners/winners';
 import type State from './state';
+import Pages from '../views/pages-logic';
 
 declare global {
   interface Window {
@@ -14,7 +15,7 @@ const base = import.meta.env.VITE_BASE;
 export class Router {
   private setContent: Function;
   private state: State;
-
+  private logic = new Pages();
   constructor(changer: Function, state: State) {
     this.setContent = changer;
     this.state = state;
@@ -30,7 +31,7 @@ export class Router {
     switch (path) {
       case '/':
       case '/garage':
-        return new GarageView(this.state);
+        return new GarageView(this.state, this.logic);
       case '/winners':
         return new WinnersView();
       default:

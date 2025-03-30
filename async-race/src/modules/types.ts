@@ -71,3 +71,18 @@ export enum HttpСode {
   NotFound = 404,
   ServerError = 500,
 }
+
+export enum PageMode {
+  garage = 'garage',
+  winners = 'winners',
+}
+
+export enum PageStep {
+  'next',
+  'prev',
+}
+
+export enum Limits {
+  garage = 7,
+  winners = 10,
+}

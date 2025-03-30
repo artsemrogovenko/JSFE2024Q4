@@ -4,10 +4,12 @@ import Block, { Container } from '../../modules/block';
 import { Button, ButtonsCreator } from '../../modules/buttons';
 import { Input } from '../../modules/form';
 import type { Car, CarParam, FormsData, FormType } from '../../modules/types';
-import { FormAction } from '../../modules/types';
+import { FormAction, Limits, PageMode } from '../../modules/types';
+import type Pages from '../pages-logic';
 import { showInfo } from './dialog';
-import { raceHandler, randomCarsHandler } from './functions';
+import { isCarsResponse, raceHandler, randomCarsHandler } from './functions';
 import { Participant } from './participant';
+('../pages-logic');
 
 function isCar(obj: object): obj is Car {
   return (
@@ -18,6 +20,7 @@ function isCar(obj: object): obj is Car {
 }
 
 export default class GarageView extends Block<'main'> {
+  private pagesLogic: Pages;
   private create: Form;
   private update: Form;
   private topContainer = new Container('top-container');
@@ -28,7 +31,7 @@ export default class GarageView extends Block<'main'> {
     create: { name: '', color: '' },
     update: { name: '', color: '', id: -1 },
   };
-  constructor(state: State) {
+  constructor(state: State, logic: Pages) {
     super('main', 'garage');
     this.state = state;
     this.create = new Form('form-create', 'create', this);
@@ -41,7 +44,11 @@ export default class GarageView extends Block<'main'> {
       this.changeValues(this.update, FormAction.UPDATE),
     );
     this.topContainer.addBlocks([this.create, this.update]);
-    this.addBlocks([this.topContainer, this.raceContainer]);
+    this.pagesLogic = logic;
+    const headlines = logic.headlines(PageMode.garage);
+    this.addBlock(logic.selectorView);
+    this.addBlocks([this.topContainer, headlines, this.raceContainer]);
+    this.addBlock(logic.selectPages);
     this.init();
   }
 
@@ -66,8 +73,7 @@ export default class GarageView extends Block<'main'> {
         if (values.name.trim() !== '') {
           const result = await Controller.newCar(values);
           if (result && isCar(result.body)) {
-            const data = result.body;
-            this.addParticipant(data);
+            this.initRace();
           }
         } else {
           showInfo('поле не должно быть пустым');
@@ -108,14 +114,36 @@ export default class GarageView extends Block<'main'> {
     racePanel.addBlocks(operatorButtons);
     racePanel.addListener('click', this.operate.bind(this));
     this.topContainer.addBlock(racePanel);
+
+    document.addEventListener('page-changed', (event) =>
+      this.getPartData(event),
+    );
   }
 
-  private async initRace(): Promise<void> {
-    const cars = await Controller.getCarsList();
-    if (cars instanceof Array) {
-      cars.forEach((car) => {
-        this.addParticipant(car);
-      });
+  private async getPartData(event: Event): Promise<void> {
+    if ('detail' in event && event.detail instanceof Object) {
+      const detail = event.detail;
+      if ('page' in detail && typeof detail.page === 'number') {
+        const page = detail.page;
+        this.initRace(page);
+      }
+    }
+  }
+
+  private async initRace(wishPage?: number): Promise<void> {
+    const maxCars = Limits.garage;
+    const page = wishPage ?? this.pagesLogic.getPage;
+    const cars = await Controller.getCarsList({ _page: page, _limit: maxCars });
+    if (isCarsResponse(cars)) {
+      this.raceContainer.deleteAllBlocks();
+      const body = cars.body;
+      if (typeof cars.count === 'string') {
+        const total = parseInt(cars.count);
+        this.pagesLogic.updateTitles(total);
+        body.forEach((car) => {
+          this.addParticipant(car);
+        });
+      }
     }
   }
 
@@ -146,7 +174,10 @@ export default class GarageView extends Block<'main'> {
           raceHandler(components, buttonText);
           break;
         case 'generate cars':
-          randomCarsHandler();
+          showInfo('Идет добавление');
+          const success = await randomCarsHandler();
+          if (success) showInfo('Успех!');
+          this.initRace();
           break;
         default:
           break;

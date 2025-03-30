@@ -51,7 +51,7 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
   }
 
   public addListener(
-    event: keyof HTMLElementEventMap,
+    event: keyof HTMLElementEventMap | string,
     listener: EventListener,
     option: boolean = false,
   ): void {
