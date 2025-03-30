@@ -1,7 +1,6 @@
-import type { Engine, EngineResponse } from '../modules/types';
+import type { Engine } from '../modules/types';
 import {
   HttpСode,
-  Status,
   type Car,
   type CarParam,
   type ResponseData,
@@ -17,7 +16,7 @@ import {
   updateCar,
 } from './requests';
 
-export class Controller {
+export default class Controller {
   public static async getCarsList(args?: GetCars): Promise<Car[] | null> {
     try {
       const result = await getCars(args);
