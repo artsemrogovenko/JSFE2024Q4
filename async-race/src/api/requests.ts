@@ -23,14 +23,17 @@ export async function getCars(attributes?: GetCars): Promise<CarsResponse> {
       params.append('_limit', attributes._limit.toString());
     url = `${url}/?${params.toString()}`;
   }
+  try {
+    const response = await fetch(url);
 
-  const response = await fetch(url);
+    const code = response.status;
+    const count = response.headers.get('X-Total-Count');
+    const body = await response.json();
 
-  const code = response.status;
-  const count = response.headers.get('X-Total-Count');
-  const body = await response.json();
-
-  return { code: code, count: count, body: body };
+    return { code: code, count: count, body: body };
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function getCar(id: number): Promise<ResponseData> {
@@ -41,7 +44,7 @@ export async function getCar(id: number): Promise<ResponseData> {
 
     return { code: code, body: body };
   } catch (error) {
-    throw error;
+    return { code: 0, body: { message: 'network error' } };
   }
 }
 
@@ -52,25 +55,33 @@ export async function createCar(data: CarParam): Promise<ResponseData> {
     name: `${data.name}`,
     color: `${data.color}`,
   });
-  const response = await fetch(`${serverUrl}${path.garage}`, {
-    method: 'POST',
-    headers: headers,
-    body: param,
-  });
-  const code = response.status;
-  const body = await response.json();
+  try {
+    const response = await fetch(`${serverUrl}${path.garage}`, {
+      method: 'POST',
+      headers: headers,
+      body: param,
+    });
+    const code = response.status;
+    const body = await response.json();
 
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }
 
 export async function deleteCar(id: number): Promise<ResponseData> {
-  const response = await fetch(`${serverUrl}${path.garage}/${id}`, {
-    method: 'DELETE',
-  });
-  const code = response.status;
-  const body = await response.json();
+  try {
+    const response = await fetch(`${serverUrl}${path.garage}/${id}`, {
+      method: 'DELETE',
+    });
+    const code = response.status;
+    const body = await response.json();
 
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }
 
 export async function updateCar(
@@ -83,16 +94,19 @@ export async function updateCar(
     name: attributes.name,
     color: attributes.color,
   });
+  try {
+    const response = await fetch(`${serverUrl}${path.garage}/${id}`, {
+      method: 'PUT',
+      headers: headers,
+      body: params,
+    });
+    const code = response.status;
+    const body = await response.json();
 
-  const response = await fetch(`${serverUrl}${path.garage}/${id}`, {
-    method: 'PUT',
-    headers: headers,
-    body: params,
-  });
-  const code = response.status;
-  const body = await response.json();
-
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }
 
 export async function startStopEngine(
@@ -102,13 +116,17 @@ export async function startStopEngine(
     id: `${attributes.id}`,
     status: `${attributes.status}`,
   });
-  const response = await fetch(`${serverUrl}/engine?${params}`, {
-    method: 'PATCH',
-  });
-  const code = response.status;
-  const body = await response.json();
+  try {
+    const response = await fetch(`${serverUrl}/engine?${params}`, {
+      method: 'PATCH',
+    });
+    const code = response.status;
+    const body = await response.json();
 
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }
 
 export async function driveCarEngine(id: number): Promise<ResponseData> {
@@ -117,39 +135,51 @@ export async function driveCarEngine(id: number): Promise<ResponseData> {
     status: `${Status.drive}`,
   });
   let response;
-  response = await fetch(`${serverUrl}/engine?${params}`, {
-    method: 'PATCH',
-  });
   try {
-    if (!response.ok) {
-      throw new Error();
+    response = await fetch(`${serverUrl}/engine?${params}`, {
+      method: 'PATCH',
+    });
+    try {
+      if (!response.ok) {
+        throw new Error();
+      }
+      const code = response.status;
+      const body = await response.json();
+      return { code: code, body: body };
+    } catch (error) {
+      const message = await response.text();
+      return {
+        code: response.status,
+        body: { message: message },
+      };
     }
-    const code = response.status;
-    const body = await response.json();
-    return { code: code, body: body };
   } catch (error) {
-    const message = await response.text();
-    return {
-      code: response.status,
-      body: { message: message },
-    };
+    return { code: 0, body: { message: 'network error' } };
   }
 }
 
 export async function getWinners(): Promise<ResponseData> {
-  const response = await fetch(`${serverUrl}/winners`);
-  const code = response.status;
-  const body = await response.json();
+  try {
+    const response = await fetch(`${serverUrl}/winners`);
+    const code = response.status;
+    const body = await response.json();
 
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }
 
 export async function getWinner(id: number): Promise<ResponseData> {
-  const response = await fetch(`${serverUrl}${path.winners}/${id}`);
-  const code = response.status;
-  const body = await response.json();
+  try {
+    const response = await fetch(`${serverUrl}${path.winners}/${id}`);
+    const code = response.status;
+    const body = await response.json();
 
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }
 
 export async function createWinner(data: Winner): Promise<ResponseData> {
@@ -161,25 +191,33 @@ export async function createWinner(data: Winner): Promise<ResponseData> {
     wins: `${data.wins}`,
     time: `${data.time}`,
   });
-  const response = await fetch(`${serverUrl}${path.winners}`, {
-    method: 'POST',
-    headers: headers,
-    body: params,
-  });
-  const code = response.status;
-  const body = await response.json();
+  try {
+    const response = await fetch(`${serverUrl}${path.winners}`, {
+      method: 'POST',
+      headers: headers,
+      body: params,
+    });
+    const code = response.status;
+    const body = await response.json();
 
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }
 
 export async function deleteWinner(id: number): Promise<ResponseData> {
-  const response = await fetch(`${serverUrl}${path.winners}/${id}`, {
-    method: 'DELETE',
-  });
-  const code = response.status;
-  const body = await response.json();
+  try {
+    const response = await fetch(`${serverUrl}${path.winners}/${id}`, {
+      method: 'DELETE',
+    });
+    const code = response.status;
+    const body = await response.json();
 
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }
 
 export async function updateWinner(
@@ -192,14 +230,17 @@ export async function updateWinner(
     wins: `${data.wins}`,
     time: `${data.time}`,
   });
+  try {
+    const response = await fetch(`${serverUrl}${path.winners}/${id}`, {
+      method: 'PUT',
+      headers: headers,
+      body: params,
+    });
+    const code = response.status;
+    const body = await response.json();
 
-  const response = await fetch(`${serverUrl}${path.winners}/${id}`, {
-    method: 'PUT',
-    headers: headers,
-    body: params,
-  });
-  const code = response.status;
-  const body = await response.json();
-
-  return { code: code, body: body };
+    return { code: code, body: body };
+  } catch (error) {
+    return { code: 0, body: { message: 'network error' } };
+  }
 }

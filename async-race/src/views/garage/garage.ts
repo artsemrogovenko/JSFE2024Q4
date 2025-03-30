@@ -5,7 +5,8 @@ import { Button, ButtonsCreator } from '../../modules/buttons';
 import { Input } from '../../modules/form';
 import type { Car, CarParam, FormsData, FormType } from '../../modules/types';
 import { FormAction } from '../../modules/types';
-import { raceHandler } from './functions';
+import { showInfo } from './dialog';
+import { raceHandler, randomCarsHandler } from './functions';
 import { Participant } from './participant';
 
 function isCar(obj: object): obj is Car {
@@ -64,10 +65,12 @@ export default class GarageView extends Block<'main'> {
       case 'form-create':
         if (values.name.trim() !== '') {
           const result = await Controller.newCar(values);
-          if (!Object.is({}, result.body) && isCar(result.body)) {
+          if (result && isCar(result.body)) {
             const data = result.body;
             this.addParticipant(data);
           }
+        } else {
+          showInfo('поле не должно быть пустым');
         }
         break;
       default:
@@ -143,6 +146,7 @@ export default class GarageView extends Block<'main'> {
           raceHandler(components, buttonText);
           break;
         case 'generate cars':
+          randomCarsHandler();
           break;
         default:
           break;

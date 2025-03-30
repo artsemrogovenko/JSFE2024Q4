@@ -5,6 +5,7 @@ const dialog = new Container('dialog');
 const dialogBackdrop = new Container('backdrop');
 dialogBackdrop.addBlock(dialog);
 dialogBackdrop.addListener('click', closeDialog);
+document.addEventListener('keyup', closeDialog);
 
 export function showInfo(message: string = ''): void {
   dialog.setText(message);
@@ -20,7 +21,6 @@ function closeWindow(): void {
 }
 function openWindow(): void {
   document.body.classList.add('no-scroll');
-  document.addEventListener('keyup', closeDialog);
   document.body.appendChild(dialogBackdrop.getNode());
 }
 

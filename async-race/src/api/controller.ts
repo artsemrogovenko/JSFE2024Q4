@@ -6,6 +6,7 @@ import {
   type ResponseData,
   type GetCars,
 } from '../modules/types';
+import { showInfo } from '../views/garage/dialog';
 import {
   createCar,
   deleteCar,
@@ -22,18 +23,25 @@ export default class Controller {
       const result = await getCars(args);
       return result.code === HttpСode.OK ? result.body : null;
     } catch (error) {
+      showInfo('Потеряна связь с сервером');
+      console.log('network error');
       return null;
     }
   }
 
   public static async newCar(data: CarParam): Promise<ResponseData> {
+    let result: ResponseData = { code: 0, body: {} };
     try {
-      const result = await createCar(data);
+      result = await createCar(data);
       if (result.code === HttpСode.Created) {
-        return result;
+      } else {
+        throw new Error('');
       }
-    } catch (error) {}
-    return { code: 0, body: {} };
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+    } finally {
+      return result;
+    }
   }
 
   public static async remove(id: number): Promise<boolean> {
@@ -42,7 +50,9 @@ export default class Controller {
       if (result.code === HttpСode.OK) {
         return true;
       }
-    } catch (error) {}
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+    }
     return false;
   }
 
@@ -55,7 +65,9 @@ export default class Controller {
       if (result.code === HttpСode.OK) {
         return result;
       }
-    } catch (error) {}
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+    }
     return { code: 0, body: {} };
   }
 
@@ -72,13 +84,14 @@ export default class Controller {
   }
 
   public static async drive(id: number): Promise<ResponseData> {
-    // try {
-    const result = await driveCarEngine(id);
-    return result;
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    // return { code: 0, body: {} };
+    try {
+      const result = await driveCarEngine(id);
+      return result;
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+      console.log(error);
+    }
+    return { code: 0, body: {} };
   }
 
   public static async getCarById(id: number): Promise<ResponseData> {
@@ -87,7 +100,9 @@ export default class Controller {
       if (result.code === HttpСode.OK) {
         return result;
       }
-    } catch (error) {}
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+    }
     return { code: 0, body: {} };
   }
 }
