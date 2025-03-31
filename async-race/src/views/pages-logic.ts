@@ -6,11 +6,7 @@ import { Limits, PageMode } from '../modules/types';
 
 export default class Pages {
   private viewSelect = new Container('view-select');
-  private infoBox = new Container('cars-and-page');
   private pagination = new Container('pagination');
-
-  private countTitle = document.createElement('h2');
-  private pageTitle = document.createElement('h4');
 
   private mode: PageMode;
   private garage: Button;
@@ -19,8 +15,8 @@ export default class Pages {
   private next: Button;
 
   private pageState = { garage: 1, winners: 1, 404: 0 };
-
   private maxPage: number;
+
   constructor() {
     this.mode = PageMode.garage;
     const buttonsTitles = ['to garage', 'to winners', 'prev', 'next'];
@@ -28,9 +24,6 @@ export default class Pages {
       ButtonsCreator.createButtons(buttonsTitles.length, buttonsTitles);
     this.viewSelect.addBlocks([this.garage, this.winners]);
     this.pagination.addBlocks([this.prev, this.next]);
-    this.countTitle.className = 'title-database';
-    this.pageTitle.className = 'title-page';
-    this.infoBox.getNode().append(this.countTitle, this.pageTitle);
 
     this.viewSelect.addListener('click', (event) => this.buttonLogic(event));
     this.pagination.addListener('click', (event) => this.buttonLogic(event));
@@ -49,17 +42,20 @@ export default class Pages {
     return this.viewSelect;
   }
 
-  public headlines(mode: PageMode): Container {
-    this.mode = mode;
-    return this.infoBox;
-  }
-
   public updateTitles(count: number): void {
     if (this.mode !== PageMode.not_found) {
       this.maxPage = Math.ceil(count / Limits[this.mode]);
-      this.pageTitle.textContent = `Page #${this.pageState[this.mode]}`;
-      this.countTitle.textContent = `${this.mode} (${count})`;
     }
+  }
+
+  public setMode(mode: PageMode): void {
+    this.mode = mode;
+  }
+  public getMode(): PageMode {
+    return this.mode;
+  }
+  public getPageState(): Record<string, number> {
+    return this.pageState;
   }
 
   public setNotFound(): void {

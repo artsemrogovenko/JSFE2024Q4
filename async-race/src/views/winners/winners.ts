@@ -1,16 +1,18 @@
 import Controller from '../../api/controller';
-import Block, { Container } from '../../modules/block';
+import { Container } from '../../modules/block';
 import { Limits, PageMode } from '../../modules/types';
 import type Pages from '../pages-logic';
 import { pagesLogic } from '../pages-logic';
+import { View } from '../view';
 import { isWinner, isWinnersResponse } from './functions';
 
-export default class WinnersView extends Block<'main'> {
+export default class WinnersView extends View {
   private pageLogic: Pages = pagesLogic;
   private table = new Container('table-container');
   constructor() {
-    super('main', 'winners');
-    this.addBlocks([this.pageLogic.headlines(PageMode.winners), this.table]);
+    super('winners');
+    const block = this.headlines(PageMode.winners);
+    this.addBlock(block);
     this.initTable();
   }
   private async initTable(wishPage?: number): Promise<void> {
@@ -24,7 +26,7 @@ export default class WinnersView extends Block<'main'> {
         typeof winners.count !== 'undefined'
       ) {
         const total = parseInt(winners.count);
-        this.pageLogic.updateTitles(total);
+        this.updateTitles(total);
       }
     }
   }

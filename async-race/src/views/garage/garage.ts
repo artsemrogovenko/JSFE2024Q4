@@ -1,12 +1,13 @@
 import Controller from '../../api/controller';
 import type State from '../../application/state';
-import Block, { Container } from '../../modules/block';
+import { Container } from '../../modules/block';
 import { Button, ButtonsCreator } from '../../modules/buttons';
 import { Input } from '../../modules/form';
 import type { Car, CarParam, FormsData, FormType } from '../../modules/types';
 import { FormAction, Limits, PageMode } from '../../modules/types';
 import type Pages from '../pages-logic';
 import { pagesLogic } from '../pages-logic';
+import { View } from '../view';
 import { showInfo } from './dialog';
 import {
   isCar,
@@ -16,7 +17,7 @@ import {
 } from './functions';
 import { Participant } from './participant';
 
-export default class GarageView extends Block<'main'> {
+export default class GarageView extends View {
   private pageLogic: Pages = pagesLogic;
   private create: Form;
   private update: Form;
@@ -29,7 +30,7 @@ export default class GarageView extends Block<'main'> {
     update: { name: '', color: '', id: -1 },
   };
   constructor(state: State) {
-    super('main', 'garage');
+    super('main');
     this.state = state;
     this.create = new Form('form-create', 'create', this);
     this.update = new Form('form-edit', 'update', this);
@@ -41,7 +42,7 @@ export default class GarageView extends Block<'main'> {
       this.changeValues(this.update, FormAction.UPDATE),
     );
     this.topContainer.addBlocks([this.create, this.update]);
-    const headlines = this.pageLogic.headlines(PageMode.garage);
+    const headlines = this.headlines(PageMode.garage);
     this.addBlocks([this.topContainer, headlines, this.raceContainer]);
     this.init();
   }
@@ -133,7 +134,7 @@ export default class GarageView extends Block<'main'> {
       const body = cars.body;
       if (typeof cars.count === 'string') {
         const total = parseInt(cars.count);
-        this.pageLogic.updateTitles(total);
+        this.updateTitles(total);
         body.forEach((car) => {
           this.addParticipant(car);
         });
