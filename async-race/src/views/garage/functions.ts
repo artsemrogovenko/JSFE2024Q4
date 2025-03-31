@@ -19,7 +19,7 @@ export function isEngineResponse(data: object): data is EngineResponse {
   const obj = Object.assign({}, data);
   return obj.hasOwnProperty('velocity') && obj.hasOwnProperty('distance');
 }
-export function isCarResponse(data: object): data is Car {
+export function isCar(data: object): data is Car {
   const obj = Object.assign({}, data);
   return (
     obj.hasOwnProperty('name') &&
@@ -27,6 +27,7 @@ export function isCarResponse(data: object): data is Car {
     obj.hasOwnProperty('id')
   );
 }
+
 export function isCarsResponse(data: object): data is CarsResponse {
   const obj = Object.assign({}, data);
   return obj.hasOwnProperty('code') && obj.hasOwnProperty('body');
@@ -45,7 +46,7 @@ export async function raceHandler(
           try {
             const result = await Promise.any(promiseArray);
             const winner = await Controller.getCarById(result.id);
-            if (isCarResponse(winner.body)) {
+            if (isCar(winner.body)) {
               carFormatter(winner.body);
             }
           } catch (error) {}

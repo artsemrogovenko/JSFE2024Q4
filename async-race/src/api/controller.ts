@@ -1,4 +1,9 @@
-import type { CarsResponse, Engine } from '../modules/types';
+import type {
+  CarsResponse,
+  Engine,
+  WinnersQuery,
+  WinnersResponse,
+} from '../modules/types';
 import {
   HttpСode,
   type Car,
@@ -13,6 +18,7 @@ import {
   driveCarEngine,
   getCar,
   getCars,
+  getWinners,
   startStopEngine,
   updateCar,
 } from './requests';
@@ -24,8 +30,9 @@ export default class Controller {
       return result;
     } catch (error) {
       showInfo('Потеряна связь с сервером');
-      throw error;
+      // throw error;
     }
+    return { code: 0, count: '0', body: undefined };
   }
 
   public static async newCar(data: CarParam): Promise<ResponseData> {
@@ -103,5 +110,17 @@ export default class Controller {
       showInfo('Потеряна связь с сервером');
     }
     return { code: 0, body: {} };
+  }
+
+  public static async winnersList(
+    args: WinnersQuery,
+  ): Promise<WinnersResponse> {
+    try {
+      const result = await getWinners(args);
+      return result;
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+    }
+    return { code: 0, count: '0', body: undefined };
   }
 }

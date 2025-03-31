@@ -6,21 +6,18 @@ import { Input } from '../../modules/form';
 import type { Car, CarParam, FormsData, FormType } from '../../modules/types';
 import { FormAction, Limits, PageMode } from '../../modules/types';
 import type Pages from '../pages-logic';
+import { pagesLogic } from '../pages-logic';
 import { showInfo } from './dialog';
-import { isCarsResponse, raceHandler, randomCarsHandler } from './functions';
+import {
+  isCar,
+  isCarsResponse,
+  raceHandler,
+  randomCarsHandler,
+} from './functions';
 import { Participant } from './participant';
-('../pages-logic');
-
-function isCar(obj: object): obj is Car {
-  return (
-    obj.hasOwnProperty('id') &&
-    obj.hasOwnProperty('name') &&
-    obj.hasOwnProperty('color')
-  );
-}
 
 export default class GarageView extends Block<'main'> {
-  private pagesLogic: Pages;
+  private pageLogic: Pages = pagesLogic;
   private create: Form;
   private update: Form;
   private topContainer = new Container('top-container');
@@ -31,7 +28,7 @@ export default class GarageView extends Block<'main'> {
     create: { name: '', color: '' },
     update: { name: '', color: '', id: -1 },
   };
-  constructor(state: State, logic: Pages) {
+  constructor(state: State) {
     super('main', 'garage');
     this.state = state;
     this.create = new Form('form-create', 'create', this);
@@ -44,11 +41,8 @@ export default class GarageView extends Block<'main'> {
       this.changeValues(this.update, FormAction.UPDATE),
     );
     this.topContainer.addBlocks([this.create, this.update]);
-    this.pagesLogic = logic;
-    const headlines = logic.headlines(PageMode.garage);
-    this.addBlock(logic.selectorView);
+    const headlines = this.pageLogic.headlines(PageMode.garage);
     this.addBlocks([this.topContainer, headlines, this.raceContainer]);
-    this.addBlock(logic.selectPages);
     this.init();
   }
 
@@ -132,14 +126,14 @@ export default class GarageView extends Block<'main'> {
 
   private async initRace(wishPage?: number): Promise<void> {
     const maxCars = Limits.garage;
-    const page = wishPage ?? this.pagesLogic.getPage;
+    const page = wishPage ?? this.pageLogic.getPage;
     const cars = await Controller.getCarsList({ _page: page, _limit: maxCars });
-    if (isCarsResponse(cars)) {
+    if (isCarsResponse(cars) && cars.body) {
       this.raceContainer.deleteAllBlocks();
       const body = cars.body;
       if (typeof cars.count === 'string') {
         const total = parseInt(cars.count);
-        this.pagesLogic.updateTitles(total);
+        this.pageLogic.updateTitles(total);
         body.forEach((car) => {
           this.addParticipant(car);
         });

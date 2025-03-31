@@ -31,7 +31,7 @@ export class Router {
     switch (path) {
       case '/':
       case '/garage':
-        return new GarageView(this.state, this.logic);
+        return new GarageView(this.state);
       case '/winners':
         return new WinnersView();
       default:

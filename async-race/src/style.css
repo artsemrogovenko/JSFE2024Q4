@@ -8,3 +8,64 @@
 body {
   background-color: rgb(14 14 14);
 }
+
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+
+  width: 100vw;
+  height: 100vh;
+}
+
+.dialog {
+  position: fixed;
+
+  display: flex;
+  row-gap: 20px;
+  align-items: center;
+  align-self: anchor-center;
+  justify-content: center;
+
+  width: fit-content;
+  height: fit-content;
+  margin: 0 auto;
+  padding: 20px;
+
+  background: gray;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+.cars-and-page {
+  display: flex;
+  flex-direction: column;
+
+  width: fit-content;
+  height: fit-content;
+
+  color: aliceblue;
+  text-transform: capitalize;
+
+  .title-database,
+  .title-page {
+    margin: 5px 10px;
+  }
+}
+
+.ui-Btn {
+  min-width: 70px;
+  min-height: max-content;
+  margin: 5px;
+  padding: 5px 10px;
+
+  color: white;
+  text-transform: uppercase;
+
+  background-color: rgb(90 63 24);
+}

@@ -1,3 +1,4 @@
+import { pushState } from '../application/router';
 import { Container } from '../modules/block';
 import type { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
@@ -17,7 +18,7 @@ export default class Pages {
   private prev: Button;
   private next: Button;
 
-  private pageState = { garage: 1, winners: 1 };
+  private pageState = { garage: 1, winners: 1, 404: 0 };
 
   private maxPage: number;
   constructor() {
@@ -54,9 +55,15 @@ export default class Pages {
   }
 
   public updateTitles(count: number): void {
-    this.maxPage = Math.ceil(count / Limits[this.mode]);
-    this.pageTitle.textContent = `Page #${this.pageState[this.mode]}`;
-    this.countTitle.textContent = `${this.mode} (${count})`;
+    if (this.mode !== PageMode.not_found) {
+      this.maxPage = Math.ceil(count / Limits[this.mode]);
+      this.pageTitle.textContent = `Page #${this.pageState[this.mode]}`;
+      this.countTitle.textContent = `${this.mode} (${count})`;
+    }
+  }
+
+  public setNotFound(): void {
+    this.mode = PageMode.not_found;
   }
 
   private buttonLogic(event: Event): void {
@@ -67,13 +74,16 @@ export default class Pages {
         case 'prev':
         case 'next':
           const page = this.calcPage(buttonText);
-          console.log(this.pageState[this.mode]);
           if (page !== undefined) {
             const pageEvent = new CustomEvent('page-changed', {
               detail: { page: page },
             });
             document.dispatchEvent(pageEvent);
           }
+          break;
+        case 'to garage':
+        case 'to winners':
+          this.viewHandler(buttonText);
           break;
         default:
           break;
@@ -102,4 +112,27 @@ export default class Pages {
     }
     return;
   }
+
+  private viewHandler(buttonText: string): void {
+    switch (buttonText) {
+      case 'to garage':
+        if (this.mode === PageMode.garage) {
+          return;
+        }
+        this.mode = PageMode.garage;
+        pushState('/garage');
+        break;
+      case 'to winners':
+        if (this.mode === PageMode.winners) {
+          return;
+        }
+        this.mode = PageMode.winners;
+        pushState('/winners');
+        break;
+      default:
+        break;
+    }
+  }
 }
+
+export const pagesLogic = new Pages();

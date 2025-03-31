@@ -5,6 +5,8 @@ import type {
   CarParam,
   Engine,
   Winner,
+  WinnersQuery,
+  WinnersResponse,
 } from '../modules/types';
 import { Status } from '../modules/types';
 
@@ -158,15 +160,21 @@ export async function driveCarEngine(id: number): Promise<ResponseData> {
   }
 }
 
-export async function getWinners(): Promise<ResponseData> {
+export async function getWinners(args: WinnersQuery): Promise<WinnersResponse> {
+  const params = new URLSearchParams({
+    _page: `${args._page}`,
+    _limit: `${args._limit}`,
+  });
+  if (args._sort) params.append('_sort', args._sort);
+  if (args._order) params.append('_order', args._order);
   try {
-    const response = await fetch(`${serverUrl}/winners`);
+    const response = await fetch(`${serverUrl}/winners/?${params}`);
     const code = response.status;
+    const count = response.headers.get('X-Total-Count');
     const body = await response.json();
-
-    return { code: code, body: body };
+    return { code: code, count: count, body: body };
   } catch (error) {
-    return { code: 0, body: { message: 'network error' } };
+    throw error;
   }
 }
 

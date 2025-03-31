@@ -13,7 +13,7 @@ export type GetCars = {
 export type CarsResponse = {
   code: number;
   count: string | null;
-  body: Car[];
+  body: Car[] | undefined;
 };
 
 export type Engine = {
@@ -34,7 +34,11 @@ export type ResponseData = {
   code: number;
   body: object;
 };
-
+export type WinnersResponse = {
+  code: number;
+  count: string | undefined;
+  body: Winner[] | undefined;
+};
 //#endregion Requests
 
 //#region Garage
@@ -71,10 +75,11 @@ export enum HttpСode {
   NotFound = 404,
   ServerError = 500,
 }
-
+//#region  PageLogic
 export enum PageMode {
   garage = 'garage',
   winners = 'winners',
+  not_found = '404',
 }
 
 export enum PageStep {
@@ -86,3 +91,19 @@ export enum Limits {
   garage = 7,
   winners = 10,
 }
+//#endregion  PageLogic
+
+//#region Winners
+// export type WinnersResponse{
+
+// }
+export type WinnersQuery = {
+  _page: number;
+  _limit: number;
+  _sort?: Sort;
+  _order?: Order;
+};
+
+export type Sort = 'id' | 'wins' | 'time';
+export type Order = 'ASC' | 'DESC';
+//#endregion Winners

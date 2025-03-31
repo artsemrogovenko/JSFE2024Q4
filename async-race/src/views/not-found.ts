@@ -1,24 +1,13 @@
 import Block from '../modules/block';
-import { Button } from '../modules/buttons';
-import { pushState } from '../application/router';
-
+import { pagesLogic } from './pages-logic';
 export default class NotFound extends Block<'main'> {
-  private button: Button;
-
   constructor() {
     super('main', 'not-found-404');
     const heading = document.createElement('h3');
     window.history.replaceState({}, '', window.location.href);
-    heading.textContent = '404';
-    this.button = new Button(
-      'ui-Btn not-found',
-      'Page Not Found,Go to homepage',
-    );
+    heading.textContent = '404\nPage Not Found';
+    heading.style.color = '#ABCDEF';
     this.getNode().appendChild(heading);
-    this.addBlock(this.button);
-    this.button.addListener('click', () => {
-      window.history.replaceState({}, '', '/');
-      pushState('/');
-    });
+    pagesLogic.setNotFound();
   }
 }

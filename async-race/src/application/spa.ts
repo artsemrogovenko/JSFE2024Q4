@@ -1,14 +1,18 @@
 import type Block from '../modules/block';
+import { pagesLogic } from '../views/pages-logic';
 import { Router } from './router';
 import State from './state';
 
 export default class App {
   private body: HTMLElement;
   private main: Block<'main'> | null;
+  private viewSwitch = pagesLogic.selectorView.getNode();
+  private selectPages = pagesLogic.selectPages.getNode();
   constructor() {
     this.body = document.body;
     this.main = null;
     const state = new State();
+    this.body.append(this.viewSwitch, this.selectPages);
     new Router(this.setContent.bind(this), state);
   }
 
@@ -19,8 +23,8 @@ export default class App {
       try {
         this.body.replaceChild(view.getNode(), this.main.getNode());
       } catch (error) {
-        this.body.replaceChildren();
-        this.body.append(this.main.getNode());
+        // this.body.replaceChildren();
+        this.viewSwitch.insertAdjacentElement('afterend', this.main.getNode());
       }
     }
   }
