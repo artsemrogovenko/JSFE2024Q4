@@ -94,9 +94,6 @@ export enum Limits {
 //#endregion  PageLogic
 
 //#region Winners
-// export type WinnersResponse{
-
-// }
 export type WinnersQuery = {
   _page: number;
   _limit: number;
@@ -106,4 +103,12 @@ export type WinnersQuery = {
 
 export type Sort = 'id' | 'wins' | 'time';
 export type Order = 'ASC' | 'DESC';
+
+export type RowData = {
+  id: string;
+  color: string;
+  name: string;
+  wins: number;
+  time: number;
+};
 //#endregion Winners

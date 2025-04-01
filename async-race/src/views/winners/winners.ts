@@ -1,20 +1,26 @@
 import Controller from '../../api/controller';
-import { Container } from '../../modules/block';
 import { Limits, PageMode } from '../../modules/types';
 import type Pages from '../pages-logic';
 import { pagesLogic } from '../pages-logic';
 import { View } from '../view';
-import { isWinner, isWinnersResponse } from './functions';
+import {
+  isRowData,
+  isWinner,
+  isWinnersResponse,
+  prepareData,
+} from './functions';
+import Table from '../../modules/table';
 
 export default class WinnersView extends View {
   private pageLogic: Pages = pagesLogic;
-  private table = new Container('table-container');
+  private table = new Table('winners-table');
   constructor() {
     super('winners');
-    const block = this.headlines(PageMode.winners);
-    this.addBlock(block);
+    const headlines = this.headlines(PageMode.winners);
+    this.addBlocks([headlines, this.table]);
     this.initTable();
   }
+
   private async initTable(wishPage?: number): Promise<void> {
     const limit = Limits.winners;
     const page = wishPage ?? this.pageLogic.getPage;
@@ -27,6 +33,12 @@ export default class WinnersView extends View {
       ) {
         const total = parseInt(winners.count);
         this.updateTitles(total);
+        winners.body.forEach(async (winner) => {
+          const data = await prepareData(winner);
+          if (typeof data !== 'undefined' && isRowData(data)) {
+            this.table.addRow(data);
+          }
+        });
       }
     }
   }

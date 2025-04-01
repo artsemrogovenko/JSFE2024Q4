@@ -1,0 +1,33 @@
+.winners-table {
+  border-collapse: collapse;
+  width: 500px;
+  color: aliceblue;
+
+  th {
+    text-transform: capitalize;
+    background: rgb(7 37 120);
+  }
+
+  th,
+  td {
+    border-collapse: collapse;
+    height: 30px;
+    border: 1px solid white;
+    text-align: center;
+  }
+
+  th:not(:nth-child(3)),
+  td:not(:nth-child(3)) {
+    width: 80px;
+  }
+
+  .car-img {
+    width: 30px;
+    height: 30px;
+
+    mask-image: url('../../assets/car.svg');
+    mask-position: 50% 10px;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+  }
+}
