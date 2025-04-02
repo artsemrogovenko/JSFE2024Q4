@@ -1,6 +1,6 @@
 export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
   protected components: Block<keyof HTMLElementTagNameMap>[] = [];
-  protected listeners: Record<string, EventListener[]> = {};
+  protected listeners: Record<string, EventHandler[]> = {};
   protected element: HTMLElementTagNameMap[T];
 
   constructor(tag: T, classN: string = '', text: string = '') {
@@ -39,6 +39,10 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     this.element.textContent = text;
   }
 
+  public setClass(className: string): void {
+    this.getNode().className = className;
+  }
+
   public deleteAllBlocks(): void {
     this.components.forEach((child) => {
       child.destroy();
@@ -52,7 +56,7 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
 
   public addListener(
     event: keyof HTMLElementEventMap | string,
-    listener: EventListener,
+    listener: EventListener | EventListenerObject,
     option: boolean = false,
   ): void {
     if (!this.listeners[event]) {
@@ -64,12 +68,12 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
 
   public removeListener(
     event: keyof HTMLElementEventMap,
-    listener: EventListener,
+    listener: EventListener | EventListenerObject,
     option: boolean = false,
   ): void {
     this.element.removeEventListener(event, listener, option);
     this.listeners[event] = this.listeners[event].filter(
-      (l: EventListener) => l !== listener,
+      (listener: EventListener | EventListenerObject) => listener !== listener,
     );
   }
 
@@ -102,3 +106,5 @@ export class Container extends Block<'div'> {
     super('div', className);
   }
 }
+
+export type EventHandler = EventListener | EventListenerObject;

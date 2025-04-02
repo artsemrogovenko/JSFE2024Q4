@@ -1,3 +1,4 @@
+import { sortTable } from '../views/winners/sort';
 import Block from './block';
 import type { RowData } from './types';
 
@@ -5,10 +6,14 @@ export default class Table extends Block<'table'> {
   private headersRow: TableRow;
   constructor(classname: string) {
     super('table', classname);
-    this.headersRow = new TableRow();
+    this.headersRow = new TableRow(false);
     const headers = ['number', 'image', 'name', 'wins', 'best time'];
     this.generateHeaders(headers);
     this.addBlock(this.headersRow);
+    this.headersRow.addListener('click', (event) => {
+      sortTable.sortListener(event, this);
+    });
+    // this.initClasses();
   }
 
   public generateHeaders(headersNames: string[]): void {
@@ -24,6 +29,20 @@ export default class Table extends Block<'table'> {
     const row = new TableRow(true);
     row.setRowData(data);
     this.addBlock(row);
+  }
+  public resetClasses(): void {
+    const tableHeaders = this.headersRow.getComponents();
+    tableHeaders[0].setClass('');
+    tableHeaders[3].setClass('');
+    tableHeaders[4].setClass('');
+  }
+
+  public clearRows(): void {
+    this.getComponents().forEach((component, index) => {
+      if (index > 0) {
+        this.deleteBlock(component);
+      }
+    });
   }
 }
 
@@ -75,9 +94,5 @@ class TableCell extends Block<'td'> {
   }
   public carColor(color: string): void {
     this.getNode().style.backgroundColor = color;
-  }
-
-  public setClass(className: string): void {
-    this.getNode().className = className;
   }
 }

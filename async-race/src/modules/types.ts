@@ -105,7 +105,10 @@ export type WinnersQuery = {
 
 export type Sort = 'id' | 'wins' | 'time';
 export type Order = 'ASC' | 'DESC';
-
+export type SortWinners = {
+  sort: Sort;
+  order: Order;
+};
 export type RowData = {
   id: string;
   color: string;

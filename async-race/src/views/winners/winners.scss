@@ -1,11 +1,23 @@
 .winners-table {
   border-collapse: collapse;
-  width: 500px;
+  width: 600px;
   color: aliceblue;
 
   th {
     text-transform: capitalize;
     background: rgb(7 37 120);
+  }
+
+  th.asc::after {
+    content: '↑';
+    display: inline-flex;
+    margin-left: 5px;
+  }
+
+  th.desc::after {
+    content: '↓';
+    display: inline-block;
+    margin-left: 5px;
   }
 
   th,
@@ -18,7 +30,7 @@
 
   th:not(:nth-child(3)),
   td:not(:nth-child(3)) {
-    width: 80px;
+    width: 100px;
   }
 
   .car-img {

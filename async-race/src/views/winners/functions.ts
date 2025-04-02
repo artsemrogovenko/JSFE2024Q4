@@ -1,5 +1,10 @@
 import Controller from '../../api/controller';
-import type { RowData, Winner, WinnersResponse } from '../../modules/types';
+import type {
+  RowData,
+  SortWinners,
+  Winner,
+  WinnersResponse,
+} from '../../modules/types';
 import { isResponseData, isCar } from '../garage/functions';
 
 export function isWinnersResponse(data: object): data is WinnersResponse {
@@ -24,6 +29,11 @@ export function isRowData(data: object): data is RowData {
     obj.hasOwnProperty('wins') &&
     obj.hasOwnProperty('time')
   );
+}
+
+export function isSortWinners(data: object): data is SortWinners {
+  const obj = Object.assign({}, data);
+  return obj.hasOwnProperty('sort') && obj.hasOwnProperty('order');
 }
 
 export async function prepareData(data: Winner): Promise<RowData | undefined> {

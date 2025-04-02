@@ -1,10 +1,12 @@
 import Controller from '../../api/controller';
+import type { WinnersQuery } from '../../modules/types';
 import { Limits, PageMode } from '../../modules/types';
 import type Pages from '../pages-logic';
 import { pagesLogic } from '../pages-logic';
 import { View } from '../view';
 import {
   isRowData,
+  isSortWinners,
   isWinner,
   isWinnersResponse,
   prepareData,
@@ -19,12 +21,13 @@ export default class WinnersView extends View {
     const headlines = this.headlines(PageMode.winners);
     this.addBlocks([headlines, this.table]);
     this.initTable();
+    this.table.addListener('sort-changed', (event) => this.sortTable(event));
   }
 
-  private async initTable(wishPage?: number): Promise<void> {
+  private async initTable(sortParam?: WinnersQuery): Promise<void> {
     const limit = Limits.winners;
-    const page = wishPage ?? this.pageLogic.getPage;
-    const param = { _page: page, _limit: limit };
+    const page = this.pageLogic.getPage;
+    const param = sortParam || { _page: page, _limit: limit };
     const winners = await Controller.winnersList(param);
     if (isWinnersResponse(winners) && Array.isArray(winners.body)) {
       if (
@@ -39,6 +42,23 @@ export default class WinnersView extends View {
             this.table.addRow(data);
           }
         });
+      }
+    }
+  }
+
+  private sortTable(event: Event): void {
+    if (event instanceof CustomEvent) {
+      const result = event.detail;
+      if (isSortWinners(result)) {
+        const limit = Limits.winners;
+        const page = this.pageLogic.getPage;
+        const query: WinnersQuery = {
+          _page: page,
+          _limit: limit,
+          _sort: result.sort,
+          _order: result.order,
+        };
+        this.initTable(query);
       }
     }
   }
