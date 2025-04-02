@@ -16,6 +16,7 @@ import {
   createCar,
   createWinner,
   deleteCar,
+  deleteWinner,
   driveCarEngine,
   getCar,
   getCars,
@@ -57,7 +58,16 @@ export default class Controller {
     try {
       const result = await deleteCar(id);
       if (result.code === HttpСode.OK) {
-        return true;
+        try {
+          const response = await deleteWinner(id);
+          if (response.code === HttpСode.OK) {
+            return true;
+          } else {
+            throw response;
+          }
+        } catch (error) {
+          throw error;
+        }
       }
     } catch (error) {
       showInfo('Потеряна связь с сервером');

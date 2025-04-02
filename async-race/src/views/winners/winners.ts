@@ -22,6 +22,10 @@ export default class WinnersView extends View {
     this.addBlocks([headlines, this.table]);
     this.initTable();
     this.table.addListener('sort-changed', (event) => this.sortTable(event));
+    this.addListener('page-changed', (event) => {
+      this.table.clearRows();
+      this.initTable();
+    });
   }
 
   private async initTable(sortParam?: WinnersQuery): Promise<void> {

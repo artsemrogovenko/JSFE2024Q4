@@ -73,7 +73,6 @@ export class Participant extends Container {
     const target = event.target;
     if (target instanceof HTMLButtonElement) {
       const buttonText = target.innerText;
-      console.log(buttonText);
       switch (buttonText) {
         case 'Race':
           this.toggleDrive();

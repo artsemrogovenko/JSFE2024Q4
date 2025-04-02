@@ -3,10 +3,12 @@ import { Container } from '../modules/block';
 import type { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
 import { Limits, PageMode } from '../modules/types';
+import { View } from './view';
 
 export default class Pages {
   private viewSelect = new Container('view-select');
   private pagination = new Container('pagination');
+  private view: View | undefined;
 
   private mode: PageMode;
   private garage: Button;
@@ -18,6 +20,7 @@ export default class Pages {
   private maxPage: number;
 
   constructor() {
+    this.view = undefined;
     this.mode = PageMode.garage;
     const buttonsTitles = ['to garage', 'to winners', 'prev', 'next'];
     [this.garage, this.winners, this.prev, this.next] =
@@ -48,7 +51,8 @@ export default class Pages {
     }
   }
 
-  public setMode(mode: PageMode): void {
+  public setMode(mode: PageMode, view: View): void {
+    this.view = view;
     this.mode = mode;
   }
   public getMode(): PageMode {
@@ -74,7 +78,8 @@ export default class Pages {
             const pageEvent = new CustomEvent('page-changed', {
               detail: { page: page },
             });
-            document.dispatchEvent(pageEvent);
+            if (this.view instanceof View)
+              this.view.getNode().dispatchEvent(pageEvent);
           }
           break;
         case 'to garage':

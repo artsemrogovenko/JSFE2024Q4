@@ -195,9 +195,9 @@ export async function createWinner(data: Winner): Promise<ResponseData> {
   headers.append('Content-Type', 'application/json');
 
   const params = JSON.stringify({
-    id: `${data.id}`,
-    wins: `${data.wins}`,
-    time: `${data.time}`,
+    id: data.id,
+    wins: data.wins,
+    time: data.time,
   });
   try {
     const response = await fetch(`${serverUrl}${path.winners}`, {

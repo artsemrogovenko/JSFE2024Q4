@@ -30,7 +30,7 @@ export class View extends Block<'main'> {
   }
 
   public headlines(mode: PageMode): Container {
-    pagesLogic.setMode(mode);
+    pagesLogic.setMode(mode, this);
     return this.infoBox;
   }
 }

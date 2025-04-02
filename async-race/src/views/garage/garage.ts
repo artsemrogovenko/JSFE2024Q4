@@ -93,8 +93,8 @@ export default class GarageView extends View {
     const carId = part.parameters.id;
     const success = await Controller.remove(carId);
     if (success) {
-      this.deleteBlock(part);
-      part.destroy();
+      this.raceContainer.deleteAllBlocks();
+      this.initRace();
     }
   }
 
@@ -110,9 +110,9 @@ export default class GarageView extends View {
     racePanel.addListener('click', this.operate.bind(this));
     this.topContainer.addBlock(racePanel);
 
-    document.addEventListener('page-changed', (event) =>
-      this.getPartData(event),
-    );
+    this.addListener('page-changed', (event) => {
+      this.getPartData(event);
+    });
   }
 
   private async getPartData(event: Event): Promise<void> {
