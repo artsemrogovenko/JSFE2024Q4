@@ -29,7 +29,7 @@ export default class WinnersView extends View {
     if (isWinnersResponse(winners) && Array.isArray(winners.body)) {
       if (
         winners.body.every((data) => isWinner(data)) &&
-        typeof winners.count !== 'undefined'
+        winners.count !== null
       ) {
         const total = parseInt(winners.count);
         this.updateTitles(total);

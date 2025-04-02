@@ -1,12 +1,14 @@
 import Controller from '../../api/controller';
+import { updateWinner } from '../../api/requests';
 import type Block from '../../modules/block';
 import type {
   EngineResponse,
   Car,
-  CarInfo,
   ResponseData,
   CarsResponse,
+  SprintResult,
 } from '../../modules/types';
+import { isWinner } from '../winners/functions';
 import { addHundredCars } from './cars-generate';
 import { carFormatter, showInfo } from './dialog';
 import { Participant } from './participant';
@@ -40,16 +42,19 @@ export async function raceHandler(
   if (participants.every((element) => element instanceof Participant))
     switch (action) {
       case 'race':
-        let promiseArray: Promise<CarInfo>[] = [];
+        let promiseArray: Promise<SprintResult>[] = [];
         if (participants.every((element) => element instanceof Participant)) {
-          participants.forEach((part) => promiseArray.push(part.racing));
+          participants.forEach((part) => promiseArray.push(startLogging(part)));
           try {
             const result = await Promise.any(promiseArray);
             const winner = await Controller.getCarById(result.id);
             if (isCar(winner.body)) {
-              carFormatter(winner.body);
+              checkOldResult(result);
+              carFormatter(winner.body, result.seconds);
             }
-          } catch (error) {}
+          } catch (error) {
+            showInfo('все машины сломались');
+          }
         }
         break;
 
@@ -62,6 +67,18 @@ export async function raceHandler(
     }
 }
 
+function startLogging(participant: Participant): Promise<SprintResult> {
+  return Promise.resolve(
+    (async (): Promise<SprintResult> => {
+      const startTime = Date.now();
+      const result = await participant.racing;
+      const milliseconds = 1000;
+      const endTime = (Date.now() - startTime) / milliseconds;
+      return { id: result.id, info: result.info, seconds: endTime };
+    })(),
+  );
+}
+
 export async function randomCarsHandler(): Promise<boolean> {
   const result = await addHundredCars();
   const required = 100;
@@ -70,4 +87,22 @@ export async function randomCarsHandler(): Promise<boolean> {
     return false;
   }
   return true;
+}
+
+async function checkOldResult(sprintResult: SprintResult): Promise<void> {
+  const response = await Controller.winnerResult(sprintResult.id);
+  const result = response.body;
+  const winnerObject = {
+    id: sprintResult.id,
+    time: sprintResult.seconds,
+    wins: 1,
+  };
+  if (isWinner(result)) {
+    winnerObject.time =
+      winnerObject.time < result.time ? winnerObject.time : result.time;
+    winnerObject.wins = Number(result.wins) + 1;
+    updateWinner(winnerObject);
+  } else {
+    Controller.createWinner(winnerObject);
+  }
 }

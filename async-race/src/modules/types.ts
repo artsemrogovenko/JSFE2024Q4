@@ -36,7 +36,7 @@ export type ResponseData = {
 };
 export type WinnersResponse = {
   code: number;
-  count: string | undefined;
+  count: string | null;
   body: Winner[] | undefined;
 };
 //#endregion Requests
@@ -65,6 +65,8 @@ export type CarInfo = {
   id: number;
   info: string;
 };
+
+export type SprintResult = CarInfo & { seconds: number };
 //#endregion Garage
 
 export enum HttpСode {

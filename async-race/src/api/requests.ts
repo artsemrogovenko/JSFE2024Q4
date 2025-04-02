@@ -228,18 +228,15 @@ export async function deleteWinner(id: number): Promise<ResponseData> {
   }
 }
 
-export async function updateWinner(
-  id: number,
-  data: Winner,
-): Promise<ResponseData> {
+export async function updateWinner(data: Winner): Promise<ResponseData> {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
   const params = JSON.stringify({
-    wins: `${data.wins}`,
-    time: `${data.time}`,
+    wins: data.wins,
+    time: data.time,
   });
   try {
-    const response = await fetch(`${serverUrl}${path.winners}/${id}`, {
+    const response = await fetch(`${serverUrl}${path.winners}/${data.id}`, {
       method: 'PUT',
       headers: headers,
       body: params,

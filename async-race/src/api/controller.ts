@@ -1,12 +1,12 @@
 import type {
   CarsResponse,
   Engine,
+  Winner,
   WinnersQuery,
   WinnersResponse,
 } from '../modules/types';
 import {
   HttpСode,
-  type Car,
   type CarParam,
   type ResponseData,
   type GetCars,
@@ -14,13 +14,16 @@ import {
 import { showInfo } from '../views/garage/dialog';
 import {
   createCar,
+  createWinner,
   deleteCar,
   driveCarEngine,
   getCar,
   getCars,
+  getWinner,
   getWinners,
   startStopEngine,
   updateCar,
+  updateWinner,
 } from './requests';
 
 export default class Controller {
@@ -122,5 +125,35 @@ export default class Controller {
       showInfo('Потеряна связь с сервером');
     }
     return { code: 0, count: '0', body: undefined };
+  }
+
+  public static async winnerResult(id: number): Promise<ResponseData> {
+    try {
+      const result = await getWinner(id);
+      return result;
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+    }
+    return { code: 0, body: {} };
+  }
+
+  public static async createWinner(winner: Winner): Promise<ResponseData> {
+    try {
+      const result = await createWinner(winner);
+      return result;
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+    }
+    return { code: 0, body: {} };
+  }
+
+  public static async updateWinner(winner: Winner): Promise<ResponseData> {
+    try {
+      const result = await updateWinner(winner);
+      return result;
+    } catch (error) {
+      showInfo('Потеряна связь с сервером');
+    }
+    return { code: 0, body: {} };
   }
 }

@@ -43,7 +43,7 @@ function closeDialog(event: Event): void {
   }
 }
 
-export function carFormatter(data: Car): void {
-  const str = `№${data.id} ${data.name} won!`;
+export function carFormatter(data: Car, time: number): void {
+  const str = `№${data.id} ${data.name} won! ${time} seconds`;
   showInfo(str);
 }
