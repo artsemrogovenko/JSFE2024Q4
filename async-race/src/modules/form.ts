@@ -103,11 +103,13 @@ export default class Form extends Container {
 
   private loadState(): void {
     const rawData = this.state.getValue(this.submitAction);
-    const data = JSON.parse(rawData);
-    if (isCarParam(data)) {
-      this.nameInput.setValue(data.name);
-      this.colorInput.setValue(data.color);
-      this.updateValues();
+    if (rawData) {
+      const data = JSON.parse(rawData);
+      if (isCarParam(data)) {
+        this.nameInput.setValue(data.name);
+        this.colorInput.setValue(data.color);
+        this.updateValues();
+      }
     } else {
       this.saveState();
     }

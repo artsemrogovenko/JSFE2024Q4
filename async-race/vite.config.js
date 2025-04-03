@@ -15,7 +15,7 @@ export default defineConfig({
   },
   root: './src/',
   build: {
-    minify: false,
+    minify: 'esbuild',
     outDir: '../dist',
     assetsDir: './assets/',
     assetsInclude: ['**/*.*'],

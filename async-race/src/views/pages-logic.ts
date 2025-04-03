@@ -17,7 +17,7 @@ export default class Pages {
   private prev: Button;
   private next: Button;
 
-  private pageState = { garage: 1, winners: 1, 404: 0 };
+  private pageState = { garage: 1, winners: 1, 404: 1 };
   private maxPage: number;
   private middleUpdated: boolean = false;
 
@@ -69,6 +69,7 @@ export default class Pages {
 
   public setNotFound(): void {
     this.mode = PageMode.not_found;
+    this.togglePagination();
   }
 
   private buttonLogic(event: Event): void {
