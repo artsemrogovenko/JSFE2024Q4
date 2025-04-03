@@ -70,3 +70,7 @@ body {
 
   background-color: rgb(90 63 24);
 }
+
+.inactive {
+  opacity: 0.2;
+}

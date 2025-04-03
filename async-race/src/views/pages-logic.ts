@@ -3,6 +3,7 @@ import { Container } from '../modules/block';
 import type { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
 import { Limits, PageMode } from '../modules/types';
+import { disableClick, enableClick } from './garage/functions';
 import { View } from './view';
 
 export default class Pages {
@@ -18,6 +19,7 @@ export default class Pages {
 
   private pageState = { garage: 1, winners: 1, 404: 0 };
   private maxPage: number;
+  private middleUpdated: boolean = false;
 
   constructor() {
     this.view = undefined;
@@ -48,12 +50,15 @@ export default class Pages {
   public updateTitles(count: number): void {
     if (this.mode !== PageMode.not_found) {
       this.maxPage = Math.ceil(count / Limits[this.mode]);
+      this.togglePagination();
     }
   }
 
   public setMode(mode: PageMode, view: View): void {
     this.view = view;
     this.mode = mode;
+    this.togglePagination();
+    this.toggleViews();
   }
   public getMode(): PageMode {
     return this.mode;
@@ -75,6 +80,7 @@ export default class Pages {
         case 'next':
           const page = this.calcPage(buttonText);
           if (page !== undefined) {
+            this.togglePagination();
             const pageEvent = new CustomEvent('page-changed', {
               detail: { page: page },
             });
@@ -132,6 +138,45 @@ export default class Pages {
         break;
       default:
         break;
+    }
+  }
+
+  private toggleViews(): void {
+    switch (this.mode) {
+      case PageMode.winners:
+        enableClick(this.garage);
+        disableClick(this.winners);
+        break;
+      case PageMode.garage:
+        disableClick(this.garage);
+        enableClick(this.winners);
+        break;
+    }
+  }
+
+  private togglePagination(): void {
+    if (this.pageState[this.mode] === 1 && this.maxPage === 1) {
+      disableClick(this.next);
+      disableClick(this.prev);
+      this.middleUpdated = false;
+      return;
+    }
+    if (this.pageState[this.mode] === this.maxPage) {
+      disableClick(this.next);
+      enableClick(this.prev);
+      this.middleUpdated = false;
+      return;
+    }
+    if (this.pageState[this.mode] === 1) {
+      enableClick(this.next);
+      disableClick(this.prev);
+      this.middleUpdated = false;
+      return;
+    }
+    if (!this.middleUpdated) {
+      enableClick(this.next);
+      enableClick(this.prev);
+      this.middleUpdated = true;
     }
   }
 }

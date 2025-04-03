@@ -1,6 +1,6 @@
 import { sortTable } from '../views/winners/sort';
 import Block from './block';
-import type { RowData } from './types';
+import type { RowData, SortWinners } from './types';
 
 export default class Table extends Block<'table'> {
   private headersRow: TableRow;
@@ -13,7 +13,6 @@ export default class Table extends Block<'table'> {
     this.headersRow.addListener('click', (event) => {
       sortTable.sortListener(event, this);
     });
-    // this.initClasses();
   }
 
   public generateHeaders(headersNames: string[]): void {
@@ -43,6 +42,23 @@ export default class Table extends Block<'table'> {
         this.deleteBlock(component);
       }
     });
+  }
+  public setHeaderClass(data: SortWinners): void {
+    const tableHeaders = this.headersRow.getComponents();
+    const direction = data.order.toLowerCase();
+    switch (data.sort) {
+      case 'id':
+        tableHeaders[0].setClass(direction);
+        break;
+      case 'wins':
+        tableHeaders[3].setClass(direction);
+        break;
+      case 'time':
+        tableHeaders[4].setClass(direction);
+        break;
+      default:
+        break;
+    }
   }
 }
 

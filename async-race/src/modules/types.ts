@@ -65,7 +65,10 @@ export type CarInfo = {
   id: number;
   info: string;
 };
-
+export enum RaceState {
+  RACING,
+  READY,
+}
 export type SprintResult = CarInfo & { seconds: number };
 //#endregion Garage
 

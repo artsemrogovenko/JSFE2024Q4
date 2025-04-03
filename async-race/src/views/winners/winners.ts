@@ -1,7 +1,6 @@
 import Controller from '../../api/controller';
 import type { WinnersQuery } from '../../modules/types';
 import { Limits, PageMode } from '../../modules/types';
-import type Pages from '../pages-logic';
 import { pagesLogic } from '../pages-logic';
 import { View } from '../view';
 import {
@@ -12,17 +11,17 @@ import {
   prepareData,
 } from './functions';
 import Table from '../../modules/table';
+import { sortTable } from './sort';
 
 export default class WinnersView extends View {
-  private pageLogic: Pages = pagesLogic;
   private table = new Table('winners-table');
   constructor() {
     super('winners');
     const headlines = this.headlines(PageMode.winners);
     this.addBlocks([headlines, this.table]);
     this.initTable();
-    this.table.addListener('sort-changed', (event) => this.sortTable(event));
-    this.addListener('page-changed', (event) => {
+    this.table.addListener('sort-changed', (event) => this.beginSort(event));
+    this.addListener('page-changed', () => {
       this.table.clearRows();
       this.initTable();
     });
@@ -30,8 +29,16 @@ export default class WinnersView extends View {
 
   private async initTable(sortParam?: WinnersQuery): Promise<void> {
     const limit = Limits.winners;
-    const page = this.pageLogic.getPage;
-    const param = sortParam || { _page: page, _limit: limit };
+    const page = pagesLogic.getPage;
+    let param: WinnersQuery;
+    if (sortParam === undefined) {
+      const sotData = sortTable.sortParams;
+      this.table.setHeaderClass(sotData);
+      const { sort, order } = sotData;
+      param = { _page: page, _limit: limit, _sort: sort, _order: order };
+    } else {
+      param = sortParam;
+    }
     const winners = await Controller.winnersList(param);
     if (isWinnersResponse(winners) && Array.isArray(winners.body)) {
       if (
@@ -50,12 +57,12 @@ export default class WinnersView extends View {
     }
   }
 
-  private sortTable(event: Event): void {
+  private beginSort(event: Event): void {
     if (event instanceof CustomEvent) {
       const result = event.detail;
       if (isSortWinners(result)) {
         const limit = Limits.winners;
-        const page = this.pageLogic.getPage;
+        const page = pagesLogic.getPage;
         const query: WinnersQuery = {
           _page: page,
           _limit: limit,

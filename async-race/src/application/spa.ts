@@ -23,7 +23,6 @@ export default class App {
       try {
         this.body.replaceChild(view.getNode(), this.main.getNode());
       } catch (error) {
-        // this.body.replaceChildren();
         this.viewSwitch.insertAdjacentElement('afterend', this.main.getNode());
       }
     }

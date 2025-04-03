@@ -72,9 +72,12 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     option: boolean = false,
   ): void {
     this.element.removeEventListener(event, listener, option);
-    this.listeners[event] = this.listeners[event].filter(
-      (listener: EventListener | EventListenerObject) => listener !== listener,
-    );
+    if (this.listeners[event]) {
+      this.listeners[event] = this.listeners[event].filter(
+        (listener: EventListener | EventListenerObject) =>
+          listener !== listener,
+      );
+    }
   }
 
   public removeAllListeners(): void {

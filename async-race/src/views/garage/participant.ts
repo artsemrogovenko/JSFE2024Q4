@@ -12,23 +12,30 @@ export class Participant extends Container {
     velocity: 0,
     distance: 0,
   };
+  private buttonEdit: Button;
+  private buttonRemove: Button;
+  private buttonEngine: Button;
+  private buttonState: Button;
 
   constructor(garage: GarageView, params: Car) {
     super('participant');
     const buttons = ['edit-car', 'remove-car', 'engine', 'drive-state'];
     const buttonsText = ['edit', 'remove', 'race', 'home'];
-    const [edit, remove, engine, state] = ButtonsCreator.createButtons(
-      buttons.length,
-      buttonsText,
-      buttons,
-    );
+    [this.buttonEdit, this.buttonRemove, this.buttonEngine, this.buttonState] =
+      ButtonsCreator.createButtons(buttons.length, buttonsText, buttons);
     this.name = params.name;
     this.color = params.color;
     this.carId = params.id;
     this.carTag = new Container('car-tag');
     this.carTag.setText(params.name);
     this.carPanel = new Container('car-panel');
-    this.carPanel.addBlocks([edit, remove, this.carTag, engine, state]);
+    this.carPanel.addBlocks([
+      this.buttonEdit,
+      this.buttonRemove,
+      this.carTag,
+      this.buttonEngine,
+      this.buttonState,
+    ]);
     this.imgContainer = new Container(`car-img _${params.id}`);
 
     const svgCopy = parser.parseFromString(svgCar, 'image/svg+xml');
@@ -45,6 +52,7 @@ export class Participant extends Container {
     this.engine = { id: params.id, status: Status.stopped };
 
     this.addListener('click', this.panelListener.bind(this));
+    this.changeStateButton();
   }
   public get racing(): Promise<CarInfo> {
     return this.toggleDrive();
@@ -71,7 +79,8 @@ export class Participant extends Container {
 
   private panelListener(event: Event): void {
     const target = event.target;
-    if (target instanceof HTMLButtonElement) {
+    const disabled = event.defaultPrevented;
+    if (target instanceof HTMLButtonElement && !disabled) {
       const buttonText = target.innerText;
       switch (buttonText) {
         case 'Race':
@@ -97,6 +106,7 @@ export class Participant extends Container {
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
       if (response.code === HttpСode.OK) {
+        this.changeStateButton();
         resetCar(this.imgContainer, this.carId);
         return true;
       }
@@ -108,27 +118,49 @@ export class Participant extends Container {
     this.engine.status = Status.started;
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+      this.changeStateButton();
       this.speedParameters = response.body;
+      this.engine.status = Status.drive;
+      moveCar(this.speedParameters, this.imgContainer, this.carId);
+      const sprintResult = await Controller.drive(this.carId);
+      const code = sprintResult.code;
+      const body = sprintResult.body;
+      switch (code) {
+        case HttpСode.ServerError:
+          stopCar(this.imgContainer, this.carId);
+          if ('message' in body && typeof body?.message === 'string') {
+            throw { id: this.carId, info: body.message };
+          }
+          break;
+        case HttpСode.OK:
+          this.engine.status = Status.stopped;
+          break;
+      }
     }
-    moveCar(this.speedParameters, this.imgContainer, this.carId);
-    const sprintResult = await Controller.drive(this.carId);
-    const code = sprintResult.code;
-    const body = sprintResult.body;
-    switch (code) {
-      case HttpСode.ServerError:
-        stopCar(this.imgContainer, this.carId);
-        if ('message' in body && typeof body?.message === 'string') {
-          throw { id: this.carId, info: body.message };
-        }
+    return { id: this.carId, info: JSON.stringify(response.body) };
+  }
+
+  private changeStateButton(): void {
+    switch (this.engine.status) {
+      case Status.drive:
+      case Status.started:
+        disableClick(this.buttonEngine);
+        enableClick(this.buttonState);
+        break;
+      case Status.stopped:
+      default:
+        enableClick(this.buttonEngine);
+        disableClick(this.buttonState);
+        disableClick(this.buttonState);
         break;
     }
-    return { id: this.carId, info: JSON.stringify(body) };
   }
 }
 
 import Controller from '../../api/controller';
 import svgCar from '../../assets/car.svg?raw';
 import { Container } from '../../modules/block';
+import type { Button } from '../../modules/buttons';
 import { ButtonsCreator } from '../../modules/buttons';
 import type {
   Car,
@@ -139,6 +171,6 @@ import type {
 } from '../../modules/types';
 import { HttpСode, Status } from '../../modules/types';
 import { moveCar, resetCar, stopCar } from './animation';
-import { isEngineResponse } from './functions';
+import { disableClick, enableClick, isEngineResponse } from './functions';
 import type GarageView from './garage';
 const parser = new DOMParser();

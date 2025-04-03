@@ -1,6 +1,6 @@
 import Controller from '../../api/controller';
 import { updateWinner } from '../../api/requests';
-import type Block from '../../modules/block';
+import type { Button } from '../../modules/buttons';
 import type {
   EngineResponse,
   Car,
@@ -11,7 +11,7 @@ import type {
 import { isWinner } from '../winners/functions';
 import { addHundredCars } from './cars-generate';
 import { carFormatter, showInfo } from './dialog';
-import { Participant } from './participant';
+import type { Participant } from './participant';
 
 export function isResponseData(data: object): data is ResponseData {
   const obj = Object.assign({}, data);
@@ -36,35 +36,45 @@ export function isCarsResponse(data: object): data is CarsResponse {
 }
 
 export async function raceHandler(
-  participants: Block<keyof HTMLElementTagNameMap>[],
+  participants: Participant[],
   action: string,
-): Promise<void> {
-  if (participants.every((element) => element instanceof Participant))
-    switch (action) {
-      case 'race':
-        let promiseArray: Promise<SprintResult>[] = [];
-        if (participants.every((element) => element instanceof Participant)) {
-          participants.forEach((part) => promiseArray.push(startLogging(part)));
-          try {
-            const result = await Promise.any(promiseArray);
-            const winner = await Controller.getCarById(result.id);
-            if (isCar(winner.body)) {
-              checkOldResult(result);
-              carFormatter(winner.body, result.seconds);
-            }
-          } catch (error) {
+): Promise<boolean> {
+  switch (action) {
+    case 'race':
+      let promiseArray: Promise<SprintResult>[] = [];
+      participants.forEach((part) => promiseArray.push(startLogging(part)));
+      try {
+        const result = await Promise.any(promiseArray);
+        const winner = await Controller.getCarById(result.id);
+        if (isCar(winner.body)) {
+          checkOldResult(result);
+          carFormatter(winner.body, result.seconds);
+        }
+      } catch (error) {
+        if (error instanceof TypeError) {
+          if (error.message.includes('net::')) {
+            console.error(error.message);
+          } else {
             showInfo('все машины сломались');
           }
         }
-        break;
+      }
+      break;
 
-      case 'reset':
-        participants.forEach((part) => part.reset);
-        break;
+    case 'reset':
+      let resetArray: Promise<Boolean>[] = [];
+      participants.forEach((part) => resetArray.push(part.reset));
+      try {
+        await Promise.allSettled(resetArray);
+      } catch (error) {
+        console.log(error);
+      }
+      break;
 
-      default:
-        break;
-    }
+    default:
+      break;
+  }
+  return true;
 }
 
 function startLogging(participant: Participant): Promise<SprintResult> {
@@ -105,4 +115,17 @@ async function checkOldResult(sprintResult: SprintResult): Promise<void> {
   } else {
     Controller.createWinner(winnerObject);
   }
+}
+
+export function disableClick(button: Button): void {
+  button.getNode().classList.add('inactive');
+  button.addListener('click', preventDefault);
+}
+export function enableClick(button: Button): void {
+  button.getNode().classList.remove('inactive');
+  button.removeListener('click', preventDefault);
+}
+
+function preventDefault(event: Event): void {
+  event.preventDefault();
 }

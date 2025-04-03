@@ -4,12 +4,14 @@ import { Container } from '../../modules/block';
 import { Button, ButtonsCreator } from '../../modules/buttons';
 import { Input } from '../../modules/form';
 import type { Car, CarParam, FormsData, FormType } from '../../modules/types';
+import { RaceState } from '../../modules/types';
 import { FormAction, Limits, PageMode } from '../../modules/types';
-import type Pages from '../pages-logic';
 import { pagesLogic } from '../pages-logic';
 import { View } from '../view';
 import { showInfo } from './dialog';
 import {
+  disableClick,
+  enableClick,
   isCar,
   isCarsResponse,
   raceHandler,
@@ -18,17 +20,19 @@ import {
 import { Participant } from './participant';
 
 export default class GarageView extends View {
-  private pageLogic: Pages = pagesLogic;
   private create: Form;
   private update: Form;
   private topContainer = new Container('top-container');
   private raceContainer = new Container('race-container');
   private state: State;
+  private raceState: RaceState = RaceState.READY;
   private editingCar: Participant | null = null;
   private formsData: FormsData = {
     create: { name: '', color: '' },
     update: { name: '', color: '', id: -1 },
   };
+  private startRace: Button | undefined;
+  private resetRace: Button | undefined;
   constructor(state: State) {
     super('main');
     this.state = state;
@@ -106,10 +110,12 @@ export default class GarageView extends View {
       buttons.length,
       buttons,
     );
+    this.startRace = operatorButtons[0];
+    this.resetRace = operatorButtons[1];
     racePanel.addBlocks(operatorButtons);
     racePanel.addListener('click', this.operate.bind(this));
     this.topContainer.addBlock(racePanel);
-
+    this.toggleButtons();
     this.addListener('page-changed', (event) => {
       this.getPartData(event);
     });
@@ -123,11 +129,13 @@ export default class GarageView extends View {
         this.initRace(page);
       }
     }
+    this.raceState = RaceState.READY;
+    this.toggleButtons();
   }
 
   private async initRace(wishPage?: number): Promise<void> {
     const maxCars = Limits.garage;
-    const page = wishPage ?? this.pageLogic.getPage;
+    const page = wishPage ?? pagesLogic.getPage;
     const cars = await Controller.getCarsList({ _page: page, _limit: maxCars });
     if (isCarsResponse(cars) && cars.body) {
       this.raceContainer.deleteAllBlocks();
@@ -161,22 +169,47 @@ export default class GarageView extends View {
   private async operate(event: Event): Promise<void> {
     const target = event.target;
     if (target instanceof HTMLButtonElement) {
-      const buttonText = target.textContent;
-      switch (buttonText) {
-        case 'race':
-        case 'reset':
-          const components = this.raceContainer.getComponents();
-          raceHandler(components, buttonText);
-          break;
-        case 'generate cars':
-          showInfo('Идет добавление');
-          const success = await randomCarsHandler();
-          if (success) showInfo('Успех!');
-          this.initRace();
-          break;
-        default:
-          break;
+      if (!event.defaultPrevented) {
+        const buttonText = target.textContent;
+        const components = this.raceContainer.getComponents();
+        if (
+          components.every((participant) => participant instanceof Participant)
+        )
+          switch (buttonText) {
+            case 'race':
+              this.raceState = RaceState.RACING;
+              this.toggleButtons();
+              raceHandler(components, buttonText);
+              break;
+            case 'reset':
+              await raceHandler(components, buttonText);
+              this.raceState = RaceState.READY;
+              this.toggleButtons();
+              break;
+            case 'generate cars':
+              showInfo('Идет добавление');
+              const success = await randomCarsHandler();
+              if (success) showInfo('Успех!');
+              this.initRace();
+              break;
+            default:
+              break;
+          }
       }
+    }
+  }
+
+  private toggleButtons(): void {
+    switch (this.raceState) {
+      case RaceState.RACING:
+        if (this.startRace) disableClick(this.startRace);
+        if (this.resetRace) enableClick(this.resetRace);
+        break;
+
+      case RaceState.READY:
+        if (this.startRace) enableClick(this.startRace);
+        if (this.resetRace) disableClick(this.resetRace);
+        break;
     }
   }
 }
