@@ -8,9 +8,10 @@ export function moveCar(
 ): void {
   const car = carBlock.getNode();
   const carWidth = car.offsetWidth;
-  const raceWidth = document.body.offsetWidth;
+  const finishLine = 0.95;
+  const raceWidth = document.body.offsetWidth * finishLine;
 
-  const time = raceWidth + data.distance / data.velocity;
+  const time = (raceWidth + data.distance) / data.velocity;
 
   let animation: Animation;
   const animationId = `car-animation_${carId}`;

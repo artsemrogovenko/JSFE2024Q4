@@ -1,9 +1,10 @@
 import Controller from '../../api/controller';
 import type State from '../../application/state';
 import { Container } from '../../modules/block';
-import { Button, ButtonsCreator } from '../../modules/buttons';
-import { Input } from '../../modules/form';
-import type { Car, CarParam, FormsData, FormType } from '../../modules/types';
+import type { Button } from '../../modules/buttons';
+import { ButtonsCreator } from '../../modules/buttons';
+import Form from '../../modules/form';
+import type { Car, CarParam, FormsData } from '../../modules/types';
 import { RaceState } from '../../modules/types';
 import { FormAction, Limits, PageMode } from '../../modules/types';
 import { pagesLogic } from '../pages-logic';
@@ -49,6 +50,11 @@ export default class GarageView extends View {
     const headlines = this.headlines(PageMode.garage);
     this.addBlocks([this.topContainer, headlines, this.raceContainer]);
     this.init();
+    disableClick(this.update);
+  }
+
+  public get getState(): State {
+    return this.state;
   }
 
   public async getForm(className: string, values: CarParam): Promise<void> {
@@ -66,6 +72,8 @@ export default class GarageView extends View {
             const newParam = { color: data.color, name: data.name };
             this.editingCar.setParameters(newParam);
           }
+          this.update.resetInput();
+          disableClick(this.update);
         }
         break;
       case 'form-create':
@@ -73,6 +81,7 @@ export default class GarageView extends View {
           const result = await Controller.newCar(values);
           if (result && isCar(result.body)) {
             this.initRace();
+            this.create.resetInput();
           }
         } else {
           showInfo('поле не должно быть пустым');
@@ -91,6 +100,7 @@ export default class GarageView extends View {
       color: part.parameters.color,
     };
     this.update.setValues(newData);
+    enableClick(this.update);
   }
 
   public async removeCar(part: Participant): Promise<void> {
@@ -211,53 +221,5 @@ export default class GarageView extends View {
         if (this.resetRace) disableClick(this.resetRace);
         break;
     }
-  }
-}
-
-class Form extends Container {
-  private nameInput: Input;
-  private colorInput: Input;
-  private button: Button;
-  private values: CarParam = { name: '', color: '' };
-  constructor(className: string, submitClass: string, view: GarageView) {
-    super(className);
-    this.nameInput = new Input('input-name', 'text', '', '', 'Car name', '');
-    this.colorInput = new Input('pick-color', 'color', 'color', '', '');
-    this.button = new Button(submitClass, submitClass);
-    this.addBlocks([this.nameInput, this.colorInput, this.button]);
-    this.button.addListener('click', () => this.submitForm(view));
-    this.colorInput.addListener('change', this.updateValues.bind(this));
-    this.nameInput.addListener('change', this.updateValues.bind(this));
-  }
-
-  public get getButton(): Button {
-    return this.button;
-  }
-
-  public get params(): FormType {
-    return this.values;
-  }
-
-  public setValues(data: CarParam): void {
-    if (this.colorInput.getNode() instanceof HTMLInputElement) {
-      this.colorInput.setValue(data.color);
-    }
-    if (this.nameInput.getNode() instanceof HTMLInputElement) {
-      this.nameInput.setValue(data.name);
-    }
-  }
-
-  private updateValues(): void {
-    if (this.colorInput.getNode() instanceof HTMLInputElement) {
-      this.values.color = this.colorInput.getValue();
-    }
-    if (this.nameInput.getNode() instanceof HTMLInputElement) {
-      this.values.name = this.nameInput.getValue();
-    }
-  }
-
-  private submitForm(view: GarageView): void {
-    const className = this.getNode().className;
-    view.getForm(className, this.values);
   }
 }

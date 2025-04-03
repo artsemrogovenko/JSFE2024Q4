@@ -1,12 +1,13 @@
 import Controller from '../../api/controller';
 import { updateWinner } from '../../api/requests';
-import type { Button } from '../../modules/buttons';
+import type Block from '../../modules/block';
 import type {
   EngineResponse,
   Car,
   ResponseData,
   CarsResponse,
   SprintResult,
+  CarParam,
 } from '../../modules/types';
 import { isWinner } from '../winners/functions';
 import { addHundredCars } from './cars-generate';
@@ -28,6 +29,10 @@ export function isCar(data: object): data is Car {
     obj.hasOwnProperty('color') &&
     obj.hasOwnProperty('id')
   );
+}
+export function isCarParam(data: object): data is CarParam {
+  const obj = Object.assign({}, data);
+  return obj.hasOwnProperty('name') && obj.hasOwnProperty('color');
 }
 
 export function isCarsResponse(data: object): data is CarsResponse {
@@ -117,13 +122,17 @@ async function checkOldResult(sprintResult: SprintResult): Promise<void> {
   }
 }
 
-export function disableClick(button: Button): void {
-  button.getNode().classList.add('inactive');
-  button.addListener('click', preventDefault);
+export function disableClick(
+  element: Block<keyof HTMLElementTagNameMap>,
+): void {
+  element.getNode().classList.add('inactive');
+  element.addListener('click', preventDefault);
+  element.addListener('keydown', preventDefault);
 }
-export function enableClick(button: Button): void {
-  button.getNode().classList.remove('inactive');
-  button.removeListener('click', preventDefault);
+export function enableClick(element: Block<keyof HTMLElementTagNameMap>): void {
+  element.getNode().classList.remove('inactive');
+  element.removeListener('click', preventDefault);
+  element.removeListener('keydown', preventDefault);
 }
 
 function preventDefault(event: Event): void {
