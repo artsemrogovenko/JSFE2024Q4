@@ -2,7 +2,7 @@ import { pushState } from '../application/router';
 import { Container } from '../modules/block';
 import type { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
-import { Limits, PageMode } from '../modules/types';
+import { Limits, PageMode, RaceState } from '../modules/types';
 import { disableClick, enableClick } from './garage/functions';
 import { View } from './view';
 
@@ -132,6 +132,9 @@ export default class Pages {
         break;
       case 'to winners':
         if (this.mode === PageMode.winners) {
+          return;
+        }
+        if (this.view?.getRaceState === RaceState.RACING) {
           return;
         }
         this.mode = PageMode.winners;

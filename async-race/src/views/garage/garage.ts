@@ -5,8 +5,7 @@ import type { Button } from '../../modules/buttons';
 import { ButtonsCreator } from '../../modules/buttons';
 import Form from '../../modules/form';
 import type { Car, CarParam, FormsData } from '../../modules/types';
-import { RaceState } from '../../modules/types';
-import { FormAction, Limits, PageMode } from '../../modules/types';
+import { FormAction, Limits, PageMode, RaceState } from '../../modules/types';
 import { pagesLogic } from '../pages-logic';
 import { View } from '../view';
 import { showInfo } from './dialog';
@@ -24,9 +23,9 @@ export default class GarageView extends View {
   private create: Form;
   private update: Form;
   private topContainer = new Container('top-container');
+  private racePanel = new Container('dispatcher');
   private raceContainer = new Container('race-container');
   private state: State;
-  private raceState: RaceState = RaceState.READY;
   private editingCar: Participant | null = null;
   private formsData: FormsData = {
     create: { name: '', color: '' },
@@ -37,12 +36,12 @@ export default class GarageView extends View {
   constructor(state: State) {
     super('main');
     this.state = state;
+    this.raceState = RaceState.READY;
     this.create = new Form('form-create', 'create', this);
     this.update = new Form('form-edit', 'update', this);
     this.create.addListener('change', () =>
       this.changeValues(this.create, FormAction.CREATE),
     );
-
     this.update.addListener('change', () =>
       this.changeValues(this.update, FormAction.UPDATE),
     );
@@ -114,7 +113,6 @@ export default class GarageView extends View {
 
   private init(): void {
     this.initRace();
-    const racePanel = new Container('dispatcher');
     const buttons = ['race', 'reset', 'generate cars'];
     const operatorButtons = ButtonsCreator.createButtons(
       buttons.length,
@@ -122,9 +120,9 @@ export default class GarageView extends View {
     );
     this.startRace = operatorButtons[0];
     this.resetRace = operatorButtons[1];
-    racePanel.addBlocks(operatorButtons);
-    racePanel.addListener('click', this.operate.bind(this));
-    this.topContainer.addBlock(racePanel);
+    this.racePanel.addBlocks(operatorButtons);
+    this.racePanel.addListener('click', this.operate.bind(this));
+    this.topContainer.addBlock(this.racePanel);
     this.toggleButtons();
     this.addListener('page-changed', (event) => {
       this.getPartData(event);
@@ -189,7 +187,7 @@ export default class GarageView extends View {
             case 'race':
               this.raceState = RaceState.RACING;
               this.toggleButtons();
-              raceHandler(components, buttonText);
+              raceHandler(components, buttonText, this.racePanel);
               break;
             case 'reset':
               await raceHandler(components, buttonText);

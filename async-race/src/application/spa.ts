@@ -1,7 +1,7 @@
 import type Block from '../modules/block';
 import { pagesLogic } from '../views/pages-logic';
 import { Router } from './router';
-import State from './state';
+import { appState } from './state';
 
 export default class App {
   private body: HTMLElement;
@@ -11,7 +11,7 @@ export default class App {
   constructor() {
     this.body = document.body;
     this.main = null;
-    const state = new State();
+    const state = appState;
     this.body.append(this.viewSwitch, this.selectPages);
     new Router(this.setContent.bind(this), state);
   }

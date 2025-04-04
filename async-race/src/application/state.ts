@@ -39,3 +39,5 @@ export default class State {
     return new Map();
   }
 }
+
+export const appState = new State();

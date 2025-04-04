@@ -16,6 +16,7 @@ export class Participant extends Container {
   private buttonRemove: Button;
   private buttonEngine: Button;
   private buttonState: Button;
+  private sound: ParticipantSound = new ParticipantSound();
 
   constructor(garage: GarageView, params: Car) {
     super('participant');
@@ -103,6 +104,7 @@ export class Participant extends Container {
 
   private async toggleStop(): Promise<Boolean> {
     this.engine.status = Status.stopped;
+    this.sound.stopEngine();
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
       if (response.code === HttpСode.OK) {
@@ -116,11 +118,14 @@ export class Participant extends Container {
 
   private async toggleDrive(): Promise<CarInfo> {
     this.engine.status = Status.started;
+    this.sound.starter;
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+      this.sound.stopStarter();
       smoke(this.imgContainer);
       this.changeStateButton();
       this.speedParameters = response.body;
+      this.sound.noiseEngine(response.body.velocity);
       this.engine.status = Status.drive;
       moveCar(this.speedParameters, this.imgContainer, this.carId);
       const sprintResult = await Controller.drive(this.carId);
@@ -129,12 +134,15 @@ export class Participant extends Container {
       switch (code) {
         case HttpСode.ServerError:
           stopCar(this.imgContainer, this.carId);
+          this.sound.stopEngine();
+          this.sound.broken();
           if ('message' in body && typeof body?.message === 'string') {
             throw { id: this.carId, info: body.message };
           }
           break;
         case HttpСode.OK:
           this.engine.status = Status.stopped;
+          this.sound.noiseEngine(1);
           break;
       }
     }
@@ -163,6 +171,7 @@ import svgCar from '../../assets/car.svg?raw';
 import { Container } from '../../modules/block';
 import type { Button } from '../../modules/buttons';
 import { ButtonsCreator } from '../../modules/buttons';
+import { ParticipantSound } from '../../modules/sound';
 import type {
   Car,
   CarInfo,

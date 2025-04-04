@@ -1,13 +1,14 @@
 import Controller from '../../api/controller';
 import { updateWinner } from '../../api/requests';
 import type Block from '../../modules/block';
+import type { Container } from '../../modules/block';
 import type {
-  EngineResponse,
   Car,
-  ResponseData,
-  CarsResponse,
-  SprintResult,
   CarParam,
+  CarsResponse,
+  EngineResponse,
+  ResponseData,
+  SprintResult,
 } from '../../modules/types';
 import { isWinner } from '../winners/functions';
 import { addHundredCars } from './cars-generate';
@@ -43,29 +44,14 @@ export function isCarsResponse(data: object): data is CarsResponse {
 export async function raceHandler(
   participants: Participant[],
   action: string,
+  racePanel?: Container,
 ): Promise<boolean> {
   switch (action) {
     case 'race':
-      let promiseArray: Promise<SprintResult>[] = [];
-      participants.forEach((part) => promiseArray.push(startLogging(part)));
-      try {
-        const result = await Promise.any(promiseArray);
-        const winner = await Controller.getCarById(result.id);
-        if (isCar(winner.body)) {
-          checkOldResult(result);
-          carFormatter(winner.body, result.seconds);
-        }
-      } catch (error) {
-        if (error instanceof TypeError) {
-          if (error.message.includes('net::')) {
-            console.error(error.message);
-          } else {
-            showInfo('все машины сломались');
-          }
-        }
-      }
-      break;
-
+      racePanel?.getComponents().forEach((element) => disableClick(element));
+      const isSuccess = await calculateWinner(participants);
+      racePanel?.getComponents().forEach((element) => enableClick(element));
+      return isSuccess;
     case 'reset':
       let resetArray: Promise<Boolean>[] = [];
       participants.forEach((part) => resetArray.push(part.reset));
@@ -80,6 +66,29 @@ export async function raceHandler(
       break;
   }
   return true;
+}
+
+async function calculateWinner(participants: Participant[]): Promise<boolean> {
+  let promiseArray: Promise<SprintResult>[] = [];
+  participants.forEach((part) => promiseArray.push(startLogging(part)));
+  try {
+    const result = await Promise.any(promiseArray);
+    const winner = await Controller.getCarById(result.id);
+    if (isCar(winner.body)) {
+      checkOldResult(result);
+      carFormatter(winner.body, result.seconds);
+    }
+    return true;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      if (error.message.includes('net::')) {
+        console.error(error.message);
+      } else {
+        showInfo('все машины сломались');
+      }
+    }
+    return false;
+  }
 }
 
 function startLogging(participant: Participant): Promise<SprintResult> {

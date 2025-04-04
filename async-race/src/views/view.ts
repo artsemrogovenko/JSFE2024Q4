@@ -1,4 +1,5 @@
 import Block, { Container } from '../modules/block';
+import type { RaceState } from '../modules/types';
 import { PageMode } from '../modules/types';
 import { pagesLogic } from './pages-logic';
 
@@ -10,6 +11,7 @@ class Heading extends Block<HeadingType> {
 }
 
 export class View extends Block<'main'> {
+  protected raceState: RaceState | undefined;
   private mode = pagesLogic.getMode();
   private pageState = pagesLogic.getPageState();
   private infoBox = new Container('cars-and-page');
@@ -19,6 +21,10 @@ export class View extends Block<'main'> {
   constructor(className: string) {
     super('main', className);
     this.infoBox.addBlocks([this.countTitle, this.pageTitle]);
+  }
+
+  public get getRaceState(): RaceState | undefined {
+    return this.raceState;
   }
 
   public updateTitles(count: number): void {
