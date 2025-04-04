@@ -118,6 +118,7 @@ export class Participant extends Container {
     this.engine.status = Status.started;
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+      smoke(this.imgContainer);
       this.changeStateButton();
       this.speedParameters = response.body;
       this.engine.status = Status.drive;
@@ -170,7 +171,7 @@ import type {
   EngineResponse,
 } from '../../modules/types';
 import { HttpСode, Status } from '../../modules/types';
-import { moveCar, resetCar, stopCar } from './animation';
+import { moveCar, resetCar, smoke, stopCar } from './animation';
 import { disableClick, enableClick, isEngineResponse } from './functions';
 import type GarageView from './garage';
 const parser = new DOMParser();

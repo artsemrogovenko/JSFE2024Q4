@@ -99,6 +99,13 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     this.element.remove();
   }
 
+  public addClass(value: string): void {
+    this.getNode().classList.add(value);
+  }
+  public removeClass(value: string): void {
+    this.getNode().classList.remove(value);
+  }
+
   protected setId(_id: string): void {
     this.element.id = _id;
   }

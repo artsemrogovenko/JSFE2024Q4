@@ -15,9 +15,7 @@ export function moveCar(
 
   let animation: Animation;
   const animationId = `car-animation_${carId}`;
-  const hasAnimation = car
-    .getAnimations()
-    .find((animation) => animation.id === animationId);
+  const hasAnimation = existAnimation(car, animationId);
   if (hasAnimation) {
     hasAnimation.cancel();
     animation = hasAnimation;
@@ -46,24 +44,40 @@ export function moveCar(
 export function stopCar(carBlock: Container, carId: number): void {
   const car = carBlock.getNode();
   const animationId = `car-animation_${carId}`;
-  const animation = hasAnimation(car, animationId);
+  const animation = existAnimation(car, animationId);
   if (animation) {
     animation.pause();
   }
+  stopSmoke(carBlock);
 }
 
 export function resetCar(carBlock: Container, carId: number): void {
   const car = carBlock.getNode();
   const animationId = `car-animation_${carId}`;
-  const animation = hasAnimation(car, animationId);
+  const animation = existAnimation(car, animationId);
   if (animation) {
     animation.cancel();
   }
+  stopSmoke(carBlock);
 }
 
-function hasAnimation(
+function existAnimation(
   node: HTMLElement,
   animationId: string,
 ): Animation | undefined {
   return node.getAnimations().find((animation) => animation.id === animationId);
+}
+
+export function smoke(carBlock: Container): void {
+  const smokeElement = document.createElement('label');
+  carBlock.getNode().insertAdjacentElement('afterbegin', smokeElement);
+  smokeElement.classList.add('exhaust');
+}
+
+export function stopSmoke(carBlock: Container): void {
+  const car = carBlock.getNode();
+  const smokeElement = car.firstChild;
+  if (smokeElement && smokeElement instanceof HTMLElement) {
+    smokeElement.remove();
+  }
 }
