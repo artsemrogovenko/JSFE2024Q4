@@ -18,11 +18,13 @@ export function moveCar(
   const hasAnimation = existAnimation(car, animationId);
   if (hasAnimation) {
     hasAnimation.cancel();
+    stopSmoke(carBlock);
     animation = hasAnimation;
   } else {
     animation = new Animation();
     animation.id = animationId;
   }
+  smoke(carBlock);
 
   const frames = [
     { left: `${car.offsetLeft}px` },

@@ -2,8 +2,10 @@ import { pushState } from '../application/router';
 import { Container } from '../modules/block';
 import type { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
+import { Sound } from '../modules/sound';
 import { Limits, PageMode, RaceState } from '../modules/types';
 import { disableClick, enableClick } from './garage/functions';
+import GarageView from './garage/garage';
 import { View } from './view';
 
 export default class Pages {
@@ -136,6 +138,9 @@ export default class Pages {
         }
         if (this.view?.getRaceState === RaceState.RACING) {
           return;
+        }
+        if (this.view instanceof GarageView) {
+          this.view.clearRace();
         }
         this.mode = PageMode.winners;
         pushState('/winners');

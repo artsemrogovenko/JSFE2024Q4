@@ -68,6 +68,7 @@ export type CarInfo = {
 export enum RaceState {
   RACING,
   READY,
+  FINISH,
 }
 export type SprintResult = CarInfo & { seconds: number };
 //#endregion Garage

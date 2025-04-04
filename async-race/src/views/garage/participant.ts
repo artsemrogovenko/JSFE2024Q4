@@ -41,7 +41,6 @@ export class Participant extends Container {
 
     const svgCopy = parser.parseFromString(svgCar, 'image/svg+xml');
     const imageElement = svgCopy.documentElement;
-
     this.image = document.importNode(imageElement, true);
     this.imgContainer.getNode().appendChild(this.image);
 
@@ -51,10 +50,10 @@ export class Participant extends Container {
 
     this.garage = garage;
     this.engine = { id: params.id, status: Status.stopped };
-
     this.addListener('click', this.panelListener.bind(this));
     this.changeStateButton();
   }
+
   public get racing(): Promise<CarInfo> {
     return this.toggleDrive();
   }
@@ -70,7 +69,9 @@ export class Participant extends Container {
     };
     return params;
   }
-
+  public stopSound(): void {
+    this.sound.destroy();
+  }
   public setParameters(param: CarParam): void {
     this.name = param.name;
     this.color = param.color;
@@ -118,11 +119,10 @@ export class Participant extends Container {
 
   private async toggleDrive(): Promise<CarInfo> {
     this.engine.status = Status.started;
-    this.sound.starter;
+    this.sound.starter();
     const response = await Controller.ignition(this.engine);
     if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
       this.sound.stopStarter();
-      smoke(this.imgContainer);
       this.changeStateButton();
       this.speedParameters = response.body;
       this.sound.noiseEngine(response.body.velocity);
@@ -180,7 +180,7 @@ import type {
   EngineResponse,
 } from '../../modules/types';
 import { HttpСode, Status } from '../../modules/types';
-import { moveCar, resetCar, smoke, stopCar } from './animation';
+import { moveCar, resetCar, stopCar } from './animation';
 import { disableClick, enableClick, isEngineResponse } from './functions';
 import type GarageView from './garage';
 const parser = new DOMParser();

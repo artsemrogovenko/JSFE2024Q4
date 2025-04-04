@@ -45,13 +45,16 @@ export async function raceHandler(
   participants: Participant[],
   action: string,
   racePanel?: Container,
-): Promise<boolean> {
+): Promise<boolean | undefined> {
   switch (action) {
     case 'race':
       racePanel?.getComponents().forEach((element) => disableClick(element));
-      const isSuccess = await calculateWinner(participants);
+      try {
+        await calculateWinner(participants);
+        return true;
+      } catch (error) {}
       racePanel?.getComponents().forEach((element) => enableClick(element));
-      return isSuccess;
+      break;
     case 'reset':
       let resetArray: Promise<Boolean>[] = [];
       participants.forEach((part) => resetArray.push(part.reset));
@@ -61,11 +64,10 @@ export async function raceHandler(
         console.log(error);
       }
       break;
-
     default:
       break;
   }
-  return true;
+  return;
 }
 
 async function calculateWinner(participants: Participant[]): Promise<boolean> {
@@ -80,14 +82,14 @@ async function calculateWinner(participants: Participant[]): Promise<boolean> {
     }
     return true;
   } catch (error) {
-    if (error instanceof TypeError) {
+    console.log(error);
+    if (error instanceof Error)
       if (error.message.includes('net::')) {
-        console.error(error.message);
+        throw error;
       } else {
         showInfo('все машины сломались');
       }
-    }
-    return false;
+    throw error;
   }
 }
 

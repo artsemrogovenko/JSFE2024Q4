@@ -3,6 +3,7 @@ import { appState } from '../application/state';
 const base = import.meta.env.VITE_BASE;
 
 export class Sound {
+  public static instances: Sound[] = [];
   public volume: number;
   public soundEffects: Record<
     string,
@@ -13,7 +14,6 @@ export class Sound {
     }
   > = {};
   public context: AudioContext = new AudioContext();
-  protected instances: Sound[] = [];
   protected loudGain: number;
 
   private state: State;
@@ -25,12 +25,13 @@ export class Sound {
     this.init();
   }
 
-  public stopAllSounds(): void {
-    for (const instance of this.instances) {
+  public static stopAllSounds(): void {
+    for (const instance of Sound.instances) {
       for (const key in instance.soundEffects) {
         instance.stopSound(key);
       }
     }
+    Sound.instances = [];
   }
   public rave(): void {
     this.playSound('rave');
@@ -116,7 +117,17 @@ export class ParticipantSound extends Sound {
       engine: base + '/assets/sound/truck2.mp3',
     });
   }
-
+  public destroy(): void {
+    this.stopAll();
+    this.context.close();
+    const index = Sound.instances.indexOf(this);
+    if (index >= 0) Sound.instances.splice(index, 1);
+  }
+  public stopAll(): void {
+    for (const key in this.soundEffects) {
+      this.stopSound(key);
+    }
+  }
   public starter(): void {
     this.playSound('starter');
   }
@@ -135,7 +146,7 @@ export class ParticipantSound extends Sound {
 
   public noiseEngine(pitch: number): void {
     const playbackRate = calculatePitch(pitch);
-    this.stopEngine;
+    this.stopEngine();
     if (!this.soundEffects.engine.buffer) return;
     const source = this.context.createBufferSource();
     source.buffer = this.soundEffects.engine.buffer;

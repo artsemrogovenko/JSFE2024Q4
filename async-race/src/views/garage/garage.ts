@@ -106,11 +106,20 @@ export default class GarageView extends View {
     const carId = part.parameters.id;
     const success = await Controller.remove(carId);
     if (success) {
+      this.clearRace();
       this.raceContainer.deleteAllBlocks();
       this.initRace();
     }
   }
-
+  public clearRace(): void {
+    const components = this.raceContainer.getComponents();
+    components.forEach((part) => {
+      if (part instanceof Participant) {
+        part.stopSound();
+      }
+    });
+    this.raceContainer.deleteAllBlocks();
+  }
   private init(): void {
     this.initRace();
     const buttons = ['race', 'reset', 'generate cars'];
@@ -146,7 +155,7 @@ export default class GarageView extends View {
     const page = wishPage ?? pagesLogic.getPage;
     const cars = await Controller.getCarsList({ _page: page, _limit: maxCars });
     if (isCarsResponse(cars) && cars.body) {
-      this.raceContainer.deleteAllBlocks();
+      this.clearRace();
       const body = cars.body;
       if (typeof cars.count === 'string') {
         const total = parseInt(cars.count);
@@ -187,10 +196,14 @@ export default class GarageView extends View {
             case 'race':
               this.raceState = RaceState.RACING;
               this.toggleButtons();
-              raceHandler(components, buttonText, this.racePanel);
+              await raceHandler(components, buttonText, this.racePanel);
+              this.raceState = RaceState.FINISH;
+              this.toggleButtons();
               break;
             case 'reset':
+              disableClick(this.racePanel);
               await raceHandler(components, buttonText);
+              enableClick(this.racePanel);
               this.raceState = RaceState.READY;
               this.toggleButtons();
               break;
@@ -209,6 +222,7 @@ export default class GarageView extends View {
 
   private toggleButtons(): void {
     switch (this.raceState) {
+      case RaceState.FINISH:
       case RaceState.RACING:
         if (this.startRace) disableClick(this.startRace);
         if (this.resetRace) enableClick(this.resetRace);
