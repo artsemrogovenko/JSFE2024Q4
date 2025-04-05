@@ -72,6 +72,12 @@ export class Participant extends Container {
   public stopSound(): void {
     this.sound.destroy();
   }
+  public raving(id: number): void {
+    if (id === this.carId) {
+      this.sound.rave();
+    }
+  }
+
   public setParameters(param: CarParam): void {
     this.name = param.name;
     this.color = param.color;

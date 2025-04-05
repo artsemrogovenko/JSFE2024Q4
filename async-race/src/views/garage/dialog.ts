@@ -7,8 +7,11 @@ dialogBackdrop.addBlock(dialog);
 dialogBackdrop.addListener('click', closeDialog);
 document.addEventListener('keyup', closeDialog);
 
-export function showInfo(message: string = ''): void {
+export function showInfo(message: string = '', carColor?: boolean): void {
   dialog.setText(message);
+  if (!carColor) {
+    dialog.getNode().removeAttribute('style');
+  }
   openWindow();
 }
 
@@ -43,7 +46,11 @@ function closeDialog(event: Event): void {
   }
 }
 
-export function carFormatter(data: Car, time: number): void {
+export function carFormatter(data: Car, time: number, color?: string): void {
   const str = `№${data.id} ${data.name} won! ${time} seconds`;
-  showInfo(str);
+  if (color) {
+    dialog.setStyle().textDecoration = `underline ${color}`;
+    dialog.setStyle().textDecorationThickness = ` 0.5em`;
+  }
+  showInfo(str, true);
 }

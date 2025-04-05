@@ -78,11 +78,11 @@ async function calculateWinner(participants: Participant[]): Promise<boolean> {
     const winner = await Controller.getCarById(result.id);
     if (isCar(winner.body)) {
       checkOldResult(result);
-      carFormatter(winner.body, result.seconds);
+      carFormatter(winner.body, result.seconds, winner.body.color);
+      participants.forEach((participant) => participant.raving(result.id));
     }
     return true;
   } catch (error) {
-    console.log(error);
     if (error instanceof Error)
       if (error.message.includes('net::')) {
         throw error;

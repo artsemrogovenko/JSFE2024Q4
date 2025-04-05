@@ -106,6 +106,9 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
     this.getNode().classList.remove(value);
   }
 
+  public setStyle(): CSSStyleDeclaration {
+    return this.getNode().style;
+  }
   protected setId(_id: string): void {
     this.element.id = _id;
   }

@@ -9,7 +9,7 @@ import { isResponseData } from './functions';
 const carBrands = [
   'Audi',
   'BMW',
-  'Mercedes-Benz',
+  'Mercedes',
   'Porsche',
   'Volkswagen',
   'Opel',

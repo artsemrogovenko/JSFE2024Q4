@@ -1,6 +1,6 @@
 import { pushState } from '../application/router';
 import { Container } from '../modules/block';
-import type { Button } from '../modules/buttons';
+import { Button } from '../modules/buttons';
 import { ButtonsCreator } from '../modules/buttons';
 import { Sound } from '../modules/sound';
 import { Limits, PageMode, RaceState } from '../modules/types';
@@ -12,6 +12,7 @@ export default class Pages {
   private viewSelect = new Container('view-select');
   private pagination = new Container('pagination');
   private view: View | undefined;
+  private soundButton = new Button('sound');
 
   private mode: PageMode;
   private garage: Button;
@@ -35,6 +36,17 @@ export default class Pages {
     this.viewSelect.addListener('click', (event) => this.buttonLogic(event));
     this.pagination.addListener('click', (event) => this.buttonLogic(event));
     this.maxPage = 1;
+    this.soundButton.addListener('click', () => {
+      const buttonState = Sound.toggleVolume();
+      if (buttonState) {
+        this.soundButton.removeClass('muted');
+      } else {
+        this.soundButton.addClass('muted');
+      }
+    });
+  }
+  public get getSoundButton(): Button {
+    return this.soundButton;
   }
 
   public get getPage(): number {

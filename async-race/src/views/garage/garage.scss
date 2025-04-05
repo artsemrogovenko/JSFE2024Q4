@@ -147,3 +147,23 @@
     transform: scale(0.3);
   }
 }
+
+.sound {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+
+  background:
+    url('../../assets/sound-loud-filled.svg') center / cover no-repeat,
+    linear-gradient(#9a7960, #635d4a);
+}
+
+.muted {
+  background:
+    url('../../assets/sound-off-filled.svg') center / cover no-repeat,
+    linear-gradient(#9a7960, #635d4a);
+}

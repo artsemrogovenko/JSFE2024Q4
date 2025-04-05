@@ -3,8 +3,8 @@ import { appState } from '../application/state';
 const base = import.meta.env.VITE_BASE;
 
 export class Sound {
-  public static instances: Sound[] = [];
-  public volume: number;
+  public static children: Sound[] = [];
+  public volume: GainNode;
   public soundEffects: Record<
     string,
     {
@@ -15,26 +15,38 @@ export class Sound {
   > = {};
   public context: AudioContext = new AudioContext();
   protected loudGain: number;
-
+  protected IsMuted = false;
   private state: State;
 
   constructor() {
-    this.volume = 0;
+    this.volume = this.context.createGain();
+    this.volume.gain.value = 1;
     this.state = appState;
     this.loudGain = 0.5;
     this.init();
+    this.volume.connect(this.context.destination);
+    Sound.children.push(this);
+  }
+  public static toggleVolume(): boolean {
+    const currentState = appState.getValue('sound');
+    const value = !JSON.parse(currentState);
+    if (Sound.children.length > 0) {
+      Sound.children.forEach((child) => {
+        child.setVolume(Number(value));
+      });
+    } else {
+      appState.setValue('sound', JSON.stringify(value));
+    }
+    return value;
   }
 
   public static stopAllSounds(): void {
-    for (const instance of Sound.instances) {
+    for (const instance of Sound.children) {
       for (const key in instance.soundEffects) {
         instance.stopSound(key);
       }
     }
-    Sound.instances = [];
-  }
-  public rave(): void {
-    this.playSound('rave');
+    Sound.children = [];
   }
 
   public getSoundState(): boolean {
@@ -42,12 +54,12 @@ export class Sound {
   }
 
   public mute(): void {
-    this.volume = 0;
+    this.volume.gain.value = 0;
     this.state.setValue('sound', 'false');
   }
 
   public unMute(): void {
-    this.volume = 1;
+    this.volume.gain.value = 1;
     this.state.setValue('sound', 'true');
   }
 
@@ -55,17 +67,20 @@ export class Sound {
     key: string,
     options: { loop?: boolean; playbackRate?: number } = {},
   ): void {
-    if (!this.soundEffects[key]?.buffer) return;
-    const source = this.context.createBufferSource();
-    source.buffer = this.soundEffects[key].buffer!;
-    source.loop = options.loop || false;
-    source.playbackRate.value = options.playbackRate || 1.0;
-
-    source.connect(this.context.destination);
-    source.start();
-    this.soundEffects[key].sources.push(source);
+    if (this.soundEffects[key].buffer) {
+      const source = this.context.createBufferSource();
+      source.buffer = this.soundEffects[key].buffer!;
+      source.loop = options.loop || false;
+      source.playbackRate.value = options.playbackRate || 1.0;
+      source.connect(this.volume);
+      source.start();
+      this.soundEffects[key].sources.push(source);
+    }
   }
-
+  public setVolume(value: number): void {
+    this.volume.gain.value = value;
+    appState.setValue('sound', value > 0 ? 'true' : 'false');
+  }
   protected async loadAudio(url: string): Promise<AudioBuffer> {
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
@@ -96,7 +111,7 @@ export class Sound {
     if (value === '') {
       this.state.setValue('sound', JSON.stringify(true));
     } else {
-      JSON.parse(value) ? (this.volume = 1) : (this.volume = 0);
+      JSON.parse(value) ? this.unMute() : this.mute();
     }
   }
 }
@@ -111,7 +126,7 @@ export class ParticipantSound extends Sound {
     };
 
     this.preloader({
-      rave: base + '/assets/sound/winner.mp3',
+      rave: base + '/assets/sound/car-winner.mp3',
       starter: base + '/assets/sound/starter.mp3',
       stop: base + '/assets/sound/car-stop.mp3',
       engine: base + '/assets/sound/truck2.mp3',
@@ -120,8 +135,8 @@ export class ParticipantSound extends Sound {
   public destroy(): void {
     this.stopAll();
     this.context.close();
-    const index = Sound.instances.indexOf(this);
-    if (index >= 0) Sound.instances.splice(index, 1);
+    const index = Sound.children.indexOf(this);
+    if (index >= 0) Sound.children.splice(index, 1);
   }
   public stopAll(): void {
     for (const key in this.soundEffects) {
@@ -143,6 +158,9 @@ export class ParticipantSound extends Sound {
   public stopEngine(): void {
     this.stopSound('engine');
   }
+  public rave(): void {
+    this.playSound('rave');
+  }
 
   public noiseEngine(pitch: number): void {
     const playbackRate = calculatePitch(pitch);
@@ -160,7 +178,7 @@ export class ParticipantSound extends Sound {
     }
     const gainNode = this.soundEffects.engine.gainNode;
     gainNode.gain.value = pitch === 1 ? this.loudGain : 1;
-    source.connect(gainNode);
+    source.connect(this.volume);
     source.start();
 
     this.soundEffects.engine.sources.push(source);

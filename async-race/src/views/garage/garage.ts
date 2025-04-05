@@ -33,6 +33,8 @@ export default class GarageView extends View {
   };
   private startRace: Button | undefined;
   private resetRace: Button | undefined;
+  private soundButton = pagesLogic.getSoundButton;
+
   constructor(state: State) {
     super('main');
     this.state = state;
@@ -50,6 +52,7 @@ export default class GarageView extends View {
     this.addBlocks([this.topContainer, headlines, this.raceContainer]);
     this.init();
     disableClick(this.update);
+    this.addBlock(this.soundButton);
   }
 
   public get getState(): State {
