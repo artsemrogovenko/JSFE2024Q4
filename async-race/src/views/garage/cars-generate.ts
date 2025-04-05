@@ -5,63 +5,7 @@ import {
   type ResponseData,
 } from '../../modules/types';
 import { isResponseData } from './functions';
-
-const carBrands = [
-  'Audi',
-  'BMW',
-  'Mercedes',
-  'Porsche',
-  'Volkswagen',
-  'Opel',
-  'Maybach',
-  'Ford',
-  'Chevrolet',
-  'Tesla',
-  'Dodge',
-  'Jeep',
-  'Chrysler',
-  'Cadillac',
-  'Buick',
-  'GMC',
-  'Ram',
-  'Lincoln',
-  'Toyota',
-  'Honda',
-  'Nissan',
-  'Mazda',
-  'Subaru',
-  'Mitsubishi',
-  'Lexus',
-  'Infiniti',
-  'Acura',
-  'Suzuki',
-  'Isuzu',
-  'Hyundai',
-  'Kia',
-  'Peugeot',
-  'Renault',
-  'Citroën',
-  'Ferrari',
-  'Lamborghini',
-  'Maserati',
-  'Alfa Romeo',
-  'Fiat',
-  'Lancia',
-  'Pagani',
-  'Land Rover',
-  'Jaguar',
-  'Bentley',
-  'Rolls-Royce',
-  'Aston Martin',
-  'McLaren',
-  'Mini',
-  'Lotus',
-  'Volvo',
-  'Koenigsegg',
-  'Saab',
-  'Škoda',
-  'Lada',
-];
+import { carBrands } from '../car-data';
 
 function randomNumber(v: number): number {
   return Math.floor(Math.random() * v);
@@ -92,11 +36,25 @@ function rgbToHex(array: number[]): string {
   );
 }
 
+const carBrandsNames = Object.keys(carBrands);
+const NamesLength = carBrandsNames.length;
+
+function randomIndex(length: number): number {
+  return Math.floor(Math.random() * length);
+}
+
+function randomModel(name: string): string {
+  const models = carBrands[name];
+  const index = randomIndex(models.length);
+  return models[index];
+}
+
 export function randomCarData(): CarParam {
-  const nameIndex = Math.floor(Math.random() * carBrands.length);
-  const name = carBrands[nameIndex];
+  const nameIndex = randomIndex(NamesLength);
+  const name = carBrandsNames[nameIndex];
+  const model = randomModel(name);
   const randomColor = rgbToHex(generateRGB());
-  return { name: name, color: randomColor };
+  return { name: `${name} ${model}`, color: randomColor };
 }
 
 export async function addHundredCars(): Promise<ResponseData[]> {

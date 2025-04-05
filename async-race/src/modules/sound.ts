@@ -4,6 +4,8 @@ const base = import.meta.env.VITE_BASE;
 
 export class Sound {
   public static children: Sound[] = [];
+  public static globalVolume: number = 1;
+  public static IsMuted = false;
   public volume: GainNode;
   public soundEffects: Record<
     string,
@@ -15,24 +17,25 @@ export class Sound {
   > = {};
   public context: AudioContext = new AudioContext();
   protected loudGain: number;
-  protected IsMuted = false;
   private state: State;
 
   constructor() {
     this.volume = this.context.createGain();
-    this.volume.gain.value = 1;
+    this.volume.gain.value = Sound.globalVolume;
     this.state = appState;
     this.loudGain = 0.5;
-    this.init();
     this.volume.connect(this.context.destination);
     Sound.children.push(this);
   }
   public static toggleVolume(): boolean {
     const currentState = appState.getValue('sound');
     const value = !JSON.parse(currentState);
+    const volume = Number(value);
+    Sound.globalVolume = volume;
+    Sound.IsMuted = !value;
     if (Sound.children.length > 0) {
       Sound.children.forEach((child) => {
-        child.setVolume(Number(value));
+        child.setVolume(volume);
       });
     } else {
       appState.setValue('sound', JSON.stringify(value));
@@ -40,6 +43,25 @@ export class Sound {
     return value;
   }
 
+  public static init(): void {
+    const value = appState.getValue('sound');
+    if (value === '') {
+      appState.setValue('sound', JSON.stringify(true));
+    } else {
+      JSON.parse(value) ? this.unMute() : this.mute();
+    }
+  }
+  public static mute(): void {
+    Sound.globalVolume = 0;
+    appState.setValue('sound', 'false');
+    Sound.IsMuted = true;
+  }
+
+  public static unMute(): void {
+    Sound.globalVolume = 1;
+    appState.setValue('sound', 'true');
+    Sound.IsMuted = false;
+  }
   public static stopAllSounds(): void {
     for (const instance of Sound.children) {
       for (const key in instance.soundEffects) {
@@ -51,16 +73,6 @@ export class Sound {
 
   public getSoundState(): boolean {
     return JSON.parse(this.state.getValue('sound'));
-  }
-
-  public mute(): void {
-    this.volume.gain.value = 0;
-    this.state.setValue('sound', 'false');
-  }
-
-  public unMute(): void {
-    this.volume.gain.value = 1;
-    this.state.setValue('sound', 'true');
   }
 
   public playSound(
@@ -105,16 +117,8 @@ export class Sound {
     this.soundEffects[key].sources.forEach((source) => source.stop());
     this.soundEffects[key].sources = [];
   }
-
-  private init(): void {
-    const value = this.state.getValue('sound');
-    if (value === '') {
-      this.state.setValue('sound', JSON.stringify(true));
-    } else {
-      JSON.parse(value) ? this.unMute() : this.mute();
-    }
-  }
 }
+
 export class ParticipantSound extends Sound {
   constructor() {
     super();
@@ -196,3 +200,5 @@ function calculatePitch(pitchShift: number): number {
   const normalized = (pitchShift - minVelocity) / (maxVelocity - minVelocity);
   return minRate + normalized * (maxRate - minRate);
 }
+
+Sound.init();

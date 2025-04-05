@@ -27,7 +27,7 @@ export class Router {
 
   private routes(path: string): Block<'main'> {
     switch (path) {
-      case '/':
+      case '':
       case '/garage':
         return new GarageView(this.state);
       case '/winners':

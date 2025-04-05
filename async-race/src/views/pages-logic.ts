@@ -36,13 +36,12 @@ export default class Pages {
     this.viewSelect.addListener('click', (event) => this.buttonLogic(event));
     this.pagination.addListener('click', (event) => this.buttonLogic(event));
     this.maxPage = 1;
+    Sound.init();
+    this.applySoundState(Sound.IsMuted);
     this.soundButton.addListener('click', () => {
-      const buttonState = Sound.toggleVolume();
-      if (buttonState) {
-        this.soundButton.removeClass('muted');
-      } else {
-        this.soundButton.addClass('muted');
-      }
+      Sound.toggleVolume();
+      const state = Sound.IsMuted;
+      this.applySoundState(state);
     });
   }
   public get getSoundButton(): Button {
@@ -198,6 +197,18 @@ export default class Pages {
       enableClick(this.next);
       enableClick(this.prev);
       this.middleUpdated = true;
+    }
+  }
+
+  private applySoundState(isMuted: boolean): void {
+    switch (isMuted) {
+      case false:
+        this.soundButton.removeClass('muted');
+        break;
+      case true:
+        this.soundButton.addClass('muted');
+        break;
+      default:
     }
   }
 }
