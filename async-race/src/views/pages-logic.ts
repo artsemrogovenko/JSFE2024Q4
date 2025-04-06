@@ -51,7 +51,9 @@ export default class Pages {
   public get getPage(): number {
     return this.pageState[this.mode];
   }
-
+  public get totalPages(): number {
+    return this.maxPage;
+  }
   public get selectPages(): Container {
     return this.pagination;
   }
@@ -92,14 +94,16 @@ export default class Pages {
       switch (buttonText) {
         case 'prev':
         case 'next':
-          const page = this.calcPage(buttonText);
-          if (page !== undefined) {
-            this.togglePagination();
-            const pageEvent = new CustomEvent('page-changed', {
-              detail: { page: page },
-            });
-            if (this.view instanceof View)
-              this.view.getNode().dispatchEvent(pageEvent);
+          if (this.maxPage !== 0) {
+            const page = this.calcPage(buttonText);
+            if (page !== undefined) {
+              this.togglePagination();
+              const pageEvent = new CustomEvent('page-changed', {
+                detail: { page: page },
+              });
+              if (this.view instanceof View)
+                this.view.getNode().dispatchEvent(pageEvent);
+            }
           }
           break;
         case 'to garage':
@@ -175,13 +179,16 @@ export default class Pages {
   }
 
   private togglePagination(): void {
-    if (this.pageState[this.mode] === 1 && this.maxPage === 1) {
+    if (
+      (this.pageState[this.mode] === 1 && this.maxPage === 1) ||
+      this.maxPage === 0
+    ) {
       disableClick(this.next);
       disableClick(this.prev);
       this.middleUpdated = false;
       return;
     }
-    if (this.pageState[this.mode] === this.maxPage) {
+    if (this.pageState[this.mode] >= this.maxPage) {
       disableClick(this.next);
       enableClick(this.prev);
       this.middleUpdated = false;

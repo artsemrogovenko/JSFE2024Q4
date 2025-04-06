@@ -12,8 +12,9 @@ import { showInfo } from './dialog';
 import {
   disableClick,
   enableClick,
+  getList,
   isCar,
-  isCarsResponse,
+  isCarParam,
   raceHandler,
   randomCarsHandler,
 } from './functions';
@@ -57,6 +58,13 @@ export default class GarageView extends View {
 
   public get getState(): State {
     return this.state;
+  }
+
+  public disableRacing(): void {
+    if (this.raceState !== RaceState.RACING) {
+      this.raceState = RaceState.RACING;
+      this.toggleButtons();
+    }
   }
 
   public async getForm(className: string, values: CarParam): Promise<void> {
@@ -107,13 +115,31 @@ export default class GarageView extends View {
 
   public async removeCar(part: Participant): Promise<void> {
     const carId = part.parameters.id;
-    const success = await Controller.remove(carId);
-    if (success) {
-      this.clearRace();
-      this.raceContainer.deleteAllBlocks();
-      this.initRace();
+    try {
+      const success = await Controller.remove(carId);
+      if (success) {
+        part.stopSound();
+        const page = pagesLogic.totalPages === 1 ? 1 : pagesLogic.getPage + 1;
+        const limit = Limits.garage;
+        const carResponse = await getList(page, limit);
+        if (carResponse && carResponse.body) {
+          const car = carResponse.body[0];
+          if (isCarParam(car) && pagesLogic.totalPages !== pagesLogic.getPage) {
+            this.addParticipant(car);
+          }
+          if (carResponse.count) {
+            const total = parseInt(carResponse.count);
+            pagesLogic.updateTitles(total);
+            this.updateTitles(total);
+          }
+        }
+        this.raceContainer.deleteBlock(part);
+      }
+    } catch (error) {
+      throw error;
     }
   }
+
   public clearRace(): void {
     const components = this.raceContainer.getComponents();
     components.forEach((part) => {
@@ -123,6 +149,7 @@ export default class GarageView extends View {
     });
     this.raceContainer.deleteAllBlocks();
   }
+
   private init(): void {
     this.initRace();
     const buttons = ['race', 'reset', 'generate cars'];
@@ -156,11 +183,11 @@ export default class GarageView extends View {
   private async initRace(wishPage?: number): Promise<void> {
     const maxCars = Limits.garage;
     const page = wishPage ?? pagesLogic.getPage;
-    const cars = await Controller.getCarsList({ _page: page, _limit: maxCars });
-    if (isCarsResponse(cars) && cars.body) {
+    const cars = await getList(page, maxCars);
+    if (cars !== undefined) {
       this.clearRace();
       const body = cars.body;
-      if (typeof cars.count === 'string') {
+      if (typeof cars.count === 'string' && Array.isArray(body)) {
         const total = parseInt(cars.count);
         this.updateTitles(total);
         body.forEach((car) => {
@@ -197,18 +224,8 @@ export default class GarageView extends View {
         )
           switch (buttonText) {
             case 'race':
-              this.raceState = RaceState.RACING;
-              this.toggleButtons();
-              await raceHandler(components, buttonText, this.racePanel);
-              this.raceState = RaceState.FINISH;
-              this.toggleButtons();
-              break;
             case 'reset':
-              disableClick(this.racePanel);
-              await raceHandler(components, buttonText);
-              enableClick(this.racePanel);
-              this.raceState = RaceState.READY;
-              this.toggleButtons();
+              this.raceLogic(buttonText, components);
               break;
             case 'generate cars':
               showInfo('Идет добавление');
@@ -220,6 +237,39 @@ export default class GarageView extends View {
               break;
           }
       }
+    }
+  }
+
+  private async raceLogic(
+    buttonText: string,
+    components: Participant[],
+  ): Promise<void> {
+    switch (buttonText) {
+      case 'race':
+        if (this.raceContainer.getComponents().length === 0) {
+          showInfo('Гараж пуст');
+          return;
+        }
+        this.raceState = RaceState.RACING;
+        this.toggleButtons();
+        await raceHandler(
+          components,
+          buttonText,
+          this.toggleButtons.bind(this),
+          this.racePanel,
+        );
+        this.raceState = RaceState.FINISH;
+        break;
+      case 'reset':
+        disableClick(this.racePanel);
+        await raceHandler(
+          components,
+          buttonText,
+          this.toggleButtons.bind(this),
+        );
+        enableClick(this.racePanel);
+        this.raceState = RaceState.READY;
+        break;
     }
   }
 

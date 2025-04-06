@@ -2,20 +2,21 @@ import Controller from '../../api/controller';
 import { updateWinner } from '../../api/requests';
 import type Block from '../../modules/block';
 import type { Container } from '../../modules/block';
-import type {
-  Car,
-  CarParam,
-  CarsResponse,
-  EngineResponse,
-  ResponseData,
-  SprintResult,
+import type { Button } from '../../modules/buttons';
+import {
+  type Car,
+  type CarParam,
+  type CarsResponse,
+  type EngineResponse,
+  type ResponseData,
+  type SprintResult,
 } from '../../modules/types';
 import { isWinner } from '../winners/functions';
 import { addHundredCars } from './cars-generate';
 import { carFormatter, showInfo } from './dialog';
 import type { Participant } from './participant';
 
-export function isResponseData(data: object): data is ResponseData {
+export function isResponseData(data: object | unknown): data is ResponseData {
   const obj = Object.assign({}, data);
   return obj.hasOwnProperty('code') && obj.hasOwnProperty('body');
 }
@@ -41,9 +42,15 @@ export function isCarsResponse(data: object): data is CarsResponse {
   return obj.hasOwnProperty('code') && obj.hasOwnProperty('body');
 }
 
+export function isCarInfo(data: object | unknown): data is Car {
+  const obj = Object.assign({}, data);
+  return obj.hasOwnProperty('info') && obj.hasOwnProperty('id');
+}
+
 export async function raceHandler(
   participants: Participant[],
   action: string,
+  toggler: Function,
   racePanel?: Container,
 ): Promise<boolean | undefined> {
   switch (action) {
@@ -51,6 +58,7 @@ export async function raceHandler(
       racePanel?.getComponents().forEach((element) => disableClick(element));
       try {
         await calculateWinner(participants);
+        toggler();
         return true;
       } catch (error) {}
       racePanel?.getComponents().forEach((element) => enableClick(element));
@@ -60,8 +68,14 @@ export async function raceHandler(
       participants.forEach((part) => resetArray.push(part.reset));
       try {
         await Promise.allSettled(resetArray);
+        toggler();
       } catch (error) {
-        console.log(error);
+        if (error instanceof AggregateError) {
+          if (isFetchError(error.errors)) {
+            showInfo('Потеряна связь с сервером');
+            return false;
+          }
+        }
       }
       break;
     default:
@@ -83,26 +97,34 @@ async function calculateWinner(participants: Participant[]): Promise<boolean> {
     }
     return true;
   } catch (error) {
-    if (error instanceof Error)
-      if (error.message.includes('net::')) {
-        throw error;
+    if (error instanceof AggregateError) {
+      if (isFetchError(error.errors)) {
+        showInfo('Потеряна связь с сервером');
+        return false;
       } else {
         showInfo('все машины сломались');
       }
+    }
+    return true;
+  }
+}
+
+async function startLogging(participant: Participant): Promise<SprintResult> {
+  const startTime = Date.now();
+  try {
+    const result = await participant.racing;
+    const milliseconds = 1000;
+    const endTime = (Date.now() - startTime) / milliseconds;
+    return { id: result.id, info: result.info, seconds: endTime };
+  } catch (error) {
     throw error;
   }
 }
 
-function startLogging(participant: Participant): Promise<SprintResult> {
-  return Promise.resolve(
-    (async (): Promise<SprintResult> => {
-      const startTime = Date.now();
-      const result = await participant.racing;
-      const milliseconds = 1000;
-      const endTime = (Date.now() - startTime) / milliseconds;
-      return { id: result.id, info: result.info, seconds: endTime };
-    })(),
-  );
+function isFetchError(array: AggregateError[]): boolean {
+  return array.some((error) => {
+    return error instanceof TypeError;
+  });
 }
 
 export async function randomCarsHandler(): Promise<boolean> {
@@ -148,4 +170,32 @@ export function enableClick(element: Block<keyof HTMLElementTagNameMap>): void {
 
 function preventDefault(event: Event): void {
   event.preventDefault();
+}
+
+export async function getList(
+  wishPage: number,
+  limit: number,
+): Promise<CarsResponse | undefined> {
+  const cars = await Controller.getCarsList({ _page: wishPage, _limit: limit });
+  if (isCarsResponse(cars) && cars.body) {
+    return cars;
+  }
+  return;
+}
+
+export async function buttonLogic(
+  button: Button,
+  execute: Function,
+): Promise<void> {
+  disableClick(button);
+  try {
+    await execute();
+  } catch (error) {
+    if (isCarInfo(error)) {
+      return;
+    }
+    if (error instanceof TypeError) {
+      enableClick(button);
+    }
+  }
 }

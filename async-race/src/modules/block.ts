@@ -118,6 +118,9 @@ export class Container extends Block<'div'> {
   constructor(className: string) {
     super('div', className);
   }
+  public get length(): number {
+    return this.components.length;
+  }
 }
 
 export type EventHandler = EventListener | EventListenerObject;

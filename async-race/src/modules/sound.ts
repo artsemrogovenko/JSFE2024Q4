@@ -27,6 +27,9 @@ export class Sound {
     this.volume.connect(this.context.destination);
     Sound.children.push(this);
   }
+  public get noClosed(): boolean {
+    return this.context.state !== 'closed';
+  }
   public static toggleVolume(): boolean {
     const currentState = appState.getValue('sound');
     const value = !JSON.parse(currentState);
@@ -79,7 +82,7 @@ export class Sound {
     key: string,
     options: { loop?: boolean; playbackRate?: number } = {},
   ): void {
-    if (this.soundEffects[key].buffer) {
+    if (this.soundEffects[key].buffer && this.noClosed) {
       const source = this.context.createBufferSource();
       source.buffer = this.soundEffects[key].buffer!;
       source.loop = options.loop || false;
@@ -138,7 +141,9 @@ export class ParticipantSound extends Sound {
   }
   public destroy(): void {
     this.stopAll();
-    this.context.close();
+    if (this.context.state !== 'closed') {
+      this.context.close();
+    }
     const index = Sound.children.indexOf(this);
     if (index >= 0) Sound.children.splice(index, 1);
   }
@@ -169,23 +174,25 @@ export class ParticipantSound extends Sound {
   public noiseEngine(pitch: number): void {
     const playbackRate = calculatePitch(pitch);
     this.stopEngine();
-    if (!this.soundEffects.engine.buffer) return;
-    const source = this.context.createBufferSource();
-    source.buffer = this.soundEffects.engine.buffer;
-    source.loop = true;
-    source.playbackRate.value = playbackRate;
+    if (this.noClosed) {
+      if (!this.soundEffects.engine.buffer) return;
+      const source = this.context.createBufferSource();
+      source.buffer = this.soundEffects.engine.buffer;
+      source.loop = true;
+      source.playbackRate.value = playbackRate;
 
-    if (!this.soundEffects.engine.gainNode) {
-      this.soundEffects.engine.gainNode = this.context.createGain();
-      this.soundEffects.engine.gainNode.gain.value = 1.0;
-      this.soundEffects.engine.gainNode.connect(this.context.destination);
+      if (!this.soundEffects.engine.gainNode) {
+        this.soundEffects.engine.gainNode = this.context.createGain();
+        this.soundEffects.engine.gainNode.gain.value = 1.0;
+        this.soundEffects.engine.gainNode.connect(this.context.destination);
+      }
+      const gainNode = this.soundEffects.engine.gainNode;
+      gainNode.gain.value = pitch === 1 ? this.loudGain : 1;
+      source.connect(this.volume);
+      source.start();
+
+      this.soundEffects.engine.sources.push(source);
     }
-    const gainNode = this.soundEffects.engine.gainNode;
-    gainNode.gain.value = pitch === 1 ? this.loudGain : 1;
-    source.connect(this.volume);
-    source.start();
-
-    this.soundEffects.engine.sources.push(source);
   }
 }
 

@@ -55,6 +55,7 @@ export class Participant extends Container {
   }
 
   public get racing(): Promise<CarInfo> {
+    disableClick(this.carPanel);
     return this.toggleDrive();
   }
 
@@ -85,23 +86,24 @@ export class Participant extends Container {
     this.image.setAttribute('fill', param.color);
   }
 
-  private panelListener(event: Event): void {
+  private async panelListener(event: Event): Promise<void> {
     const target = event.target;
     const disabled = event.defaultPrevented;
     if (target instanceof HTMLButtonElement && !disabled) {
       const buttonText = target.innerText;
       switch (buttonText) {
         case 'Race':
-          this.toggleDrive();
+          this.garage.disableRacing();
+          buttonLogic(this.buttonEngine, this.toggleDrive.bind(this));
           break;
         case 'Home':
-          this.toggleStop();
+          buttonLogic(this.buttonState, this.toggleStop.bind(this));
           break;
         case 'Edit':
           this.garage.editCar(this);
           break;
         case 'Remove':
-          this.garage.removeCar(this);
+          buttonLogic(this.buttonRemove, () => this.garage.removeCar(this));
           break;
         default:
           break;
@@ -110,30 +112,52 @@ export class Participant extends Container {
   }
 
   private async toggleStop(): Promise<Boolean> {
-    this.engine.status = Status.stopped;
-    this.sound.stopEngine();
-    const response = await Controller.ignition(this.engine);
-    if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
-      if (response.code === HttpСode.OK) {
-        this.changeStateButton();
-        resetCar(this.imgContainer, this.carId);
-        return true;
+    const oldStatus = this.engine.status;
+    try {
+      this.engine.status = Status.stopped;
+      const response = await Controller.ignition(this.engine);
+      if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+        if (response.code === HttpСode.OK) {
+          this.sound.stopEngine();
+          this.changeStateButton();
+          resetCar(this.imgContainer, this.carId);
+          return true;
+        }
       }
+      return false;
+    } catch (e) {
+      this.engine.status = oldStatus;
+      disableClick(this.buttonEngine);
+      throw e;
+    } finally {
+      enableClick(this.carPanel);
     }
-    return false;
   }
 
   private async toggleDrive(): Promise<CarInfo> {
     this.engine.status = Status.started;
     this.sound.starter();
-    const response = await Controller.ignition(this.engine);
-    if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
-      this.sound.stopStarter();
-      this.changeStateButton();
-      this.speedParameters = response.body;
-      this.sound.noiseEngine(response.body.velocity);
-      this.engine.status = Status.drive;
-      moveCar(this.speedParameters, this.imgContainer, this.carId);
+    try {
+      const response = await Controller.ignition(this.engine);
+      if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+        this.sound.stopStarter();
+        this.changeStateButton();
+        this.speedParameters = response.body;
+        this.sound.noiseEngine(response.body.velocity);
+        this.engine.status = Status.drive;
+        moveCar(this.speedParameters, this.imgContainer, this.carId);
+      }
+      await this.drive();
+      return { id: this.carId, info: JSON.stringify(response.body) };
+    } catch (error) {
+      throw error;
+    } finally {
+      enableClick(this.carPanel);
+    }
+  }
+
+  private async drive(): Promise<void> {
+    try {
       const sprintResult = await Controller.drive(this.carId);
       const code = sprintResult.code;
       const body = sprintResult.body;
@@ -151,8 +175,10 @@ export class Participant extends Container {
           this.sound.noiseEngine(1);
           break;
       }
+    } catch (error) {
+      throw error;
     }
-    return { id: this.carId, info: JSON.stringify(response.body) };
+    return;
   }
 
   private changeStateButton(): void {
@@ -165,7 +191,6 @@ export class Participant extends Container {
       case Status.stopped:
       default:
         enableClick(this.buttonEngine);
-        disableClick(this.buttonState);
         disableClick(this.buttonState);
         break;
     }
@@ -187,6 +212,11 @@ import type {
 } from '../../modules/types';
 import { HttpСode, Status } from '../../modules/types';
 import { moveCar, resetCar, stopCar } from './animation';
-import { disableClick, enableClick, isEngineResponse } from './functions';
+import {
+  buttonLogic,
+  disableClick,
+  enableClick,
+  isEngineResponse,
+} from './functions';
 import type GarageView from './garage';
 const parser = new DOMParser();

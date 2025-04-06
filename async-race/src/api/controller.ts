@@ -59,20 +59,16 @@ export default class Controller {
       const result = await deleteCar(id);
       if (result.code === HttpСode.OK) {
         try {
-          const response = await deleteWinner(id);
-          if (response.code === HttpСode.OK) {
-            return true;
-          } else {
-            throw response;
-          }
-        } catch (error) {
-          throw error;
+          await deleteWinner(id);
+        } finally {
+          return true;
         }
       }
+      throw result;
     } catch (error) {
       showInfo('Потеряна связь с сервером');
+      throw error;
     }
-    return false;
   }
 
   public static async update(
@@ -96,10 +92,13 @@ export default class Controller {
       if (result.code === HttpСode.OK) {
         return result;
       }
+      throw result;
     } catch (error) {
-      console.log(error);
+      if (error instanceof TypeError) {
+        showInfo('Потеряна связь с сервером');
+      }
+      throw error;
     }
-    return { code: 0, body: {} };
   }
 
   public static async drive(id: number): Promise<ResponseData> {
@@ -107,10 +106,11 @@ export default class Controller {
       const result = await driveCarEngine(id);
       return result;
     } catch (error) {
-      showInfo('Потеряна связь с сервером');
-      console.log(error);
+      if (error instanceof TypeError) {
+        showInfo('Потеряна связь с сервером');
+      }
+      throw error;
     }
-    return { code: 0, body: {} };
   }
 
   public static async getCarById(id: number): Promise<ResponseData> {

@@ -1,6 +1,6 @@
 import { defineConfig ,loadEnv} from 'vite'
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import dns from 'node:dns'
-
 dns.setDefaultResultOrder('verbatim')
 
 const env = loadEnv(process.env.NODE_ENV, process.cwd(), '');
@@ -17,7 +17,17 @@ export default defineConfig({
   build: {
     minify: 'esbuild',
     outDir: '../dist',
-    assetsDir: './assets/',
+    assetsDir: 'assets',
     assetsInclude: ['**/*.*'],
-  },
+   },
+  // plugins: [
+  //   viteStaticCopy({
+  //     targets: [
+  //       {
+  //         src: 'assets',
+  //         dest: './'
+  //       }
+  //     ]
+  //   })
+  // ]
 });
