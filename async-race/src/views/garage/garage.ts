@@ -87,6 +87,10 @@ export default class GarageView extends View {
         }
         break;
       case 'form-create':
+        if (this.raceState === RaceState.RACING) {
+          showInfo('Дождитесь окончания заезда');
+          return;
+        }
         if (values.name.trim() !== '') {
           const result = await Controller.newCar(values);
           if (result && isCar(result.body)) {
@@ -225,13 +229,23 @@ export default class GarageView extends View {
           switch (buttonText) {
             case 'race':
             case 'reset':
-              this.raceLogic(buttonText, components);
+              if (this.raceContainer.getComponents().length === 0) {
+                showInfo('Гараж пуст');
+                return;
+              }
+              disableClick(this.racePanel);
+              this.raceState = RaceState.RACING;
+              try {
+                await this.panelCommand(buttonText, components);
+                this.calcState(buttonText);
+                this.toggleButtons();
+              } catch (error) {
+              } finally {
+                enableClick(this.racePanel);
+              }
               break;
             case 'generate cars':
-              showInfo('Идет добавление');
-              const success = await randomCarsHandler();
-              if (success) showInfo('Успех!');
-              this.initRace();
+              await this.generateCars();
               break;
             default:
               break;
@@ -240,37 +254,46 @@ export default class GarageView extends View {
     }
   }
 
-  private async raceLogic(
+  private async panelCommand(
     buttonText: string,
     components: Participant[],
-  ): Promise<void> {
-    switch (buttonText) {
-      case 'race':
-        if (this.raceContainer.getComponents().length === 0) {
-          showInfo('Гараж пуст');
-          return;
-        }
-        this.raceState = RaceState.RACING;
-        this.toggleButtons();
-        await raceHandler(
-          components,
-          buttonText,
-          this.toggleButtons.bind(this),
-          this.racePanel,
-        );
-        this.raceState = RaceState.FINISH;
-        break;
-      case 'reset':
-        disableClick(this.racePanel);
-        await raceHandler(
-          components,
-          buttonText,
-          this.toggleButtons.bind(this),
-        );
-        enableClick(this.racePanel);
-        this.raceState = RaceState.READY;
-        break;
+  ): Promise<boolean | void> {
+    try {
+      const result = await raceHandler(
+        components,
+        buttonText,
+        this.toggleButtons.bind(this),
+      );
+      return result;
+    } catch (error) {
+      throw error;
     }
+  }
+
+  private calcState(button: string): void {
+    if (button === 'reset') {
+      this.raceState = RaceState.READY;
+      return;
+    }
+    if (button === 'race') {
+      this.raceState = RaceState.FINISH;
+      return;
+    }
+  }
+
+  private async generateCars(): Promise<void> {
+    if (this.raceState === RaceState.RACING) {
+      showInfo('Дождитесь окончания заезда');
+      return;
+    }
+    showInfo('Идет добавление');
+    const success = await randomCarsHandler();
+    if (success) {
+      showInfo('Успех!');
+      this.raceState = RaceState.READY;
+      this.toggleButtons();
+    }
+    this.initRace();
   }
 
   private toggleButtons(): void {

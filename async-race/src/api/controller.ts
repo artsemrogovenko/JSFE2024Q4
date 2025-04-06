@@ -34,7 +34,6 @@ export default class Controller {
       return result;
     } catch (error) {
       showInfo('Потеряна связь с сервером');
-      // throw error;
     }
     return { code: 0, count: '0', body: undefined };
   }

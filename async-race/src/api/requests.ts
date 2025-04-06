@@ -114,6 +114,7 @@ export async function startStopEngine(
     });
     return objectFromBody(response);
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }

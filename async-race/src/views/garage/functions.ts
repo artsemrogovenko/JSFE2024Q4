@@ -1,7 +1,6 @@
 import Controller from '../../api/controller';
 import { updateWinner } from '../../api/requests';
 import type Block from '../../modules/block';
-import type { Container } from '../../modules/block';
 import type { Button } from '../../modules/buttons';
 import {
   type Car,
@@ -51,37 +50,29 @@ export async function raceHandler(
   participants: Participant[],
   action: string,
   toggler: Function,
-  racePanel?: Container,
-): Promise<boolean | undefined> {
+): Promise<boolean | void> {
   switch (action) {
     case 'race':
-      racePanel?.getComponents().forEach((element) => disableClick(element));
       try {
-        await calculateWinner(participants);
         toggler();
-        return true;
-      } catch (error) {}
-      racePanel?.getComponents().forEach((element) => enableClick(element));
+        await calculateWinner(participants);
+      } catch (error) {
+        throw error;
+      }
       break;
     case 'reset':
       let resetArray: Promise<Boolean>[] = [];
       participants.forEach((part) => resetArray.push(part.reset));
-      try {
-        await Promise.allSettled(resetArray);
-        toggler();
-      } catch (error) {
-        if (error instanceof AggregateError) {
-          if (isFetchError(error.errors)) {
-            showInfo('Потеряна связь с сервером');
-            return false;
-          }
-        }
+      toggler();
+      const result = (await Promise.allSettled(resetArray)).every(
+        (promise) => promise.status === 'fulfilled',
+      );
+      if (!result) {
+        throw result;
       }
       break;
-    default:
-      break;
   }
-  return;
+  return true;
 }
 
 async function calculateWinner(participants: Participant[]): Promise<boolean> {
@@ -105,7 +96,7 @@ async function calculateWinner(participants: Participant[]): Promise<boolean> {
         showInfo('все машины сломались');
       }
     }
-    return true;
+    throw false;
   }
 }
 

@@ -59,7 +59,7 @@ export class Participant extends Container {
     return this.toggleDrive();
   }
 
-  public get reset(): Promise<Boolean> {
+  public get reset(): Promise<boolean> {
     return this.toggleStop();
   }
   public get parameters(): Car {
@@ -111,7 +111,7 @@ export class Participant extends Container {
     }
   }
 
-  private async toggleStop(): Promise<Boolean> {
+  private async toggleStop(): Promise<boolean> {
     const oldStatus = this.engine.status;
     try {
       this.engine.status = Status.stopped;
@@ -124,7 +124,7 @@ export class Participant extends Container {
           return true;
         }
       }
-      return false;
+      throw response;
     } catch (e) {
       this.engine.status = oldStatus;
       disableClick(this.buttonEngine);
