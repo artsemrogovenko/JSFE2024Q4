@@ -1,7 +1,8 @@
 export class Participant extends Container {
-  private imgContainer: Container;
+  private imgContainer: Container | undefined;
+  private imageElement: HTMLElement;
   private carTag: Container;
-  private image: HTMLElement;
+  private image: HTMLElement | undefined;
   private carPanel: Container;
   private carId: number;
   private color: string;
@@ -37,16 +38,10 @@ export class Participant extends Container {
       this.buttonEngine,
       this.buttonState,
     ]);
-    this.imgContainer = new Container(`car-img _${params.id}`);
-
     const svgCopy = parser.parseFromString(svgCar, 'image/svg+xml');
-    const imageElement = svgCopy.documentElement;
-    this.image = document.importNode(imageElement, true);
-    this.imgContainer.getNode().appendChild(this.image);
-
-    this.image.setAttribute('fill', params.color);
+    this.imageElement = svgCopy.documentElement;
     this.addBlock(this.carPanel);
-    this.addBlock(this.imgContainer);
+    this.renderImage();
 
     this.garage = garage;
     this.engine = { id: params.id, status: Status.stopped };
@@ -83,7 +78,7 @@ export class Participant extends Container {
     this.name = param.name;
     this.color = param.color;
     this.carTag.setText(param.name);
-    this.image.setAttribute('fill', param.color);
+    if (this.image) this.image.setAttribute('fill', param.color);
   }
 
   private async panelListener(event: Event): Promise<void> {
@@ -120,7 +115,8 @@ export class Participant extends Container {
         if (response.code === HttpСode.OK) {
           this.sound.stopEngine();
           this.changeStateButton();
-          resetCar(this.imgContainer, this.carId);
+          if (this.imgContainer) resetCar(this.imgContainer);
+          this.renderImage();
           return true;
         }
       }
@@ -145,7 +141,8 @@ export class Participant extends Container {
         this.speedParameters = response.body;
         this.sound.noiseEngine(response.body.velocity);
         this.engine.status = Status.drive;
-        moveCar(this.speedParameters, this.imgContainer, this.carId);
+        if (this.imgContainer)
+          moveCar(this.speedParameters, this.imgContainer, this.carId);
       }
       await this.drive();
       return { id: this.carId, info: JSON.stringify(response.body) };
@@ -163,7 +160,7 @@ export class Participant extends Container {
       const body = sprintResult.body;
       switch (code) {
         case HttpСode.ServerError:
-          stopCar(this.imgContainer, this.carId);
+          if (this.imgContainer) stopCar(this.imgContainer, this.carId);
           this.sound.stopEngine();
           this.sound.broken();
           if ('message' in body && typeof body?.message === 'string') {
@@ -194,6 +191,18 @@ export class Participant extends Container {
         disableClick(this.buttonState);
         break;
     }
+  }
+
+  private renderImage(): void {
+    if (this.imgContainer) {
+      this.deleteBlock(this.imgContainer);
+    }
+    this.imgContainer = new Container(`car-img _${this.carId}`);
+    this.image = document.importNode(this.imageElement, true);
+    this.imgContainer.getNode().appendChild(this.image);
+
+    this.image.setAttribute('fill', this.color);
+    this.addBlock(this.imgContainer);
   }
 }
 

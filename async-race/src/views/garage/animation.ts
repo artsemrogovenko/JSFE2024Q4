@@ -10,20 +10,12 @@ export function moveCar(
   const carWidth = car.offsetWidth;
   const finishLine = 0.95;
   const raceWidth = document.body.offsetWidth * finishLine;
-
   const time = (raceWidth + data.distance) / data.velocity;
 
-  let animation: Animation;
+  resetCar(carBlock);
+  const animation: Animation = new Animation();
   const animationId = `car-animation_${carId}`;
-  const hasAnimation = existAnimation(car, animationId);
-  if (hasAnimation) {
-    hasAnimation.cancel();
-    stopSmoke(carBlock);
-    animation = hasAnimation;
-  } else {
-    animation = new Animation();
-    animation.id = animationId;
-  }
+  animation.id = animationId;
   smoke(carBlock);
 
   const frames = [
@@ -36,11 +28,9 @@ export function moveCar(
     fill: 'forwards',
     easing: 'linear',
   });
-  if (animation instanceof Animation) {
-    animation.effect = effect;
-    animation.timeline = document.timeline;
-    animation.play();
-  }
+  animation.effect = effect;
+  animation.timeline = document.timeline;
+  animation.play();
 }
 
 export function stopCar(carBlock: Container, carId: number): void {
@@ -48,26 +38,25 @@ export function stopCar(carBlock: Container, carId: number): void {
   const animationId = `car-animation_${carId}`;
   const animation = existAnimation(car, animationId);
   if (animation) {
-    animation.pause();
+    car.getAnimations().forEach((animation) => {
+      animation.pause();
+    });
   }
   stopSmoke(carBlock);
 }
 
-export function resetCar(carBlock: Container, carId: number): void {
+export function resetCar(carBlock: Container): void {
   const car = carBlock.getNode();
-  const animationId = `car-animation_${carId}`;
-  const animation = existAnimation(car, animationId);
-  if (animation) {
+  car.getAnimations().forEach((animation) => {
     animation.cancel();
-  }
+    animation.timeline = null;
+    animation.effect = null;
+  });
   stopSmoke(carBlock);
 }
 
-function existAnimation(
-  node: HTMLElement,
-  animationId: string,
-): Animation | undefined {
-  return node.getAnimations().find((animation) => animation.id === animationId);
+function existAnimation(node: HTMLElement, animationId: string): boolean {
+  return node.getAnimations().some((animation) => animation.id === animationId);
 }
 
 export function smoke(carBlock: Container): void {

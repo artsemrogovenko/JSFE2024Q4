@@ -238,7 +238,6 @@ export default class GarageView extends View {
               try {
                 await this.panelCommand(buttonText, components);
                 this.calcState(buttonText);
-                this.toggleButtons();
               } catch (error) {
               } finally {
                 enableClick(this.racePanel);
@@ -252,6 +251,7 @@ export default class GarageView extends View {
           }
       }
     }
+    this.toggleButtons();
   }
 
   private async panelCommand(
@@ -264,6 +264,10 @@ export default class GarageView extends View {
         buttonText,
         this.toggleButtons.bind(this),
       );
+      if (this.raceState === RaceState.RACING) {
+        this.raceState = RaceState.FINISH;
+      }
+
       return result;
     } catch (error) {
       throw error;

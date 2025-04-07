@@ -1,4 +1,4 @@
-import { defineConfig ,loadEnv} from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import dns from 'node:dns'
 dns.setDefaultResultOrder('verbatim')
@@ -19,7 +19,7 @@ export default defineConfig({
     outDir: '../dist',
     assetsDir: 'assets',
     assetsInclude: ['**/*.*'],
-   },
+  },
   // plugins: [
   //   viteStaticCopy({
   //     targets: [
@@ -29,5 +29,5 @@ export default defineConfig({
   //       }
   //     ]
   //   })
-  // ]
+  // ] 
 });
