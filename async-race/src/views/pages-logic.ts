@@ -62,6 +62,13 @@ export default class Pages {
     return this.viewSelect;
   }
 
+  public disablePagination(): void {
+    disableClick(this.pagination);
+  }
+  public enablePagination(): void {
+    enableClick(this.pagination);
+  }
+
   public updateTitles(count: number): void {
     if (this.mode !== PageMode.not_found) {
       this.maxPage = Math.ceil(count / Limits[this.mode]);

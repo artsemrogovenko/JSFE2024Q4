@@ -161,6 +161,7 @@ export function enableClick(element: Block<keyof HTMLElementTagNameMap>): void {
 
 function preventDefault(event: Event): void {
   event.preventDefault();
+  event.stopImmediatePropagation();
 }
 
 export async function getList(

@@ -235,12 +235,14 @@ export default class GarageView extends View {
               }
               disableClick(this.racePanel);
               this.raceState = RaceState.RACING;
+              pagesLogic.disablePagination();
               try {
                 await this.panelCommand(buttonText, components);
                 this.calcState(buttonText);
               } catch (error) {
               } finally {
                 enableClick(this.racePanel);
+                pagesLogic.enablePagination();
               }
               break;
             case 'generate cars':
