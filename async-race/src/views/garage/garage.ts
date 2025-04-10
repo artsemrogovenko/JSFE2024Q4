@@ -59,7 +59,20 @@ export default class GarageView extends View {
   public get getState(): State {
     return this.state;
   }
-
+  public carReadyRacing(): void {
+    const everyIsReady = this.raceContainer
+      .getComponents()
+      .every((component) => {
+        if (component instanceof Participant) {
+          return component.raceState === RaceState.READY;
+        }
+        return false;
+      });
+    if (everyIsReady) {
+      this.raceState = RaceState.READY;
+      this.toggleButtons();
+    }
+  }
   public disableRacing(): void {
     if (this.raceState !== RaceState.RACING) {
       this.raceState = RaceState.RACING;

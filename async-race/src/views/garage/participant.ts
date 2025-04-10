@@ -18,6 +18,7 @@ export class Participant extends Container {
   private buttonEngine: Button;
   private buttonState: Button;
   private sound: ParticipantSound = new ParticipantSound();
+  private state: RaceState = RaceState.READY;
 
   constructor(garage: GarageView, params: Car) {
     super('participant');
@@ -48,7 +49,9 @@ export class Participant extends Container {
     this.addListener('click', this.panelListener.bind(this));
     this.changeStateButton();
   }
-
+  public get raceState(): RaceState {
+    return this.state;
+  }
   public get racing(): Promise<CarInfo> {
     disableClick(this.carPanel);
     return this.toggleDrive();
@@ -92,7 +95,8 @@ export class Participant extends Container {
           buttonLogic(this.buttonEngine, this.toggleDrive.bind(this));
           break;
         case 'Home':
-          buttonLogic(this.buttonState, this.toggleStop.bind(this));
+          await buttonLogic(this.buttonState, this.toggleStop.bind(this));
+          this.garage.carReadyRacing();
           break;
         case 'Edit':
           this.garage.editCar(this);
@@ -117,6 +121,7 @@ export class Participant extends Container {
           this.changeStateButton();
           if (this.imgContainer) resetCar(this.imgContainer);
           this.renderImage();
+          this.state = RaceState.READY;
           return true;
         }
       }
@@ -136,6 +141,7 @@ export class Participant extends Container {
     try {
       const response = await Controller.ignition(this.engine);
       if (!Object.is({}, response.body) && isEngineResponse(response.body)) {
+        this.state = RaceState.RACING;
         this.sound.stopStarter();
         this.changeStateButton();
         this.speedParameters = response.body;
@@ -219,6 +225,7 @@ import type {
   Engine,
   EngineResponse,
 } from '../../modules/types';
+import { RaceState } from '../../modules/types';
 import { HttpСode, Status } from '../../modules/types';
 import { moveCar, resetCar, stopCar } from './animation';
 import {
