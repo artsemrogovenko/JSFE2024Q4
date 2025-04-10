@@ -79,6 +79,12 @@ export default class GarageView extends View {
       this.toggleButtons();
     }
   }
+  public enableRacing(): void {
+    if (this.raceState !== RaceState.READY) {
+      this.raceState = RaceState.READY;
+      this.toggleButtons();
+    }
+  }
 
   public async getForm(className: string, values: CarParam): Promise<void> {
     switch (className) {
@@ -135,7 +141,7 @@ export default class GarageView extends View {
     try {
       const success = await Controller.remove(carId);
       if (success) {
-        part.stopSound();
+        part.clearData();
         const page = pagesLogic.totalPages === 1 ? 1 : pagesLogic.getPage + 1;
         const limit = Limits.garage;
         const carResponse = await getList(page, limit);
@@ -150,7 +156,9 @@ export default class GarageView extends View {
             this.updateTitles(total);
           }
         }
-        this.raceContainer.deleteBlock(part);
+        const index = this.raceContainer.deleteBlock(part);
+        this.raceContainer.getComponents().splice(index, 1);
+        this.enableRacing();
       }
     } catch (error) {
       throw error;

@@ -68,6 +68,12 @@ export class Participant extends Container {
     };
     return params;
   }
+
+  public clearData(): void {
+    this.sound.stopEngine();
+    if (this.imgContainer) stopCar(this.imgContainer, this.carId);
+  }
+
   public stopSound(): void {
     this.sound.destroy();
   }

@@ -20,14 +20,14 @@ export default defineConfig({
     assetsDir: 'assets',
     assetsInclude: ['**/*.*'],
   },
-  // plugins: [
-  //   viteStaticCopy({
-  //     targets: [
-  //       {
-  //         src: 'assets',
-  //         dest: './'
-  //       }
-  //     ]
-  //   })
-  // ] 
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'assets',
+          dest: './'
+        }
+      ]
+    })
+  ] 
 });
