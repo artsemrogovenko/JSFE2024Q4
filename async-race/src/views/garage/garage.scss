@@ -44,10 +44,6 @@
   border-bottom: 5px dashed darkgoldenrod;
 
   background-color: rgb(255 228 196 / 12%);
-  background-image: url('../../assets/flag.svg');
-  background-repeat: no-repeat;
-  background-position: 80vw;
-  background-size: contain;
 
   .car-panel {
     position: relative;
@@ -108,6 +104,21 @@
     width: 64px;
     height: 30px;
   }
+}
+
+.participant::before {
+  content: '';
+
+  position: absolute;
+  top: auto;
+  left: calc(95vw - 100px - 10px);
+
+  width: 100px;
+  height: 100px;
+
+  background-image: url('../../assets/flag.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .exhaust {
