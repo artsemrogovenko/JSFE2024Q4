@@ -7,6 +7,7 @@ import ESLintPlugin from 'eslint-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import { merge } from 'webpack-merge';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,11 +18,11 @@ const config = {
   entry: path.resolve(__dirname, 'src', 'index.ts'),
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
+    filename: 'index.js',
     publicPath: basePath,
     clean: true,
   },
-  devtool: 'inline-source-map',
+  devtool: false,
   devServer: {
     open: [basePath],
     host: 'localhost',
@@ -37,9 +38,10 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.html'),
+      minify: false
     }),
     new MiniCssExtractPlugin({
-      filename: 'style.css',
+      filename: 'styles.css',
     }),
     new CleanWebpackPlugin(),
     new ESLintPlugin({
@@ -69,21 +71,25 @@ const config = {
       {
         test: /\.html$/,
         loader: 'html-loader',
+        options: {
+          sources: false,
+          minimize: false,
+        },
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader', 'sass-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: 'asset/resource',
-        generator: {
-          filename: 'assets/[hash][ext][query]',
-        },
+        // generator: {
+        //   filename: 'assets/[name]',
+        // },
       },
     ],
   },
