@@ -109,6 +109,11 @@ export default abstract class Block<T extends keyof HTMLElementTagNameMap> {
   public setStyle(): CSSStyleDeclaration {
     return this.getNode().style;
   }
+
+  public setAttribute(qualifiedName: string, value: string): void {
+    this.element.setAttribute(qualifiedName, value);
+  }
+
   protected setId(_id: string): void {
     this.element.id = _id;
   }

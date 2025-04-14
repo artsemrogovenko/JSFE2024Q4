@@ -8,8 +8,8 @@ import stylisticJs from '@stylistic/eslint-plugin-js'
 export default [
   {
     linterOptions: {
-			noInlineConfig: true,
-		},
+      noInlineConfig: true,
+    },
     ignores: ['.config/', 'dist/', 'tsconfig.json', 'node_modules', '*.config.js'],
     files: ['src/**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
@@ -37,7 +37,7 @@ export default [
       '@typescript-eslint/member-ordering': 'error',
       'class-methods-use-this': 'error',
       'prettier/prettier': 'error',
-      '@stylistic/js/line-comment-position': ["warn", { "position": "beside", "ignorePattern": "\\s*#(endregion|region)" }],
+      // '@stylistic/js/line-comment-position': ["warn", { "position": "beside", "ignorePattern": "\\s*#(endregion|region)" }],
       'max-lines-per-function': ['error', { max: 40, skipComments: true, skipBlankLines: true }],
       '@typescript-eslint/no-magic-numbers': [
         'error',

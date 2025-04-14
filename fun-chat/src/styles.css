@@ -1,3 +1,22 @@
+@import './views/login/login.scss';
+
 * {
   padding: 0;
+  border-radius: 10px;
+}
+
+main {
+  scrollbar-color: red;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: calc(100vw - 17px);
+  height: calc(100vh - 17px);
+}
+
+.ui-button {
+  min-width: 100px;
+  padding: 10px;
 }

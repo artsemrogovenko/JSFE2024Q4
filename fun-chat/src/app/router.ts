@@ -1,6 +1,8 @@
 import type Block from '../modules/block';
+import Login from '../views/login/login-view';
 import NotFound from '../views/not-found';
 
+export const base = '/artsemrogovenko-JSFE2024Q4/fun-chat/';
 declare global {
   interface Window {
     route: (event: Event) => void;
@@ -31,7 +33,7 @@ export class Router {
   };
 
   private handleLocation(): void {
-    const path = window.location.pathname;
+    const path = window.location.pathname.replace(`${base}`, '');
     const route = routes(path);
     this.setContent(route);
   }
@@ -40,9 +42,10 @@ export class Router {
 function routes(path: string): Block<'main'> {
   switch (path) {
     case '':
-    case '/login':
-    case '/main':
-    case '/about':
+    case 'login':
+      return new Login();
+    case 'main':
+    case 'about':
     default:
       break;
   }

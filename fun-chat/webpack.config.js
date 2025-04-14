@@ -4,9 +4,6 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import ESLintPlugin from 'eslint-webpack-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
-import TerserPlugin from 'terser-webpack-plugin';
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import { merge } from 'webpack-merge';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +35,7 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.html'),
+      favicon: path.resolve(__dirname, 'src','assets','favicon.svg'),
       minify: false
     }),
     new MiniCssExtractPlugin({
@@ -46,15 +44,6 @@ const config = {
     new CleanWebpackPlugin(),
     new ESLintPlugin({
       extensions: 'ts',
-    }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.resolve(__dirname, './src/assets'),
-          to: path.resolve(__dirname, './dist/assets'),
-          noErrorOnMissing: true,
-        },
-      ],
     }),
   ],
   module: {
@@ -87,9 +76,9 @@ const config = {
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: 'asset/resource',
-        // generator: {
-        //   filename: 'assets/[name]',
-        // },
+        generator: {
+          filename: 'assets/[name][ext]',
+        },
       },
     ],
   },
@@ -99,23 +88,16 @@ const config = {
   stats: {
     errorDetails: false,
   },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        minify: TerserPlugin.esbuildMinify,
-        // Link to options - https://esbuild.github.io/api/#minify
-        terserOptions: {},
-      }),
-      new CssMinimizerPlugin({
-        minify: CssMinimizerPlugin.esbuildMinify,
-        minimizerOptions: {
-          legalComments: 'none',
-        },
-      }),
-    ],
-    emitOnErrors: false,
-  },
 };
 
-export default config;
+
+export default async (env, argv) => {
+  const mode = argv.mode || 'development';
+  
+  if (mode === 'production') {
+    const prodConfig = await import('./webpack.prod.config.js');
+    return merge(config, prodConfig.default);
+  }
+  
+  return config;
+};
