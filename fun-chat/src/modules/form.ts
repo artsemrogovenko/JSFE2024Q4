@@ -40,7 +40,7 @@ export class Form<T extends Input> extends Block<'form'> {
   public get getLabel(): Label | undefined {
     return this.label;
   }
-  public get getInput(): Input | undefined {
+  public get getInput(): Input {
     return this.input;
   }
 }

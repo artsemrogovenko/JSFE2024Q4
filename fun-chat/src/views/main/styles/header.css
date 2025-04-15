@@ -1,0 +1,20 @@
+.header {
+  column-gap: 20px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 10px;
+}
+
+.header-user {
+  min-width: 100px;
+}
+
+.title-app {
+  width: 100px;
+  text-transform: uppercase;
+}
+
+.header button {
+  min-width: fit-content;
+  text-transform: uppercase;
+}

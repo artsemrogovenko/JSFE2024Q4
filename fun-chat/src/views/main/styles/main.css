@@ -1,0 +1,28 @@
+@import './header.css';
+@import './chat.css';
+@import './footer.css';
+@import './history.css';
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.main section {
+  display: flex;
+  box-sizing: border-box;
+  width: 80%;
+}
+
+section:not(.chat),
+.users,
+.history {
+  display: flex;
+  border: 2px solid rgb(0 174 255);
+}
+
+.header,
+.footer {
+  min-height: 50px;
+}

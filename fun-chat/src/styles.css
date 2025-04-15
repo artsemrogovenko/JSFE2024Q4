@@ -1,4 +1,5 @@
 @import './views/login/login.scss';
+@import './views/main/styles/main.css';
 
 * {
   padding: 0;

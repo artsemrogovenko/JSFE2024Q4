@@ -1,0 +1,7 @@
+.history .status {
+  color: brown;
+}
+
+.history .status.online {
+  color: green;
+}

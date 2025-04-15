@@ -1,5 +1,6 @@
 import type Block from '../modules/block';
 import Login from '../views/login/login-view';
+import Main from '../views/main/main-view';
 import NotFound from '../views/not-found';
 
 export const base = '/artsemrogovenko-JSFE2024Q4/fun-chat/';
@@ -45,6 +46,7 @@ function routes(path: string): Block<'main'> {
     case 'login':
       return new Login();
     case 'main':
+      return new Main();
     case 'about':
     default:
       break;
