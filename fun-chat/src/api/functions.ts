@@ -1,9 +1,32 @@
 import { appLogic } from '..';
-import type { AuthLocal, LocalUser, User, UserStatus } from '../modules/types';
+import type {
+  ApiResponse,
+  AuthLocal,
+  LocalUser,
+  User,
+  UserStatus,
+} from '../modules/types';
 
 export function handleMessage(uuid: string, message: MessageEvent): void {
-  const data = JSON.parse(message.data);
+  const data: ApiResponse = JSON.parse(message.data);
   if (isResponse(data)) {
+    switch (data.type) {
+      case 'USER_LOGOUT':
+      case 'USER_LOGIN':
+        localUserStatus(uuid, data);
+        break;
+      case 'USER_ACTIVE':
+      case 'USER_INACTIVE':
+        appLogic.saveAllUsers(data.payload);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function localUserStatus(uuid: string, data: ApiResponse): void {
+  if (data.type === 'USER_LOGOUT' || data.type === 'USER_LOGIN') {
     if ('id' in data && data.id === uuid) {
       if ('payload' in data && data.payload) {
         const userData = verifyUser(data.payload);
@@ -55,11 +78,25 @@ export function isUserStatus(data: object): data is UserStatus {
   return 'login' in data && 'isLogined' in data;
 }
 
-export function isResponse(data: object): data is Response {
+export function isResponse(data: object): data is ApiResponse {
   const obj = Object.assign({}, data);
   return (
     obj.hasOwnProperty('id') &&
     obj.hasOwnProperty('type') &&
     obj.hasOwnProperty('payload')
   );
+}
+export function gettingActive(uuid: string): string {
+  return JSON.stringify({
+    id: uuid,
+    type: 'USER_ACTIVE',
+    payload: null,
+  });
+}
+export function gettingInactive(uuid: string): string {
+  return JSON.stringify({
+    id: uuid,
+    type: 'USER_INACTIVE',
+    payload: null,
+  });
 }

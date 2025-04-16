@@ -5,18 +5,50 @@
 }
 
 .users {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   width: 30%;
   min-width: 185px;
 }
 
 .user-search {
-  display: inline-flex;
-
-  width: 100%;
+  display: flex;
   height: 30px;
   margin: 10px;
-  padding: 5px;
+  padding: 10px;
+}
+
+.user-list {
+  overflow-y: overlay;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  padding-inline-start: 20px;
+}
+
+li.user {
+  display: inline-flex;
+  width: 90%;
+  margin: 5px;
+}
+
+.user.online::before {
+  background: rgb(0 160 19);
+}
+
+.user::before {
+  content: '';
+
+  position: relative;
+  top: 4px;
+  left: -6px;
+
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  background: rgb(194 151 151);
 }
 
 .history {

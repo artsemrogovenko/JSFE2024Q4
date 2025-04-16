@@ -25,6 +25,24 @@ export class Router {
 
   private route = (event: Event): void => {
     event.preventDefault();
+    event.stopImmediatePropagation();
+    if (event instanceof PopStateEvent) {
+      const target = event.target;
+      if (
+        target &&
+        'location' in target &&
+        typeof target.location === 'object'
+      ) {
+        if (target.location && 'pathname' in target.location) {
+          switch (target.location.pathname) {
+            case `${base}main`:
+            case `${base}login`:
+              return;
+          }
+        }
+      }
+      return;
+    }
     if (event.target instanceof HTMLElement) {
       const target = event.target;
       if (target && target instanceof HTMLAnchorElement) {
@@ -40,19 +58,24 @@ export class Router {
     this.setContent(route);
   }
 }
-
-function routes(path: string): Block<'main'> {
+function routes(path: string): Block<'main'> | undefined {
   switch (path) {
     case '':
     case 'login':
+      if (Boolean(appLogic.isLogined)) {
+        return;
+      }
       return new Login();
     case 'main':
+      if (!Boolean(appLogic.isLogined)) {
+        return;
+      }
       return new Main();
     case 'about':
     default:
+      return new NotFound();
       break;
   }
-  return new NotFound();
 }
 
 export function pushState(path: string): void {

@@ -12,9 +12,11 @@ export default class Header extends Block<'section'> {
     this.appTitle.setText('Fun chat');
     this.addBlocks([this.currentUser, this.appTitle, this.about, this.logout]);
     this.logout.addListener('click', () => appLogic.logout());
+    const myName = appLogic.currentName;
+    this.setName(myName);
   }
 
-  public set userName(name: string) {
+  private setName(name: string): void {
     this.currentUser.setText(name);
   }
 }

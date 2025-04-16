@@ -1,6 +1,6 @@
 export type Indicator = 'off' | 'on';
 
-export type Response = {
+export type ApiResponse = {
   id: string | null;
   type: MessageType;
   payload: object;
@@ -13,7 +13,11 @@ export type MessageType =
   | 'MSG_DELIVER'
   | 'MSG_FROM_USER'
   | 'MSG_SEND'
-  | 'ERROR';
+  | 'ERROR'
+  | 'USER_ACTIVE'
+  | 'USER_INACTIVE'
+  | 'USER_LOGOUT'
+  | 'USER_LOGIN';
 
 export type MessagePayload = {
   message: {
