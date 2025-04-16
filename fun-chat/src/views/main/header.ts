@@ -1,3 +1,4 @@
+import { appLogic } from '../..';
 import Block, { Container } from '../../modules/block';
 import { Button } from '../../modules/buttons';
 
@@ -10,6 +11,7 @@ export default class Header extends Block<'section'> {
     super('section', 'header');
     this.appTitle.setText('Fun chat');
     this.addBlocks([this.currentUser, this.appTitle, this.about, this.logout]);
+    this.logout.addListener('click', () => appLogic.logout());
   }
 
   public set userName(name: string) {

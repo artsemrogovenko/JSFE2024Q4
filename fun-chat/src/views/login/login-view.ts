@@ -3,6 +3,7 @@ import { Button } from '../../modules/buttons';
 import { Form } from '../../modules/form';
 import { InputPassword, InputText } from '../../modules/inputs';
 import View from '../vew';
+import { checkForm } from './functions';
 
 export default class Login extends View {
   private form: FormAuth = new FormAuth('auth');
@@ -57,5 +58,8 @@ class FormAuth extends Container {
       this.submitButton,
       this.aboutButton,
     ]);
+    this.submitButton.addListener('click', (event) =>
+      checkForm(event, this.name.getInput, this.password.getInput),
+    );
   }
 }

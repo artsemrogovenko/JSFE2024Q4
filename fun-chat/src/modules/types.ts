@@ -1,24 +1,19 @@
 export type Indicator = 'off' | 'on';
 
-export type Structure = {
+export type Response = {
   id: string | null;
-  type: string;
+  type: MessageType;
   payload: object;
 };
 
-type MessageType =
+export type MessageType =
   | 'MSG_EDIT'
   | 'MSG_DELETE'
   | 'MSG_READ'
   | 'MSG_DELIVER'
   | 'MSG_FROM_USER'
-  | 'MSG_SEND';
-
-export type MessageResponse = {
-  id: string;
-  type: MessageType;
-  payload: object;
-};
+  | 'MSG_SEND'
+  | 'ERROR';
 
 export type MessagePayload = {
   message: {
@@ -36,3 +31,16 @@ export type MessageStatuses = {
   isReaded: boolean;
   isEdited: boolean;
 };
+
+export type LocalUser = {
+  login: string;
+  password: string;
+};
+
+export type User = {
+  user: UserStatus;
+};
+
+export type UserStatus = { login: string; isLogined: boolean };
+
+export type AuthLocal = 'USER_LOGOUT' | 'USER_LOGIN';

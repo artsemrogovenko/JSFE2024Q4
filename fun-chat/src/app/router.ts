@@ -1,3 +1,4 @@
+import { appLogic } from '..';
 import type Block from '../modules/block';
 import Login from '../views/login/login-view';
 import Main from '../views/main/main-view';
