@@ -1,0 +1,46 @@
+.wrapper-message {
+  display: grid;
+  grid-template-columns: 2fr;
+  grid-template-rows: 3fr;
+
+  width: 30%;
+  height: fit-content;
+
+  background: #ffe87756;
+}
+
+.wrapper-message.you {
+  background: #a0ff7756;
+}
+
+.message-date {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.message {
+  grid-column: span 2;
+  grid-row: 2;
+
+  padding-left: 13px;
+  border-radius: unset;
+
+  word-break: break-word;
+
+  background: white;
+}
+
+.message-status {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.messages-list {
+  overflow-x: overlay;
+  display: flex;
+  flex-direction: column;
+  row-gap: 11px;
+  justify-items: stretch;
+
+  width: 100%;
+}

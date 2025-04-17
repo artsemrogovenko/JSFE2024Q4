@@ -1,4 +1,4 @@
-import { Container } from './block';
+import { Container } from '../../../modules/block';
 
 export default class SelectedUser extends Container {
   private selectedName = new Container('selected');

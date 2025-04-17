@@ -3,25 +3,52 @@ import type {
   ApiResponse,
   AuthLocal,
   LocalUser,
+  Message,
+  MessageHistory,
+  MessagePayload,
+  MessageStatuses,
   User,
   UserStatus,
 } from '../modules/types';
+import Chat from '../views/main/chat';
 
 export function handleMessage(uuid: string, message: MessageEvent): void {
   const data: ApiResponse = JSON.parse(message.data);
   if (isResponse(data)) {
     switch (data.type) {
-      case 'USER_LOGOUT':
-      case 'USER_LOGIN':
-        localUserStatus(uuid, data);
+      case 'MSG_FROM_USER':
+      case 'MSG_SEND':
+        getMessages(data);
         break;
-      case 'USER_ACTIVE':
-      case 'USER_INACTIVE':
-        appLogic.saveAllUsers(data.payload);
-        break;
+
       default:
+        handleListsAndAuth(uuid, data);
         break;
     }
+  }
+}
+
+function handleListsAndAuth(uuid: string, data: ApiResponse): void {
+  switch (data.type) {
+    case 'USER_LOGOUT':
+    case 'USER_LOGIN':
+      localUserStatus(uuid, data);
+      break;
+    case 'USER_ACTIVE':
+    case 'USER_INACTIVE':
+      appLogic.saveAllUsers(data.payload);
+      break;
+    default:
+      break;
+  }
+}
+
+function getMessages(object: ApiResponse): void {
+  if (isMessageHistory(object.payload)) {
+    Chat.setHistory(object.payload.messages);
+  }
+  if (isMessage(object.payload)) {
+    Chat.setHistory(object.payload.message);
   }
 }
 
@@ -65,7 +92,6 @@ export function isUser(data: object | undefined): data is User {
   if ('user' in obj) {
     return (
       typeof obj.user === 'object' &&
-      typeof obj.user === 'object' &&
       obj.user !== null &&
       'login' in obj.user &&
       'isLogined' in obj.user
@@ -86,6 +112,52 @@ export function isResponse(data: object): data is ApiResponse {
     obj.hasOwnProperty('payload')
   );
 }
+
+function isMessageHistory(data: object): data is MessageHistory {
+  const obj = Object.assign({}, data);
+  return 'messages' in obj && Array.isArray(obj.messages);
+}
+
+function isMessage(data: object): data is Message {
+  const obj = Object.assign({}, data);
+  return (
+    'message' in obj &&
+    typeof obj.message === 'object' &&
+    obj.message !== null &&
+    isMessagePayload(obj.message)
+  );
+}
+
+export function isMessagePayload(data: object): data is MessagePayload {
+  const obj = Object.assign({}, data);
+  if (obj === null) return false;
+  return (
+    'id' in obj &&
+    'from' in obj &&
+    'to' in obj &&
+    'text' in obj &&
+    'datetime' in obj &&
+    'status' in obj &&
+    typeof obj.status === 'object' &&
+    isMessageStatuses(obj.status)
+  );
+}
+
+export function isMessageStatuses(
+  data: object | null,
+): data is MessageStatuses {
+  const obj = Object.assign({}, data);
+  return (
+    obj.hasOwnProperty('isDelivered') &&
+    obj.hasOwnProperty('isReaded') &&
+    obj.hasOwnProperty('isEdited')
+  );
+}
+
+function clone(data: unknown): object {
+  return JSON.parse(JSON.stringify(data));
+}
+
 export function gettingActive(uuid: string): string {
   return JSON.stringify({
     id: uuid,
@@ -98,5 +170,17 @@ export function gettingInactive(uuid: string): string {
     id: uuid,
     type: 'USER_INACTIVE',
     payload: null,
+  });
+}
+
+export function messageHistory(uuid: string, nickName: string): string {
+  return JSON.stringify({
+    id: uuid,
+    type: 'MSG_FROM_USER',
+    payload: {
+      user: {
+        login: nickName,
+      },
+    },
   });
 }

@@ -19,21 +19,25 @@ export type MessageType =
   | 'USER_LOGOUT'
   | 'USER_LOGIN';
 
+export type Message = { message: MessagePayload };
+
 export type MessagePayload = {
-  message: {
-    id: string;
-    from: string;
-    to: string;
-    text: string;
-    datetime: number;
-    status: MessageStatuses;
-  };
+  id: string;
+  from: string;
+  to: string;
+  text: string;
+  datetime: number;
+  status: MessageStatuses;
 };
 
 export type MessageStatuses = {
   isDelivered: boolean;
   isReaded: boolean;
   isEdited: boolean;
+};
+
+export type MessageHistory = {
+  messages: MessagePayload[];
 };
 
 export type LocalUser = {

@@ -1,3 +1,4 @@
+import { appLogic } from '..';
 import { Container } from './block';
 import { Label } from './form';
 import type { MessagePayload, MessageStatuses } from './types';
@@ -10,8 +11,12 @@ export default class Messages extends Container {
 
   public addMessage(data: MessagePayload): void {
     let message = new Message(data);
-    this.messages.set(data.message.id, message);
+    this.messages.set(data.id, message);
     this.addBlock(message);
+  }
+
+  public addMessages(data: MessagePayload[]): void {
+    data.forEach((message) => this.addMessage(message));
   }
 }
 
@@ -23,31 +28,38 @@ class Message extends Container {
   constructor(data: MessagePayload) {
     super('wrapper-message');
     this.addBlocks([this.from, this.timestamp, this.text, this.status]);
-    this.text.setText(data.message.text);
-    const timestamp = new Date(data.message.datetime);
-    this.timestamp.setText(timestamp.toString());
-    this.setProperties(data.message.status);
+    this.text.setText(data.text);
+    const timestamp = new Date(data.datetime);
+    const format: Intl.DateTimeFormatOptions = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    };
+    this.timestamp.setText(timestamp.toLocaleDateString('ru-RU', format));
+    const forMe = appLogic.currentName === data.to;
+    this.setProperties(data.status, forMe);
   }
 
-  public delivered(): void {
-    this.status.setText('доставлено');
+  public delivered(forMe: boolean): void {
+    !forMe ? this.status.setText('доставлено') : this.status.setText('ᅟ');
   }
-  public readed(): void {
-    this.status.setText('прочитано');
+  public readed(forMe: boolean): void {
+    !forMe ? this.status.setText('прочитано') : this.status.setText('ᅟ');
   }
   public edited(): void {
     this.status.addClass('edited');
   }
 
-  private setProperties(data: MessageStatuses): void {
+  private setProperties(data: MessageStatuses, forMe: boolean): void {
     if (!data.isDelivered && !data.isReaded) {
       this.status.setText('отправлено');
     }
     if (data.isDelivered && !data.isReaded) {
-      this.delivered();
+      this.delivered(forMe);
     }
     if (data.isReaded) {
-      this.readed();
+      this.readed(forMe);
     }
     if (data.isEdited) {
       this.edited();

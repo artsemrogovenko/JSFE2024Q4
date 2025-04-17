@@ -3,6 +3,7 @@ import {
   gettingActive,
   gettingInactive,
   handleMessage,
+  messageHistory,
 } from '../api/functions';
 import type { UserStatus } from '../modules/types';
 import { pushState } from './router';
@@ -86,6 +87,12 @@ export class AppLogic {
 
   public getList(): UserStatus[] {
     return this.users;
+  }
+
+  public fetchHistory(from: string): void {
+    if (this.socket && this.socket.OPEN) {
+      this.socket.send(messageHistory(this.uuid, from));
+    }
   }
 
   private login(): void {
