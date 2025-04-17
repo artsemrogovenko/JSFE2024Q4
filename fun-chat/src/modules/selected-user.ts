@@ -5,6 +5,7 @@ export default class SelectedUser extends Container {
   private isOnline = new Container('status');
   constructor() {
     super('selected-user');
+    this.addBlocks([this.selectedName, this.isOnline]);
   }
 
   public set status(online: boolean) {
