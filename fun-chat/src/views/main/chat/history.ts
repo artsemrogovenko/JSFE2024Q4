@@ -47,4 +47,7 @@ export class History extends Block<'article'> {
   public clearText(): void {
     this.send.getInput.clear();
   }
+  public clearList(): void {
+    this.messages.clearList();
+  }
 }

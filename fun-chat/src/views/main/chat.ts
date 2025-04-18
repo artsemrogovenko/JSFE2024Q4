@@ -1,6 +1,6 @@
 import Block from '../../modules/block';
 import type { MessagePayload } from '../../modules/types';
-import { Users, UserList } from './chat/users-block';
+import { Users } from './chat/users-block';
 import { pickUser } from './chat/utils';
 import { History } from './chat/history';
 import { appLogic } from '../..';
@@ -17,7 +17,7 @@ export default class Chat extends Block<'section'> {
       .addListener('click', (event) => this.selectUser(event));
   }
 
-  public static setHistory(history: MessagePayload[] | MessagePayload): void {
+  public static addHistory(history: MessagePayload[] | MessagePayload): void {
     Chat.history.newData(history);
   }
 
@@ -30,6 +30,7 @@ export default class Chat extends Block<'section'> {
   private selectUser(event: Event): void {
     const user = pickUser(event);
     if (user !== undefined) {
+      Chat.history.clearList();
       Chat.history.setUser(user);
       appLogic.fetchHistory(user.name);
       this.selectedUser = user.name;

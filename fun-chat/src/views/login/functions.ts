@@ -10,7 +10,12 @@ export function checkForm(event: Event, name: Input, password: Input): void {
   if (target instanceof HTMLButtonElement) {
     if (nameLength >= minlength && nameLength <= maxlength) {
       if (passwordLength >= minlength && passwordLength <= maxlength) {
-        appLogic.createSocket(name.getValue(), password.getValue());
+        if (
+          name.getValue().trim() !== '' &&
+          password.getValue().trim() !== ''
+        ) {
+          appLogic.createSocket(name.getValue(), password.getValue());
+        }
       }
     }
   }

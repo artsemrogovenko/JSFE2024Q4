@@ -45,10 +45,10 @@ function handleListsAndAuth(uuid: string, data: ApiResponse): void {
 
 function getMessages(object: ApiResponse): void {
   if (isMessageHistory(object.payload)) {
-    Chat.setHistory(object.payload.messages);
+    Chat.addHistory(object.payload.messages);
   }
   if (isMessage(object.payload)) {
-    Chat.setHistory(object.payload.message);
+    Chat.addHistory(object.payload.message);
   }
 }
 

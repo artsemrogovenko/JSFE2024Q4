@@ -63,11 +63,13 @@ function routes(path: string): Block<'main'> | undefined {
     case '':
     case 'login':
       if (Boolean(appLogic.isLogined)) {
+        pushState('main');
         return;
       }
       return new Login();
     case 'main':
       if (!Boolean(appLogic.isLogined)) {
+        pushState('login');
         return;
       }
       return new Main();

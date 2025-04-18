@@ -29,6 +29,9 @@ export default class Messages extends Container {
   public addMessages(data: MessagePayload[]): void {
     data.forEach((message) => this.addMessage(message));
   }
+  public clearList(): void {
+    this.deleteAllBlocks();
+  }
 }
 
 class Message extends Container {
@@ -62,7 +65,8 @@ class Message extends Container {
     !forMe ? this.status.setText('прочитано') : this.status.setText('ᅟ');
   }
   public edited(): void {
-    this.status.addClass('edited');
+    this.status.setText('изменено');
+    // this.status.addClass('edited');
   }
 
   private setProperties(data: MessageStatuses, forMe: boolean): void {
