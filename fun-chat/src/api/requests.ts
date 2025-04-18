@@ -58,3 +58,47 @@ export function sendingMessagetoUser(
     },
   });
 }
+//#region notifications from client
+export function messageReadStatusChange(
+  uuid: string,
+  messageId: string,
+): string {
+  return JSON.stringify({
+    id: uuid,
+    type: 'MSG_READ',
+    payload: {
+      message: {
+        id: messageId,
+      },
+    },
+  });
+}
+
+export function messageDeletion(uuid: string, messageId: string): string {
+  return JSON.stringify({
+    id: uuid,
+    type: 'MSG_DELETE',
+    payload: {
+      message: {
+        id: messageId,
+      },
+    },
+  });
+}
+
+export function messageTextEditing(
+  uuid: string,
+  messageId: string,
+  text: string,
+): string {
+  return JSON.stringify({
+    id: uuid,
+    type: 'MSG_EDIT',
+    payload: {
+      message: {
+        id: messageId,
+        text: text,
+      },
+    },
+  });
+}

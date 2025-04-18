@@ -1,4 +1,5 @@
 import { appLogic } from '..';
+import Messages from '../modules/messages';
 import type {
   ApiResponse,
   UserStatus,
@@ -7,6 +8,10 @@ import type {
   Message,
   MessagePayload,
   MessageStatuses,
+  MsgDelete,
+  MsgEdit,
+  MsgRead,
+  NotifyMsg,
 } from '../modules/types';
 import Chat from '../views/main/chat';
 
@@ -18,7 +23,14 @@ export function handleMessage(uuid: string, message: MessageEvent): void {
       case 'MSG_SEND':
         getMessages(data);
         break;
-
+      case 'MSG_DELIVER':
+      case 'MSG_READ':
+      case 'MSG_DELETE':
+      case 'MSG_EDIT':
+        Messages.updateStatus(uuid, data.payload);
+        break;
+      case 'ERROR':
+        throw new Error(message.data);
       default:
         handleListsAndAuth(uuid, data);
         break;
@@ -134,5 +146,33 @@ export function isMessageStatuses(
     obj.hasOwnProperty('isDelivered') &&
     obj.hasOwnProperty('isReaded') &&
     obj.hasOwnProperty('isEdited')
+  );
+}
+
+export function isMsgEdit(obj: object): obj is MsgEdit {
+  return obj !== null && 'isEdited' in obj && typeof obj.isEdited === 'boolean';
+}
+
+export function isMsgDelete(obj: object): obj is MsgDelete {
+  return (
+    obj !== null && 'isDeleted' in obj && typeof obj.isDeleted === 'boolean'
+  );
+}
+
+export function isMsgRead(obj: object): obj is MsgRead {
+  return obj !== null && 'isReaded' in obj && typeof obj.isReaded === 'boolean';
+}
+
+export function isNotifyStatus(obj: any): obj is MsgEdit | MsgDelete | MsgRead {
+  return isMsgEdit(obj) || isMsgDelete(obj) || isMsgRead(obj);
+}
+
+export function isNotifyMsg(obj: object): obj is NotifyMsg {
+  return (
+    'id' in obj &&
+    typeof obj.id === 'string' &&
+    ('text'! in obj || ('text' in obj && typeof obj.text === 'string')) &&
+    'status' in obj &&
+    isNotifyStatus(obj.status)
   );
 }

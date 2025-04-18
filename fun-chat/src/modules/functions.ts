@@ -1,3 +1,4 @@
+import { appLogic } from '..';
 import type Block from './block';
 
 export function disableClick(
@@ -16,4 +17,14 @@ export function enableClick(element: Block<keyof HTMLElementTagNameMap>): void {
 function preventDefault(event: Event): void {
   event.preventDefault();
   event.stopImmediatePropagation();
+}
+
+export function messageLogic(
+  event: Event,
+  messageId: string,
+  owner: boolean,
+): void {
+  if (owner === false) {
+    appLogic.readMessage(messageId);
+  }
 }

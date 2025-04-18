@@ -31,6 +31,9 @@ export class History extends Block<'article'> {
   public getSelected(): string {
     return this.selectedUser.getName;
   }
+  public clearSelected(): void {
+    this.selectedUser.name = '';
+  }
 
   public setUser(user: UserElement): void {
     this.selectedUser.name = user.name;

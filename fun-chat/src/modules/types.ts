@@ -52,3 +52,21 @@ export type User = {
 export type UserStatus = { login: string; isLogined: boolean };
 
 export type AuthLocal = 'USER_LOGOUT' | 'USER_LOGIN';
+
+export type MsgEdit = {
+  isEdited: boolean;
+};
+export type MsgDelete = {
+  isDeleted: boolean;
+};
+export type MsgRead = {
+  isReaded: boolean;
+};
+
+export type NotifyMsg = {
+  message: {
+    id: string;
+    text?: string;
+    status: MsgEdit | MsgDelete | MsgRead;
+  };
+};

@@ -24,9 +24,14 @@ export default class Chat extends Block<'section'> {
   public static getSelected(): string {
     return Chat.history.getSelected();
   }
+  public static resetSelected(): void {
+    Chat.history.clearSelected();
+  }
+
   public static clearText(): void {
     this.history.clearText();
   }
+
   private selectUser(event: Event): void {
     const user = pickUser(event);
     if (user !== undefined) {

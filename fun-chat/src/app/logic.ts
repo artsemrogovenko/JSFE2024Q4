@@ -2,11 +2,15 @@ import {
   auth,
   gettingActive,
   gettingInactive,
+  messageDeletion,
   messageHistory,
+  messageReadStatusChange,
+  messageTextEditing,
   sendingMessagetoUser,
 } from '../api/requests';
 import { handleMessage } from '../api/utils';
 import type { UserStatus } from '../modules/types';
+import Chat from '../views/main/chat';
 import { pushState } from './router';
 
 export class AppLogic {
@@ -55,11 +59,12 @@ export class AppLogic {
 
   public meLogined(): void {
     if (this.logined) {
-      this.getListUsers();
       pushState('main');
+      this.getListUsers();
     } else {
       if (this.socket) {
         this.socket.close();
+        Chat.resetSelected();
       }
       pushState('login');
     }
@@ -99,6 +104,20 @@ export class AppLogic {
       const request = sendingMessagetoUser(this.uuid, to, message);
       this.sendRequest(request);
     }
+  }
+
+  public readMessage(messageId: string): void {
+    const request = messageReadStatusChange(this.uuid, messageId);
+    this.sendRequest(request);
+  }
+
+  public deleteMessage(messageId: string): void {
+    const request = messageDeletion(this.uuid, messageId);
+    this.sendRequest(request);
+  }
+  public editMessage(messageId: string, newText: string): void {
+    const request = messageTextEditing(this.uuid, messageId, newText);
+    this.sendRequest(request);
   }
 
   private login(): void {
