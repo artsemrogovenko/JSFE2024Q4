@@ -31,7 +31,6 @@ export default class Chat extends Block<'section'> {
     const user = pickUser(event);
     if (user !== undefined) {
       Chat.history.setUser(user);
-      UserList.selectedUser(user);
       appLogic.fetchHistory(user.name);
       this.selectedUser = user.name;
     }

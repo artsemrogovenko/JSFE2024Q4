@@ -1,5 +1,6 @@
 import { appLogic } from '..';
 import Chat from '../views/main/chat';
+import { UserList } from '../views/main/chat/users-block';
 import { Container } from './block';
 import { Label } from './form';
 import type { MessagePayload, MessageStatuses } from './types';
@@ -17,9 +18,11 @@ export default class Messages extends Container {
     if (data.from === selectedUser || data.to === selectedUser) {
       this.addBlock(message);
       this.element.scrollTop = this.element.scrollHeight;
-    }
-    if (data.to === selectedUser) {
-      Chat.clearText();
+      if (data.to === selectedUser) {
+        Chat.clearText();
+      }
+    } else {
+      UserList.increaseUnreadCount(data.from, 1);
     }
   }
 

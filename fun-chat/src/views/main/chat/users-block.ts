@@ -43,5 +43,18 @@ export class UserList extends Block<'ul'> {
   public static getUser(userName: string): UserElement | undefined {
     return this.dictionary.get(userName);
   }
-  public static selectedUser(user: UserElement): void {}
+  // static selectedUser(user: UserElement) {
+  // }
+  public static increaseUnreadCount(userName: string, count: number): void {
+    const user = this.getUser(userName);
+    if (user) {
+      user.increaseCount(count);
+    }
+  }
+  public static decreaseUnreadCount(userName: string, count: number): void {
+    const user = this.getUser(userName);
+    if (user) {
+      user.decreaseCount(count);
+    }
+  }
 }
