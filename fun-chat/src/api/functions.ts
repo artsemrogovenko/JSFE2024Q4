@@ -1,7 +1,8 @@
-import { appLogic } from '..';
+import { appLogic, appState } from '..';
 import type {
   ApiResponse,
   AuthLocal,
+  AuthStorage,
   LocalUser,
   Message,
   MessageHistory,
@@ -104,6 +105,10 @@ export function isUserStatus(data: object): data is UserStatus {
   return 'login' in data && 'isLogined' in data;
 }
 
+export function isUserStatusArray(data: object[]): data is UserStatus[] {
+  return data.every((element) => isUserStatus(element));
+}
+
 export function isResponse(data: object): data is ApiResponse {
   const obj = Object.assign({}, data);
   return (
@@ -154,8 +159,26 @@ export function isMessageStatuses(
   );
 }
 
+export function isAuthStorage(data: object | null): data is AuthStorage {
+  const obj = Object.assign({}, data);
+  return (
+    obj.hasOwnProperty('uuid') &&
+    obj.hasOwnProperty('logined') &&
+    obj.hasOwnProperty('localUser')
+  );
+}
+
 function clone(data: unknown): object {
   return JSON.parse(JSON.stringify(data));
+}
+
+export function saveToStorage(
+  uuid: string,
+  logined: boolean,
+  user: object,
+): void {
+  const data = { uuid: uuid, logined: logined, localUser: user };
+  appState.setValue('localuser', JSON.stringify(data));
 }
 
 export function gettingActive(uuid: string): string {

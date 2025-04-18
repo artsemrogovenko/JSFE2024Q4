@@ -1,9 +1,14 @@
+import { appState } from '..';
 import {
   auth,
   gettingActive,
   gettingInactive,
   handleMessage,
+  isAuthStorage,
+  isUserStatus,
+  isUserStatusArray,
   messageHistory,
+  saveToStorage,
 } from '../api/functions';
 import type { UserStatus } from '../modules/types';
 import { pushState } from './router';
@@ -13,7 +18,22 @@ export class AppLogic {
   private uuid: string = '';
   private logined: boolean = false;
   private localUser = { login: '', password: '' };
-  private users: UserStatus[] = [];
+  private users = new Map<string, object>();
+
+  constructor() {
+    const user = appState.getValue('localuser');
+    if (user !== '') {
+      const data = JSON.parse(user);
+      if (isAuthStorage(data)) {
+        if (data.uuid !== '') {
+          this.localUser = data.localUser;
+          this.logined = data.logined;
+          this.uuid = data.uuid;
+          this.initSocket();
+        }
+      }
+    }
+  }
 
   public get currentName(): string {
     return this.localUser.login;
@@ -24,10 +44,15 @@ export class AppLogic {
   }
 
   public createSocket(name: string, password: string): void {
-    this.uuid = self.crypto.randomUUID();
-    this.localUser.login = name;
-    this.localUser.password = password;
-    this.initSocket();
+    if (
+      this.socket === undefined ||
+      this.socket.readyState === WebSocket.CLOSING
+    ) {
+      this.uuid = self.crypto.randomUUID();
+      this.localUser.login = name;
+      this.localUser.password = password;
+      this.initSocket();
+    }
   }
 
   public closeConnection(): void {
@@ -42,8 +67,10 @@ export class AppLogic {
 
   public setStatus(value: boolean): void {
     if (!this.logined === value) {
+      // this.getListUsers();
       this.logined = value;
     }
+    saveToStorage(this.uuid, this.logined, this.localUser);
     this.meLogined();
   }
 
@@ -56,11 +83,13 @@ export class AppLogic {
 
   public meLogined(): void {
     if (this.logined) {
-      this.getListUsers();
       pushState('main');
+      this.getListUsers();
     } else {
       if (this.socket) {
         this.socket.close();
+        this.socket = undefined;
+        appState.setValue('localuser', '');
       }
       pushState('login');
     }
@@ -69,24 +98,38 @@ export class AppLogic {
   public saveAllUsers(data: object): void {
     if ('users' in data && Array.isArray(data.users)) {
       const usersArray = data.users;
-      this.users.push(...usersArray);
+      usersArray.forEach((user) => {
+        if (isUserStatus(user)) {
+          this.users.set(user.login, user);
+        }
+      });
+      // this.users.push(...usersArray);
     }
   }
 
   public getListUsers(): void {
-    if (this.socket && this.socket.OPEN) {
-      this.socket.send(gettingActive(this.uuid));
-      this.socket.send(gettingInactive(this.uuid));
-      const event = new Event('List_received');
-      const delay = 200;
-      setTimeout(() => {
-        document.dispatchEvent(event);
-      }, delay);
+    try {
+      console.log('getListUsers');
+      if (this.socket) {
+        this.socket.send(gettingActive(this.uuid));
+        this.socket.send(gettingInactive(this.uuid));
+        const event = new Event('List_received');
+        const delay = 200;
+        setTimeout(() => {
+          document.dispatchEvent(event);
+        }, delay);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
-  public getList(): UserStatus[] {
-    return this.users;
+  public getList(): UserStatus[] | [] {
+    console.log('getList');
+    let array = [...this.users.values()];
+    console.log(array);
+    return isUserStatusArray(array) ? array : [];
+    // return Array.from(this.users);
   }
 
   public fetchHistory(from: string): void {
@@ -97,6 +140,7 @@ export class AppLogic {
 
   private login(): void {
     const request = auth(this.uuid, 'USER_LOGIN', this.localUser);
+    console.log(request);
     if (this.socket) {
       this.socket.send(request);
     }

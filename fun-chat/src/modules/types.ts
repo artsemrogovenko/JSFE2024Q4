@@ -52,3 +52,9 @@ export type User = {
 export type UserStatus = { login: string; isLogined: boolean };
 
 export type AuthLocal = 'USER_LOGOUT' | 'USER_LOGIN';
+
+export type AuthStorage = {
+  uuid: string;
+  logined: boolean;
+  localUser: { login: string; password: string };
+};
