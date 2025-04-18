@@ -44,6 +44,10 @@ export class Input extends Block<'input'> {
   public enable(): void {
     this.element.disabled = false;
   }
+
+  public clear(): void {
+    this.element.value = '';
+  }
 }
 
 export class InputText extends Input {

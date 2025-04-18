@@ -5,11 +5,13 @@
 
   width: 30%;
   height: fit-content;
+  border-radius: unset;
 
   background: #ffe87756;
 }
 
 .wrapper-message.you {
+  align-self: end;
   background: #a0ff7756;
 }
 
@@ -43,4 +45,5 @@
   justify-items: stretch;
 
   width: 100%;
+  border-radius: unset;
 }

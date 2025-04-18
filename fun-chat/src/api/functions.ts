@@ -184,3 +184,20 @@ export function messageHistory(uuid: string, nickName: string): string {
     },
   });
 }
+
+export function sendingMessagetoUser(
+  uuid: string,
+  to: string,
+  message: string,
+): string {
+  return JSON.stringify({
+    id: uuid,
+    type: 'MSG_SEND',
+    payload: {
+      message: {
+        to: to,
+        text: message,
+      },
+    },
+  });
+}

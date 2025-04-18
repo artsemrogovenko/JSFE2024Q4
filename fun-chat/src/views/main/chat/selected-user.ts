@@ -8,6 +8,10 @@ export default class SelectedUser extends Container {
     this.addBlocks([this.selectedName, this.isOnline]);
   }
 
+  public get getName(): string {
+    return this.selectedName.getNode().textContent ?? '';
+  }
+
   public set status(online: boolean) {
     switch (online) {
       case true:

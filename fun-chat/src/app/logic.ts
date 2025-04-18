@@ -4,6 +4,7 @@ import {
   gettingInactive,
   handleMessage,
   messageHistory,
+  sendingMessagetoUser,
 } from '../api/functions';
 import type { UserStatus } from '../modules/types';
 import { pushState } from './router';
@@ -92,6 +93,15 @@ export class AppLogic {
   public fetchHistory(from: string): void {
     if (this.socket && this.socket.OPEN) {
       this.socket.send(messageHistory(this.uuid, from));
+    }
+  }
+
+  public sendMessage(to: string, message: string): void {
+    if (message.trim() !== '') {
+      const request = sendingMessagetoUser(this.uuid, to, message);
+      if (this.socket) {
+        this.socket.send(request);
+      }
     }
   }
 

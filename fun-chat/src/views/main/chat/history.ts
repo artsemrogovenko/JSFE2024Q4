@@ -6,6 +6,7 @@ import Messages from '../../../modules/messages';
 import type { MessagePayload } from '../../../modules/types';
 import SelectedUser from './selected-user';
 import type UserElement from './user-element';
+import { sendMessage } from './utils';
 
 export class History extends Block<'article'> {
   private selectedUser = new SelectedUser();
@@ -23,6 +24,12 @@ export class History extends Block<'article'> {
     const sendButton = new Button('send', 'Отправить');
     this.send.getInput.setAttribute('placeholder', 'Сообщение...');
     this.send.addBlock(sendButton);
+    this.send.addListener('submit', (event) => {
+      sendMessage(event, this.getSelected());
+    });
+  }
+  public getSelected(): string {
+    return this.selectedUser.getName;
   }
 
   public setUser(user: UserElement): void {
@@ -36,5 +43,8 @@ export class History extends Block<'article'> {
     } else {
       this.messages.addMessage(data);
     }
+  }
+  public clearText(): void {
+    this.send.getInput.clear();
   }
 }

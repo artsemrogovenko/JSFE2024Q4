@@ -1,4 +1,5 @@
 import { appLogic } from '..';
+import Chat from '../views/main/chat';
 import { Container } from './block';
 import { Label } from './form';
 import type { MessagePayload, MessageStatuses } from './types';
@@ -12,7 +13,14 @@ export default class Messages extends Container {
   public addMessage(data: MessagePayload): void {
     let message = new Message(data);
     this.messages.set(data.id, message);
-    this.addBlock(message);
+    const selectedUser = Chat.getSelected();
+    if (data.from === selectedUser || data.to === selectedUser) {
+      this.addBlock(message);
+      this.element.scrollTop = this.element.scrollHeight;
+    }
+    if (data.to === selectedUser) {
+      Chat.clearText();
+    }
   }
 
   public addMessages(data: MessagePayload[]): void {
@@ -38,6 +46,9 @@ class Message extends Container {
     };
     this.timestamp.setText(timestamp.toLocaleDateString('ru-RU', format));
     const forMe = appLogic.currentName === data.to;
+    if (!forMe) {
+      this.addClass('you');
+    }
     this.setProperties(data.status, forMe);
   }
 
