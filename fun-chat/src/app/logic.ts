@@ -2,10 +2,10 @@ import {
   auth,
   gettingActive,
   gettingInactive,
-  handleMessage,
   messageHistory,
   sendingMessagetoUser,
-} from '../api/functions';
+} from '../api/requests';
+import { handleMessage } from '../api/utils';
 import type { UserStatus } from '../modules/types';
 import { pushState } from './router';
 
@@ -50,9 +50,7 @@ export class AppLogic {
 
   public logout(): void {
     const request = auth(this.uuid, 'USER_LOGOUT', this.localUser);
-    if (this.socket) {
-      this.socket.send(request);
-    }
+    this.sendRequest(request);
   }
 
   public meLogined(): void {
@@ -99,17 +97,13 @@ export class AppLogic {
   public sendMessage(to: string, message: string): void {
     if (message.trim() !== '') {
       const request = sendingMessagetoUser(this.uuid, to, message);
-      if (this.socket) {
-        this.socket.send(request);
-      }
+      this.sendRequest(request);
     }
   }
 
   private login(): void {
     const request = auth(this.uuid, 'USER_LOGIN', this.localUser);
-    if (this.socket) {
-      this.socket.send(request);
-    }
+    this.sendRequest(request);
   }
 
   private initSocket(): void {
@@ -118,5 +112,11 @@ export class AppLogic {
     this.socket.addEventListener('message', (message) =>
       handleMessage(this.uuid, message),
     );
+  }
+
+  private sendRequest(request: string): void {
+    if (this.socket) {
+      this.socket.send(request);
+    }
   }
 }

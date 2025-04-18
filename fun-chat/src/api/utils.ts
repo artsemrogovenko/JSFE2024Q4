@@ -1,14 +1,12 @@
 import { appLogic } from '..';
 import type {
   ApiResponse,
-  AuthLocal,
-  LocalUser,
-  Message,
+  UserStatus,
+  User,
   MessageHistory,
+  Message,
   MessagePayload,
   MessageStatuses,
-  User,
-  UserStatus,
 } from '../modules/types';
 import Chat from '../views/main/chat';
 
@@ -63,21 +61,6 @@ function localUserStatus(uuid: string, data: ApiResponse): void {
       }
     }
   }
-}
-
-export function auth(
-  uuid: string,
-  type: AuthLocal,
-  userData: LocalUser,
-): string {
-  const requestString = JSON.stringify({
-    id: uuid,
-    type: type,
-    payload: {
-      user: userData,
-    },
-  });
-  return requestString;
 }
 
 export function verifyUser(params: object): UserStatus | undefined {
@@ -152,52 +135,4 @@ export function isMessageStatuses(
     obj.hasOwnProperty('isReaded') &&
     obj.hasOwnProperty('isEdited')
   );
-}
-
-function clone(data: unknown): object {
-  return JSON.parse(JSON.stringify(data));
-}
-
-export function gettingActive(uuid: string): string {
-  return JSON.stringify({
-    id: uuid,
-    type: 'USER_ACTIVE',
-    payload: null,
-  });
-}
-export function gettingInactive(uuid: string): string {
-  return JSON.stringify({
-    id: uuid,
-    type: 'USER_INACTIVE',
-    payload: null,
-  });
-}
-
-export function messageHistory(uuid: string, nickName: string): string {
-  return JSON.stringify({
-    id: uuid,
-    type: 'MSG_FROM_USER',
-    payload: {
-      user: {
-        login: nickName,
-      },
-    },
-  });
-}
-
-export function sendingMessagetoUser(
-  uuid: string,
-  to: string,
-  message: string,
-): string {
-  return JSON.stringify({
-    id: uuid,
-    type: 'MSG_SEND',
-    payload: {
-      message: {
-        to: to,
-        text: message,
-      },
-    },
-  });
 }
