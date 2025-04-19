@@ -1,5 +1,4 @@
 import { appLogic } from '..';
-import Messages from '../modules/messages';
 import type {
   ApiResponse,
   UserStatus,
@@ -8,12 +7,13 @@ import type {
   Message,
   MessagePayload,
   MessageStatuses,
-  MsgDelete,
   MsgEdit,
+  MsgDelete,
   MsgRead,
   NotifyMsg,
 } from '../modules/types';
-import Chat from '../views/main/chat';
+import { Chat } from '../views/main/chat';
+import MessagesDB from '../views/main/chat/messages-base';
 
 export function handleMessage(uuid: string, message: MessageEvent): void {
   const data: ApiResponse = JSON.parse(message.data);
@@ -27,7 +27,7 @@ export function handleMessage(uuid: string, message: MessageEvent): void {
       case 'MSG_READ':
       case 'MSG_DELETE':
       case 'MSG_EDIT':
-        Messages.updateStatus(uuid, data.payload);
+        MessagesDB.updateStatus(uuid, data.payload);
         break;
       case 'ERROR':
         throw new Error(message.data);

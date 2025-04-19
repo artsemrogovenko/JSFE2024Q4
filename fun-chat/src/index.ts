@@ -1,8 +1,10 @@
 import './styles.css';
 import App from './app/spa';
 import { AppLogic } from './app/logic';
-import Messages from './modules/messages';
+import { Chat } from './views/main/chat';
+import MessagesDB from './views/main/chat/messages-base';
 
 export const appLogic = new AppLogic();
-new Messages();
+new MessagesDB();
+new Chat();
 new App();

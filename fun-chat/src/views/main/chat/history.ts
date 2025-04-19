@@ -2,15 +2,15 @@ import Block from '../../../modules/block';
 import { Button } from '../../../modules/buttons';
 import { Form } from '../../../modules/form';
 import { InputText } from '../../../modules/inputs';
-import Messages from '../../../modules/messages';
 import type { MessagePayload } from '../../../modules/types';
 import SelectedUser from './selected-user';
+import MessagesUI from './UI/messages-ui';
 import type UserElement from './user-element';
 import { sendMessage } from './utils';
 
-export class History extends Block<'article'> {
+export default class ChatHistory extends Block<'article'> {
   private selectedUser = new SelectedUser();
-  private messages = new Messages();
+  private messages = new MessagesUI();
   private send = new Form(
     'send-message',
     'send',

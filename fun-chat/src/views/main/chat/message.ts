@@ -1,61 +1,10 @@
-import { appLogic } from '..';
-import { isMsgDelete, isMsgEdit, isMsgRead, isNotifyMsg } from '../api/utils';
-import Chat from '../views/main/chat';
-import { UserList } from '../views/main/chat/users-block';
-import { Container } from './block';
-import { Label } from './form';
-import { messageLogic } from './functions';
-import type { MessagePayload, MessageStatuses } from './types';
+import { appLogic } from '../../..';
+import { Container } from '../../../modules/block';
+import { Label } from '../../../modules/form';
+import { messageLogic } from '../../../modules/functions';
+import type { MessagePayload, MessageStatuses } from '../../../modules/types';
 
-export default class Messages extends Container {
-  private static messages = new Map<string, Message>();
-  constructor() {
-    super('messages-list');
-  }
-
-  public static updateStatus(uuid: string, payload: object): void {
-    if (isNotifyMsg(payload)) {
-      const messageId = payload.message.id;
-      const status = payload.message.status;
-      const message = this.messages.get(messageId);
-      if (message) {
-        if (isMsgEdit(status)) {
-          message.edited();
-        }
-        if (isMsgDelete(status)) {
-          message.deleted();
-        }
-        if (isMsgRead(status)) {
-          message.readed();
-        }
-      }
-    }
-  }
-
-  public addMessage(data: MessagePayload): void {
-    const message = new Message(data);
-    Messages.messages.set(data.id, message);
-    const selectedUser = Chat.getSelected();
-    if (data.from === selectedUser || data.to === selectedUser) {
-      this.addBlock(message);
-      this.element.scrollTop = this.element.scrollHeight;
-      if (data.to === selectedUser) {
-        Chat.clearText();
-      }
-    } else {
-      UserList.increaseUnreadCount(data.from, 1);
-    }
-  }
-
-  public addMessages(data: MessagePayload[]): void {
-    data.forEach((message) => this.addMessage(message));
-  }
-  public clearList(): void {
-    this.deleteAllBlocks();
-  }
-}
-
-class Message extends Container {
+export default class Message extends Container {
   private from = new Label('message-from');
   private timestamp = new Label('message-date');
   private text = new Label('message');

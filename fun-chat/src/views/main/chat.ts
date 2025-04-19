@@ -1,21 +1,10 @@
-import Block from '../../modules/block';
 import type { MessagePayload } from '../../modules/types';
+import ChatHistory from './chat/history';
 import { Users } from './chat/users-block';
-import { pickUser } from './chat/utils';
-import { History } from './chat/history';
-import { appLogic } from '../..';
 
-export default class Chat extends Block<'section'> {
-  private static history = new History();
-  private static users = new Users();
-  private selectedUser: string = '';
-  constructor() {
-    super('section', 'chat');
-    this.addBlocks([Chat.users, Chat.history]);
-    Chat.users
-      .getList()
-      .addListener('click', (event) => this.selectUser(event));
-  }
+export class Chat {
+  public static history = new ChatHistory();
+  public static users = new Users();
 
   public static addHistory(history: MessagePayload[] | MessagePayload): void {
     Chat.history.newData(history);
@@ -30,15 +19,5 @@ export default class Chat extends Block<'section'> {
 
   public static clearText(): void {
     this.history.clearText();
-  }
-
-  private selectUser(event: Event): void {
-    const user = pickUser(event);
-    if (user !== undefined) {
-      Chat.history.clearList();
-      Chat.history.setUser(user);
-      appLogic.fetchHistory(user.name);
-      this.selectedUser = user.name;
-    }
   }
 }

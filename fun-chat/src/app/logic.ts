@@ -10,7 +10,7 @@ import {
 } from '../api/requests';
 import { handleMessage } from '../api/utils';
 import type { UserStatus } from '../modules/types';
-import Chat from '../views/main/chat';
+import { Chat } from '../views/main/chat';
 import { pushState } from './router';
 
 export class AppLogic {
