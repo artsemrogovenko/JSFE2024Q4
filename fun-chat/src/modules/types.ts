@@ -63,6 +63,10 @@ export type MsgRead = {
   isReaded: boolean;
 };
 
+export type MsgDelivered = {
+  isDelivered: boolean;
+};
+
 export type NotifyMsg = {
   message: {
     id: string;
@@ -70,3 +74,5 @@ export type NotifyMsg = {
     status: MsgEdit | MsgDelete | MsgRead;
   };
 };
+
+export type NotifyStatus = MsgEdit | MsgDelete | MsgRead | MsgDelivered;

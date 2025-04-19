@@ -1,4 +1,14 @@
 import { appLogic } from '../../..';
+import {
+  isMsgEdit,
+  isMsgDelivered,
+  isMsgDelete,
+  isMsgRead,
+} from '../../../api/utils';
+import { MessagePayload, NotifyStatus } from '../../../modules/types';
+import { Chat } from '../chat';
+import MessagesDB from './messages-base';
+import MessagesUI from './UI/messages-ui';
 import type UserElement from './user-element';
 import { UserList } from './users-block';
 
@@ -35,6 +45,49 @@ export function sendMessage(event: Event, to: string): void {
         const message = textArea.value;
         appLogic.sendMessage(to, message);
       }
+    }
+  }
+}
+
+export function selectUser(event: Event): void {
+  const user = pickUser(event);
+  if (user !== undefined) {
+    Chat.history.clearList();
+    Chat.history.setUser(user);
+    const messages = MessagesDB.getChainMessages(user.name);
+    if (messages) {
+      Chat.addHistory(messages);
+    }
+  }
+}
+
+export function saveToDbMessage(data: MessagePayload): void {
+  if (data.from === appLogic.currentName) {
+    MessagesDB.saveMessage(data.id, data, data.to);
+  } else {
+    MessagesDB.saveMessage(data.id, data, data.from);
+  }
+}
+
+export function updateMessageUI(messageId: string, status: NotifyStatus): void {
+  const message = MessagesUI.dictionary.get(messageId);
+  debugger;
+  if (message) {
+    if (isMsgEdit(status)) {
+      message.edited();
+      return;
+    }
+    if (isMsgDelivered(status)) {
+      message.delivered();
+      return;
+    }
+    if (isMsgDelete(status)) {
+      message.deleted();
+      return;
+    }
+    if (isMsgRead(status)) {
+      message.readed();
+      return;
     }
   }
 }

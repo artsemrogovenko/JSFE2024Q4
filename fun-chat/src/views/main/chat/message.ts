@@ -8,12 +8,17 @@ export default class Message extends Container {
   private from = new Label('message-from');
   private timestamp = new Label('message-date');
   private text = new Label('message');
-  private status = new Label('message-status');
+  private statusTag = new Label('message-status');
   private id: string = '';
   private owner: boolean;
+  private status = {
+    isDelivered: false,
+    isReaded: false,
+    isEdited: false,
+  };
   constructor(data: MessagePayload) {
     super('wrapper-message');
-    this.addBlocks([this.from, this.timestamp, this.text, this.status]);
+    this.addBlocks([this.from, this.timestamp, this.text, this.statusTag]);
     this.id = data.id;
     this.text.setText(data.text);
     const timestamp = new Date(data.datetime);
@@ -31,36 +36,42 @@ export default class Message extends Container {
     }
     this.setProperties(data.status, forMe);
     this.getNode().addEventListener('pointerenter', (event) =>
-      messageLogic(event, this.id, this.owner),
+      messageLogic(event, this.id, this.owner, this.status),
     );
+    this.status = data.status;
   }
 
   public delivered(forMe?: boolean): void {
     if (forMe !== undefined) {
-      !forMe ? this.status.setText('доставлено') : this.status.setText('ᅟ');
+      !forMe
+        ? this.statusTag.setText('доставлено')
+        : this.statusTag.setText('ᅟ');
     } else {
-      this.status.setText('доставлено');
+      this.statusTag.setText('доставлено');
     }
   }
 
   public readed(forMe?: boolean): void {
+    debugger;
     if (forMe !== undefined) {
-      !forMe ? this.status.setText('прочитано') : this.status.setText('ᅟ');
+      !forMe
+        ? this.statusTag.setText('прочитано')
+        : this.statusTag.setText('ᅟ');
     } else {
-      this.status.setText('прочитано');
+      this.statusTag.setText('прочитано');
     }
   }
   public edited(): void {
-    this.status.setText('изменено');
+    this.statusTag.setText('изменено');
   }
   public deleted(): void {
     this.deleteBlock(this.text);
-    this.status.setText('удалено');
+    this.statusTag.setText('удалено');
   }
 
   private setProperties(data: MessageStatuses, forMe: boolean): void {
     if (!data.isDelivered && !data.isReaded) {
-      this.status.setText('отправлено');
+      this.statusTag.setText('отправлено');
     }
     if (data.isDelivered && !data.isReaded) {
       this.delivered(forMe);

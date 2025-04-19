@@ -6,8 +6,11 @@ export class Chat {
   public static history = new ChatHistory();
   public static users = new Users();
 
-  public static addHistory(history: MessagePayload[] | MessagePayload): void {
+  public static appendHistory(history: MessagePayload): void {
     Chat.history.newData(history);
+  }
+  public static addHistory(history: MessagePayload[]): void {
+    Chat.history.addHistory(history);
   }
 
   public static getSelected(): string {

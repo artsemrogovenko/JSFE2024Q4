@@ -3,7 +3,7 @@ import Block from '../../../modules/block';
 export default class UserElement extends Block<'li'> {
   private login: string;
   private isOnline: boolean;
-  private counter = 0;
+  private counter = new Set<string>();
   private unreadCount = document.createElement('p');
   constructor(text: string, isOnline: boolean) {
     super('li', 'user', text);
@@ -24,22 +24,23 @@ export default class UserElement extends Block<'li'> {
   public setStatus(status: boolean): void {
     status === true ? this.setClass('user online') : this.setClass('user');
   }
-  public increaseCount(count: number): void {
-    this.counter += count;
+  public increaseCount(messageId: string): void {
+    this.counter.add(messageId);
     this.toggleValues();
   }
-  public decreaseCount(count: number): void {
-    this.counter -= count;
+  public decreaseCount(messageId: string): void {
+    this.counter.delete(messageId);
     this.toggleValues();
   }
-
   private toggleValues(): void {
-    if (this.counter === 0) {
+    console.log(this.counter.size);
+    if (this.counter.size === 0) {
       this.unreadCount.classList.add('none');
+      this.unreadCount.textContent = '';
     }
-    if (this.counter > 0) {
+    if (this.counter.size > 0) {
       this.unreadCount.classList.remove('none');
+      this.unreadCount.textContent = `${this.counter.size}`;
     }
-    this.unreadCount.textContent = `${this.counter}`;
   }
 }

@@ -40,13 +40,14 @@ export default class ChatHistory extends Block<'article'> {
     this.selectedUser.status = user.status;
   }
 
-  public newData(data: MessagePayload[] | MessagePayload): void {
-    if (Array.isArray(data)) {
-      this.messages.addMessages(data);
-    } else {
-      this.messages.addMessage(data);
-    }
+  public newData(data: MessagePayload): void {
+    this.messages.addMessage(data);
   }
+
+  public addHistory(history: MessagePayload[]): void {
+    this.messages.appendMessages(history);
+  }
+
   public clearText(): void {
     this.send.getInput.clear();
   }

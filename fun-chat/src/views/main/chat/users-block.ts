@@ -40,16 +40,16 @@ export class UserList {
     return this.dictionary.get(userName);
   }
 
-  public static increaseUnreadCount(userName: string, count: number): void {
+  public static increaseUnreadCount(userName: string, messageid: string): void {
     const user = this.getUser(userName);
     if (user) {
-      user.increaseCount(count);
+      user.increaseCount(messageid);
     }
   }
-  public static decreaseUnreadCount(userName: string, count: number): void {
+  public static decreaseUnreadCount(userName: string, messageid: string): void {
     const user = this.getUser(userName);
     if (user) {
-      user.decreaseCount(count);
+      user.decreaseCount(messageid);
     }
   }
 
@@ -66,6 +66,8 @@ export class UserList {
         this.updateUserElement(value);
       }
     });
+    this.dictionary.delete(appLogic.currentName);
+    this.fetchHistory();
     const event = new Event('List_received');
     const delay = 300;
     setTimeout(() => {
@@ -78,6 +80,13 @@ export class UserList {
     return [...this.dictionary.values()].filter(
       (value) => value.name !== currentName,
     );
+  }
+
+  private static fetchHistory(): void {
+    const names = this.dictionary.keys();
+    [...names].forEach((name) => {
+      appLogic.fetchHistory(name);
+    });
   }
 
   private static updateUserElement(value: UserStatus): void {

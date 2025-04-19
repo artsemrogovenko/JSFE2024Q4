@@ -1,5 +1,6 @@
 import { appLogic } from '..';
 import type Block from './block';
+import { MessageStatuses } from './types';
 
 export function disableClick(
   element: Block<keyof HTMLElementTagNameMap>,
@@ -23,8 +24,9 @@ export function messageLogic(
   event: Event,
   messageId: string,
   owner: boolean,
+  status: MessageStatuses,
 ): void {
-  if (owner === false) {
+  if (owner === false && !status.isReaded) {
     appLogic.readMessage(messageId);
   }
 }

@@ -11,10 +11,12 @@ import type {
   MsgDelete,
   MsgRead,
   NotifyMsg,
+  MsgDelivered,
 } from '../modules/types';
 import { Chat } from '../views/main/chat';
 import MessagesDB from '../views/main/chat/messages-base';
 import { UserList } from '../views/main/chat/users-block';
+import { saveToDbMessage } from '../views/main/chat/utils';
 
 export function handleMessage(uuid: string, message: MessageEvent): void {
   const data: ApiResponse = JSON.parse(message.data);
@@ -59,10 +61,10 @@ function handleListsAndAuth(uuid: string, data: ApiResponse): void {
 
 function getMessages(object: ApiResponse): void {
   if (isMessageHistory(object.payload)) {
-    Chat.addHistory(object.payload.messages);
+    MessagesDB.addHistory(object.payload.messages);
   }
   if (isMessage(object.payload)) {
-    Chat.addHistory(object.payload.message);
+    saveToDbMessage(object.payload.message);
   }
 }
 
@@ -156,6 +158,11 @@ export function isMessageStatuses(
 export function isMsgEdit(obj: object): obj is MsgEdit {
   return obj !== null && 'isEdited' in obj && typeof obj.isEdited === 'boolean';
 }
+export function isMsgDelivered(obj: object): obj is MsgDelivered {
+  return (
+    obj !== null && 'isDelivered' in obj && typeof obj.isDelivered === 'boolean'
+  );
+}
 
 export function isMsgDelete(obj: object): obj is MsgDelete {
   return (
@@ -167,16 +174,22 @@ export function isMsgRead(obj: object): obj is MsgRead {
   return obj !== null && 'isReaded' in obj && typeof obj.isReaded === 'boolean';
 }
 
-export function isNotifyStatus(obj: any): obj is MsgEdit | MsgDelete | MsgRead {
-  return isMsgEdit(obj) || isMsgDelete(obj) || isMsgRead(obj);
+export function isNotifyStatus(
+  obj: any,
+): obj is MsgEdit | MsgDelete | MsgRead | MsgDelivered {
+  return (
+    isMsgEdit(obj) || isMsgDelete(obj) || isMsgRead(obj) || isMsgDelivered(obj)
+  );
 }
 
 export function isNotifyMsg(obj: object): obj is NotifyMsg {
   return (
-    'id' in obj &&
-    typeof obj.id === 'string' &&
-    ('text'! in obj || ('text' in obj && typeof obj.text === 'string')) &&
-    'status' in obj &&
-    isNotifyStatus(obj.status)
+    'message' in obj &&
+    typeof obj.message === 'object' &&
+    obj.message !== null &&
+    'id' in obj.message &&
+    typeof obj.message.id === 'string' &&
+    'status' in obj.message &&
+    isNotifyStatus(obj.message.status)
   );
 }
