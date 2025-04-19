@@ -14,6 +14,7 @@ import type {
 } from '../modules/types';
 import { Chat } from '../views/main/chat';
 import MessagesDB from '../views/main/chat/messages-base';
+import { UserList } from '../views/main/chat/users-block';
 
 export function handleMessage(uuid: string, message: MessageEvent): void {
   const data: ApiResponse = JSON.parse(message.data);
@@ -47,6 +48,7 @@ function handleListsAndAuth(uuid: string, data: ApiResponse): void {
     case 'USER_ACTIVE':
     case 'USER_INACTIVE':
       appLogic.saveAllUsers(data.payload);
+      UserList.writeBase();
       break;
     default:
       break;

@@ -81,11 +81,11 @@ export class AppLogic {
     if (this.socket && this.socket.OPEN) {
       this.socket.send(gettingActive(this.uuid));
       this.socket.send(gettingInactive(this.uuid));
-      const event = new Event('List_received');
-      const delay = 200;
-      setTimeout(() => {
-        document.dispatchEvent(event);
-      }, delay);
+      //   const event = new Event('List_received');
+      //   const delay = 200;
+      //   setTimeout(() => {
+      //     document.dispatchEvent(event);
+      //   }, delay);
     }
   }
 
