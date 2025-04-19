@@ -17,18 +17,6 @@ export class Users extends Block<'aside'> {
     return this.list;
   }
   public addUsers(): void {
-    // const users: UserStatus[] = appLogic.getList();
-    // const currentName = appLogic.currentName;
-    // users.forEach((value) => {
-    //   if (value.login !== currentName) {
-    //     const user = new UserElement(
-    //       `${value.login}`,
-    //       Boolean(value.isLogined),
-    //     );
-    //     this.list.addBlock(user);
-    //     UserList.addUser(user);
-    //   }
-    // });
     const array = UserList.getUsers();
     if (array.length !== 0) {
       this.list.addBlocks(UserList.getUsers());
@@ -68,8 +56,15 @@ export class UserList {
   public static writeBase(): void {
     const users: UserStatus[] = appLogic.getList();
     users.forEach((value) => {
-      const user = new UserElement(`${value.login}`, Boolean(value.isLogined));
-      UserList.addUser(user);
+      if (!this.dictionary.has(value.login)) {
+        const user = new UserElement(
+          `${value.login}`,
+          Boolean(value.isLogined),
+        );
+        UserList.addUser(user);
+      } else {
+        this.updateUserElement(value);
+      }
     });
     const event = new Event('List_received');
     const delay = 300;
@@ -83,5 +78,12 @@ export class UserList {
     return [...this.dictionary.values()].filter(
       (value) => value.name !== currentName,
     );
+  }
+
+  private static updateUserElement(value: UserStatus): void {
+    const element = this.getUser(value.login);
+    if (element) {
+      element.setStatus(value.isLogined);
+    }
   }
 }

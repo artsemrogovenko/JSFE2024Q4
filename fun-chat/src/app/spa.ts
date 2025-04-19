@@ -13,12 +13,14 @@ export default class App {
   private setContent(view: Block<'main'>): void {
     if (this.body) {
       if (view !== undefined) {
-        if (this.main !== null) this.main.destroy();
-        this.main = view;
-        try {
-          this.body.replaceChild(view.getNode(), this.main.getNode());
-        } catch (error) {
-          this.body.append(this.main.getNode());
+        if (this.main !== null) {
+          this.main.removeAllListeners();
+          this.body.removeChild(this.main.getNode());
+          this.main = view;
+          this.body.prepend(this.main.getNode());
+        } else {
+          this.main = view;
+          this.body.prepend(this.main.getNode());
         }
       }
     }

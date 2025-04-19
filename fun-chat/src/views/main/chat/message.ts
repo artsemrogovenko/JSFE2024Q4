@@ -52,7 +52,6 @@ export default class Message extends Container {
   }
   public edited(): void {
     this.status.setText('изменено');
-    // this.status.addClass('edited');
   }
   public deleted(): void {
     this.deleteBlock(this.text);

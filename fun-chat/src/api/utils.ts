@@ -48,7 +48,9 @@ function handleListsAndAuth(uuid: string, data: ApiResponse): void {
     case 'USER_ACTIVE':
     case 'USER_INACTIVE':
       appLogic.saveAllUsers(data.payload);
-      UserList.writeBase();
+      if (data.type === 'USER_INACTIVE') {
+        UserList.writeBase();
+      }
       break;
     default:
       break;

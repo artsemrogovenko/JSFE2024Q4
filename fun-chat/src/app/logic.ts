@@ -18,7 +18,7 @@ export class AppLogic {
   private uuid: string = '';
   private logined: boolean = false;
   private localUser = { login: '', password: '' };
-  private users: UserStatus[] = [];
+  private users = new Map<string, UserStatus>();
 
   public get currentName(): string {
     return this.localUser.login;
@@ -73,7 +73,9 @@ export class AppLogic {
   public saveAllUsers(data: object): void {
     if ('users' in data && Array.isArray(data.users)) {
       const usersArray = data.users;
-      this.users.push(...usersArray);
+      usersArray.forEach((user: UserStatus) =>
+        this.users.set(user.login, user),
+      );
     }
   }
 
@@ -81,16 +83,11 @@ export class AppLogic {
     if (this.socket && this.socket.OPEN) {
       this.socket.send(gettingActive(this.uuid));
       this.socket.send(gettingInactive(this.uuid));
-      //   const event = new Event('List_received');
-      //   const delay = 200;
-      //   setTimeout(() => {
-      //     document.dispatchEvent(event);
-      //   }, delay);
     }
   }
 
   public getList(): UserStatus[] {
-    return this.users;
+    return [...this.users.values()];
   }
 
   public fetchHistory(from: string): void {
