@@ -1,0 +1,57 @@
+@media (width <=575px) {
+  section {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: unset;
+  }
+
+  .header {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 4px 5px;
+    place-content: center center;
+    align-items: center;
+    height: 76px;
+
+    word-break: normal;
+  }
+
+  .header .ui-button {
+    padding: 5px;
+  }
+
+  .users {
+    height: 240px;
+  }
+
+  .history {
+    height: 448px;
+  }
+
+  .users,
+  .footer,
+  .history {
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .footer {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 5px;
+    align-items: center;
+
+    padding-top: 10px;
+  }
+
+  .year {
+    margin: 2px;
+    padding: 0;
+  }
+}

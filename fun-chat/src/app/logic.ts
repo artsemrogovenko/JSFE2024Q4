@@ -52,6 +52,10 @@ export class AppLogic {
   public get isLogined(): boolean {
     return this.logined;
   }
+  public resetLogin(): void {
+    this.logined = false;
+    pushState('login');
+  }
 
   public createSocket(name: string, password: string): void {
     this.uuid = self.crypto.randomUUID();

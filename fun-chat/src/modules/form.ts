@@ -50,3 +50,9 @@ export class Paragraph extends Block<'p'> {
     super('p', className, text);
   }
 }
+
+export class Anchor extends Block<'a'> {
+  constructor(className: string) {
+    super('a', className);
+  }
+}

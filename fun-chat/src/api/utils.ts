@@ -136,6 +136,9 @@ export function isValidFields(data: LocalUser): boolean {
 
 function handleError(data: ApiResponse): void {
   if (isError(data.payload)) {
+    if (data.payload.error === 'a user with this login is already authorized') {
+      appLogic.resetLogin();
+    }
     showInfo(data.payload.error);
   }
 }
