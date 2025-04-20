@@ -3,20 +3,40 @@ import type { MessagePayload } from '../../../../modules/types';
 import { Chat } from '../../chat';
 import Message from '../message';
 import { UserList } from '../users-block';
+import { updateMessageUI } from '../utils';
+import { UnreadLine } from './uread-line';
 
 export default class MessagesUI extends Container {
   public static dictionary = new Map<string, Message>();
+  private delimeter: UnreadLine | null = null;
   constructor() {
     super('messages-list');
   }
 
-  public addMessage(data: MessagePayload): void {
+  public addMessage(data: MessagePayload, fromDB?: boolean): void {
     const message = new Message(data);
     MessagesUI.dictionary.set(data.id, message);
     const selectedUser = Chat.getSelected();
     if (data.from === selectedUser || data.to === selectedUser) {
+      if (
+        !data.status.isReaded &&
+        typeof fromDB === 'boolean' &&
+        fromDB === true &&
+        this.delimeter === null
+      ) {
+        if (data.to !== selectedUser) {
+          this.delimeter = new UnreadLine();
+          this.addBlock(this.delimeter);
+        }
+      }
+
       this.addBlock(message);
-      this.element.scrollTop = this.element.scrollHeight;
+
+      if (this.delimeter === null) {
+        this.element.scrollTop = this.element.scrollHeight;
+        updateMessageUI(data.id, data.status);
+        // message.readed();
+      }
       if (data.to === selectedUser) {
         Chat.clearText();
       }
@@ -26,11 +46,20 @@ export default class MessagesUI extends Container {
     }
   }
 
-  public appendMessages(data: MessagePayload[]): void {
-    data.forEach((message) => this.addMessage(message));
+  public appendMessages(data: MessagePayload[], fromDB: boolean): void {
+    data.forEach((message) => this.addMessage(message, fromDB));
   }
 
   public clearList(): void {
     this.deleteAllBlocks();
+  }
+
+  public removeLine(login: string): void {
+    if (login === Chat.getSelected()) {
+      if (this.delimeter) {
+        this.deleteBlock(this.delimeter);
+        this.delimeter = null;
+      }
+    }
   }
 }

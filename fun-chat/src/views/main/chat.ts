@@ -1,5 +1,6 @@
 import type { MessagePayload } from '../../modules/types';
 import ChatHistory from './chat/history';
+import UserElement from './chat/user-element';
 import { Users } from './chat/users-block';
 
 export class Chat {
@@ -7,20 +8,35 @@ export class Chat {
   public static users = new Users();
 
   public static appendHistory(history: MessagePayload): void {
-    Chat.history.newData(history);
+    this.history.newData(history);
   }
-  public static addHistory(history: MessagePayload[]): void {
-    Chat.history.addHistory(history);
+  public static addHistory(
+    history: MessagePayload[],
+    fromDB: boolean = false,
+  ): void {
+    this.history.addHistory(history, fromDB);
   }
 
   public static getSelected(): string {
-    return Chat.history.getSelected();
+    return this.history.getSelected();
   }
   public static resetSelected(): void {
-    Chat.history.clearSelected();
+    this.history.clearSelected();
   }
 
   public static clearText(): void {
     this.history.clearText();
+  }
+
+  public static clearList(): void {
+    this.history.clearMessageList();
+    this.history.clearText();
+  }
+  public static setUser(user: UserElement): void {
+    this.history.setUser(user);
+  }
+
+  public static removeLine(login: string): void {
+    this.history.removeLine(login);
   }
 }

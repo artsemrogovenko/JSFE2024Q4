@@ -44,14 +44,17 @@ export default class ChatHistory extends Block<'article'> {
     this.messages.addMessage(data);
   }
 
-  public addHistory(history: MessagePayload[]): void {
-    this.messages.appendMessages(history);
+  public addHistory(history: MessagePayload[], fromDB: boolean): void {
+    this.messages.appendMessages(history, fromDB);
   }
 
   public clearText(): void {
     this.send.getInput.clear();
   }
-  public clearList(): void {
+  public clearMessageList(): void {
     this.messages.clearList();
+  }
+  public removeLine(user: string): void {
+    this.messages.removeLine(user);
   }
 }

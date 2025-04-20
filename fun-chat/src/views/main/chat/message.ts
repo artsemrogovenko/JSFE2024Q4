@@ -10,7 +10,7 @@ export default class Message extends Container {
   private text = new Label('message');
   private statusTag = new Label('message-status');
   private id: string = '';
-  private owner: boolean;
+  private iOwner: boolean;
   private status = {
     isDelivered: false,
     isReaded: false,
@@ -21,6 +21,7 @@ export default class Message extends Container {
     this.addBlocks([this.from, this.timestamp, this.text, this.statusTag]);
     this.id = data.id;
     this.text.setText(data.text);
+    this.from.setText(data.from);
     const timestamp = new Date(data.datetime);
     const format: Intl.DateTimeFormatOptions = {
       weekday: 'short',
@@ -30,35 +31,36 @@ export default class Message extends Container {
     };
     this.timestamp.setText(timestamp.toLocaleDateString('ru-RU', format));
     const forMe = appLogic.currentName === data.to;
-    this.owner = !forMe;
+    this.iOwner = !forMe;
     if (!forMe) {
       this.addClass('you');
     }
     this.setProperties(data.status, forMe);
     this.getNode().addEventListener('pointerenter', (event) =>
-      messageLogic(event, this.id, this.owner, this.status),
+      messageLogic(event, this.id, this.iOwner, this.status),
     );
     this.status = data.status;
   }
 
   public delivered(forMe?: boolean): void {
-    if (forMe !== undefined) {
+    if (forMe !== undefined && this.iOwner) {
       !forMe
         ? this.statusTag.setText('доставлено')
         : this.statusTag.setText('ᅟ');
     } else {
-      this.statusTag.setText('доставлено');
+      this.statusTag.setText('ᅟ');
+      this.addClass('unread');
     }
   }
 
   public readed(forMe?: boolean): void {
-    debugger;
-    if (forMe !== undefined) {
+    if (forMe !== undefined && this.iOwner) {
       !forMe
         ? this.statusTag.setText('прочитано')
         : this.statusTag.setText('ᅟ');
     } else {
-      this.statusTag.setText('прочитано');
+      this.statusTag.setText('ᅟ');
+      this.removeClass('unread');
     }
   }
   public edited(): void {
@@ -67,6 +69,7 @@ export default class Message extends Container {
   public deleted(): void {
     this.deleteBlock(this.text);
     this.statusTag.setText('удалено');
+    this.destroy();
   }
 
   private setProperties(data: MessageStatuses, forMe: boolean): void {

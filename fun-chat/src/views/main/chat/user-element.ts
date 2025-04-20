@@ -1,4 +1,5 @@
 import Block from '../../../modules/block';
+import { Chat } from '../chat';
 
 export default class UserElement extends Block<'li'> {
   private login: string;
@@ -33,10 +34,10 @@ export default class UserElement extends Block<'li'> {
     this.toggleValues();
   }
   private toggleValues(): void {
-    console.log(this.counter.size);
     if (this.counter.size === 0) {
       this.unreadCount.classList.add('none');
       this.unreadCount.textContent = '';
+      Chat.removeLine(this.login);
     }
     if (this.counter.size > 0) {
       this.unreadCount.classList.remove('none');

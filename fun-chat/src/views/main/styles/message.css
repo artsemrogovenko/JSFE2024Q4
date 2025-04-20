@@ -3,11 +3,12 @@
   grid-template-columns: 2fr;
   grid-template-rows: 3fr;
 
-  width: 30%;
+  max-width: 350px;
   height: fit-content;
   border-radius: unset;
 
   background: #ffe87756;
+  box-shadow: 0 8px 14px #8d8d8d;
 }
 
 .wrapper-message.you {
@@ -24,6 +25,7 @@
   grid-column: span 2;
   grid-row: 2;
 
+  margin: 0 10px;
   padding-left: 13px;
   border-radius: unset;
 
@@ -38,13 +40,15 @@
 }
 
 .messages-list {
-  overflow-x: overlay;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   row-gap: 11px;
+  justify-content: flex-start;
   justify-items: stretch;
 
   width: 100%;
+  padding: 10px 0;
   border-radius: unset;
 }
 
@@ -62,4 +66,22 @@
 
   background: white;
   box-shadow: inset 0 0 3px 0 #ff4700;
+}
+
+.unread {
+  box-shadow: 0 8px 14px #cb8100;
+}
+
+.underline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+hr {
+  overflow: visible;
+  width: 100%;
+  height: 4px;
+  background: orange;
 }

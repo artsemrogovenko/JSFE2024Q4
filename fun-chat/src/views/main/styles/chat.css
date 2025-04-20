@@ -3,7 +3,7 @@
 .chat {
   column-gap: 5px;
   justify-content: space-between;
-  height: 50dvh;
+  height: 70dvh;
 }
 
 .users {
@@ -74,6 +74,8 @@ li.user {
   padding: 0 20px;
   border-bottom: 1px solid;
   border-radius: unset;
+
+  line-height: 40px;
 
   background: aliceblue;
 }

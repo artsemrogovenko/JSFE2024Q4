@@ -52,11 +52,11 @@ export function sendMessage(event: Event, to: string): void {
 export function selectUser(event: Event): void {
   const user = pickUser(event);
   if (user !== undefined) {
-    Chat.history.clearList();
-    Chat.history.setUser(user);
+    Chat.clearList();
+    Chat.setUser(user);
     const messages = MessagesDB.getChainMessages(user.name);
     if (messages) {
-      Chat.addHistory(messages);
+      Chat.addHistory(messages, true);
     }
   }
 }
@@ -71,23 +71,18 @@ export function saveToDbMessage(data: MessagePayload): void {
 
 export function updateMessageUI(messageId: string, status: NotifyStatus): void {
   const message = MessagesUI.dictionary.get(messageId);
-  debugger;
   if (message) {
     if (isMsgEdit(status)) {
-      message.edited();
-      return;
+      if (status.isEdited) message.edited();
     }
     if (isMsgDelivered(status)) {
-      message.delivered();
-      return;
+      if (status.isDelivered) message.delivered(!status.isDelivered);
     }
     if (isMsgDelete(status)) {
-      message.deleted();
-      return;
+      if (status.isDeleted) message.deleted();
     }
     if (isMsgRead(status)) {
-      message.readed();
-      return;
+      if (status.isReaded) message.readed(!status.isReaded);
     }
   }
 }
