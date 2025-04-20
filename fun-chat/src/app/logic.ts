@@ -12,6 +12,7 @@ import {
 import { handleMessage, isAuthStorage, saveToStorage } from '../api/utils';
 import type { UserStatus } from '../modules/types';
 import { Chat } from '../views/main/chat';
+import { UserList } from '../views/main/chat/users-block';
 import { pushState } from './router';
 
 export class AppLogic {
@@ -131,6 +132,20 @@ export class AppLogic {
   public editMessage(messageId: string, newText: string): void {
     const request = messageTextEditing(this.uuid, messageId, newText);
     this.sendRequest(request);
+  }
+
+  public setLogined(login: string, isLogined: boolean): void {
+    if (this.users.has(login)) {
+      const user = this.users.get(login);
+      if (user) {
+        user.isLogined = isLogined;
+        UserList.updateUserElement(user);
+      }
+    } else {
+      const newUser = { login: login, isLogined: isLogined };
+      UserList.createNewUser(newUser);
+      this.fetchHistory(login);
+    }
   }
 
   private login(): void {

@@ -13,6 +13,7 @@ import type {
   NotifyMsg,
   MsgDelivered,
   AuthStorage,
+  ThirdPartyUser,
 } from '../modules/types';
 import MessagesDB from '../views/main/chat/messages-base';
 import { UserList } from '../views/main/chat/users-block';
@@ -34,6 +35,10 @@ export function handleMessage(uuid: string, message: MessageEvent): void {
         break;
       case 'ERROR':
         throw new Error(message.data);
+      case 'USER_EXTERNAL_LOGIN':
+      case 'USER_EXTERNAL_LOGOUT':
+        handleUser(data);
+        break;
       default:
         handleListsAndAuth(uuid, data);
         break;
@@ -203,6 +208,18 @@ export function isAuthStorage(data: object | null): data is AuthStorage {
   );
 }
 
+export function isThirdPartyUser(obj: object): obj is ThirdPartyUser {
+  return (
+    'user' in obj &&
+    typeof obj.user === 'object' &&
+    obj.user !== null &&
+    'login' in obj.user &&
+    'isLogined' in obj.user &&
+    typeof obj.user.login === 'string' &&
+    typeof obj.user.isLogined === 'boolean'
+  );
+}
+
 export function saveToStorage(
   uuid: string,
   logined: boolean,
@@ -210,4 +227,11 @@ export function saveToStorage(
 ): void {
   const data = { uuid: uuid, logined: logined, localUser: user };
   appState.setValue('localuser', JSON.stringify(data));
+}
+
+function handleUser(data: ApiResponse): void {
+  const payload = data.payload;
+  if (isThirdPartyUser(payload)) {
+    appLogic.setLogined(payload.user.login, payload.user.isLogined);
+  }
 }

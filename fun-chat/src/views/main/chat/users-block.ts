@@ -2,6 +2,7 @@ import { appLogic } from '../../..';
 import Block from '../../../modules/block';
 import { Search } from '../../../modules/inputs';
 import type { UserStatus } from '../../../modules/types';
+import { Chat } from '../chat';
 import UserElement from './user-element';
 
 export class Users extends Block<'aside'> {
@@ -11,15 +12,13 @@ export class Users extends Block<'aside'> {
     super('aside', 'users');
     this.search.setAttribute('placeholder', 'Найти пользователя');
     this.addBlocks([this.search, this.list]);
-    document.addEventListener('List_received', () => this.addUsers());
   }
   public getList(): UserListUI {
     return this.list;
   }
-  public addUsers(): void {
-    const array = UserList.getUsers();
-    if (array.length !== 0) {
-      this.list.addBlocks(UserList.getUsers());
+  public addUser(user: UserElement): void {
+    if (appLogic.currentName !== user.name) {
+      this.list.addBlock(user);
     }
   }
 }
@@ -33,9 +32,6 @@ export class UserListUI extends Block<'ul'> {
 export class UserList {
   private static dictionary = new Map<string, UserElement>();
 
-  public static addUser(user: UserElement): void {
-    UserList.dictionary.set(user.name, user);
-  }
   public static getUser(userName: string): UserElement | undefined {
     return this.dictionary.get(userName);
   }
@@ -56,15 +52,7 @@ export class UserList {
   public static writeBase(): void {
     const users: UserStatus[] = appLogic.getList();
     users.forEach((value) => {
-      if (!this.dictionary.has(value.login)) {
-        const user = new UserElement(
-          `${value.login}`,
-          Boolean(value.isLogined),
-        );
-        UserList.addUser(user);
-      } else {
-        this.updateUserElement(value);
-      }
+      UserList.createNewUser(value);
     });
     this.dictionary.delete(appLogic.currentName);
     this.fetchHistory();
@@ -82,6 +70,26 @@ export class UserList {
     );
   }
 
+  public static createNewUser(value: UserStatus): void {
+    if (!UserList.dictionary.has(value.login)) {
+      const user = new UserElement(`${value.login}`, Boolean(value.isLogined));
+      UserList.addUser(user);
+    } else {
+      UserList.updateUserElement(value);
+    }
+  }
+
+  public static updateUserElement(value: UserStatus): void {
+    const element = this.getUser(value.login);
+    if (element) {
+      element.setStatus(value.isLogined);
+      this.dictionary.set(value.login, element);
+      if (Chat.getSelected() === value.login) {
+        Chat.updateSelectedStatus(value.isLogined);
+      }
+    }
+  }
+
   private static fetchHistory(): void {
     const names = this.dictionary.keys();
     [...names].forEach((name) => {
@@ -89,10 +97,8 @@ export class UserList {
     });
   }
 
-  private static updateUserElement(value: UserStatus): void {
-    const element = this.getUser(value.login);
-    if (element) {
-      element.setStatus(value.isLogined);
-    }
+  private static addUser(user: UserElement): void {
+    UserList.dictionary.set(user.name, user);
+    Chat.addUser(user);
   }
 }

@@ -17,7 +17,9 @@ export type MessageType =
   | 'USER_ACTIVE'
   | 'USER_INACTIVE'
   | 'USER_LOGOUT'
-  | 'USER_LOGIN';
+  | 'USER_LOGIN'
+  | 'USER_EXTERNAL_LOGIN'
+  | 'USER_EXTERNAL_LOGOUT';
 
 export type Message = { message: MessagePayload };
 
@@ -76,6 +78,13 @@ export type NotifyMsg = {
 };
 
 export type NotifyStatus = MsgEdit | MsgDelete | MsgRead | MsgDelivered;
+
+export type ThirdPartyUser = {
+  user: {
+    login: string;
+    isLogined: boolean;
+  };
+};
 
 export type AuthStorage = {
   uuid: string;

@@ -32,9 +32,12 @@ export default class ChatHistory extends Block<'article'> {
     return this.selectedUser.getName;
   }
   public clearSelected(): void {
-    this.selectedUser.name = '';
+    this.deleteBlock(this.selectedUser);
+    this.selectedUser = new SelectedUser();
   }
-
+  public updateSelected(state: boolean): void {
+    this.selectedUser.status = state;
+  }
   public setUser(user: UserElement): void {
     this.selectedUser.name = user.name;
     this.selectedUser.status = user.status;

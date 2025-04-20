@@ -35,7 +35,12 @@ export class Chat {
   public static setUser(user: UserElement): void {
     this.history.setUser(user);
   }
-
+  public static addUser(user: UserElement): void {
+    this.users.addUser(user);
+  }
+  public static updateSelectedStatus(isLogined: boolean): void {
+    this.history.updateSelected(isLogined);
+  }
   public static removeLine(login: string): void {
     this.history.removeLine(login);
   }
