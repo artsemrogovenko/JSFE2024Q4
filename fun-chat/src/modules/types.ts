@@ -76,3 +76,9 @@ export type NotifyMsg = {
 };
 
 export type NotifyStatus = MsgEdit | MsgDelete | MsgRead | MsgDelivered;
+
+export type AuthStorage = {
+  uuid: string;
+  logined: boolean;
+  localUser: { login: string; password: string };
+};

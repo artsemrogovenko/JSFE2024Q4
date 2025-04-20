@@ -61,5 +61,6 @@ class FormAuth extends Container {
     this.submitButton.addListener('click', (event) =>
       checkForm(event, this.name.getInput, this.password.getInput),
     );
+    this.addListener('submit', () => this.submitButton.getNode().click());
   }
 }

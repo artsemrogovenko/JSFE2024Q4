@@ -1,3 +1,4 @@
+import { appState } from '..';
 import {
   auth,
   gettingActive,
@@ -8,7 +9,7 @@ import {
   messageTextEditing,
   sendingMessagetoUser,
 } from '../api/requests';
-import { handleMessage } from '../api/utils';
+import { handleMessage, isAuthStorage, saveToStorage } from '../api/utils';
 import type { UserStatus } from '../modules/types';
 import { Chat } from '../views/main/chat';
 import { pushState } from './router';
@@ -20,6 +21,20 @@ export class AppLogic {
   private localUser = { login: '', password: '' };
   private users = new Map<string, UserStatus>();
 
+  constructor() {
+    const user = appState.getValue('localuser');
+    if (user !== '') {
+      const data = JSON.parse(user);
+      if (isAuthStorage(data)) {
+        if (data.uuid !== '') {
+          this.localUser = data.localUser;
+          this.logined = data.logined;
+          this.uuid = data.uuid;
+          this.initSocket();
+        }
+      }
+    }
+  }
   public get currentName(): string {
     return this.localUser.login;
   }
@@ -49,6 +64,7 @@ export class AppLogic {
     if (!this.logined === value) {
       this.logined = value;
     }
+    saveToStorage(this.uuid, this.logined, this.localUser);
     this.meLogined();
   }
 

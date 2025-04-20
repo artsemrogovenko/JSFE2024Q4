@@ -1,4 +1,4 @@
-import { appLogic } from '..';
+import { appLogic, appState } from '..';
 import type {
   ApiResponse,
   UserStatus,
@@ -12,8 +12,8 @@ import type {
   MsgRead,
   NotifyMsg,
   MsgDelivered,
+  AuthStorage,
 } from '../modules/types';
-import { Chat } from '../views/main/chat';
 import MessagesDB from '../views/main/chat/messages-base';
 import { UserList } from '../views/main/chat/users-block';
 import { saveToDbMessage } from '../views/main/chat/utils';
@@ -192,4 +192,22 @@ export function isNotifyMsg(obj: object): obj is NotifyMsg {
     'status' in obj.message &&
     isNotifyStatus(obj.message.status)
   );
+}
+
+export function isAuthStorage(data: object | null): data is AuthStorage {
+  const obj = Object.assign({}, data);
+  return (
+    obj.hasOwnProperty('uuid') &&
+    obj.hasOwnProperty('logined') &&
+    obj.hasOwnProperty('localUser')
+  );
+}
+
+export function saveToStorage(
+  uuid: string,
+  logined: boolean,
+  user: object,
+): void {
+  const data = { uuid: uuid, logined: logined, localUser: user };
+  appState.setValue('localuser', JSON.stringify(data));
 }
