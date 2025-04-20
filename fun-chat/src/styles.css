@@ -19,3 +19,42 @@ main {
   min-width: 100px;
   padding: 10px;
 }
+
+.backdrop {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+  border-radius: unset;
+
+  background-color: #42382a4a;
+  backdrop-filter: blur(2px);
+}
+
+.dialog {
+  position: fixed;
+
+  display: flex;
+  row-gap: 20px;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  height: fit-content;
+  margin: 0 auto;
+  padding: 20px;
+
+  background: gray;
+}
+
+.no-scroll {
+  overflow: hidden;
+}

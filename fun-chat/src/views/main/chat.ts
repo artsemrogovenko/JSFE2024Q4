@@ -20,9 +20,6 @@ export class Chat {
   public static getSelected(): string {
     return this.history.getSelected();
   }
-  public static resetSelected(): void {
-    this.history.clearSelected();
-  }
 
   public static clearText(): void {
     this.history.clearText();

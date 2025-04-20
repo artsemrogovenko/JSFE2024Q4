@@ -13,6 +13,7 @@ import type {
   NotifyMsg,
   AuthStorage,
   ThirdPartyUser,
+  ApiError,
 } from '../modules/types';
 
 export function isUser(data: object | undefined): data is User {
@@ -140,4 +141,8 @@ export function isThirdPartyUser(obj: object): obj is ThirdPartyUser {
     typeof obj.user.login === 'string' &&
     typeof obj.user.isLogined === 'boolean'
   );
+}
+
+export function isError(obj: object): obj is ApiError {
+  return obj !== null && 'error' in obj && typeof obj.error === 'string';
 }

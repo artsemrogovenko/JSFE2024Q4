@@ -13,6 +13,12 @@ export default class MessagesUI extends Container {
     super('messages-list');
   }
 
+  public static get(messageId: string): Message | undefined {
+    return MessagesUI.dictionary.get(messageId);
+  }
+  public static clear(): void {
+    return MessagesUI.dictionary.clear();
+  }
   public addMessage(data: MessagePayload, fromDB?: boolean): void {
     const message = new Message(data);
     MessagesUI.dictionary.set(data.id, message);

@@ -10,8 +10,16 @@ import {
   sendingMessagetoUser,
 } from '../api/requests';
 import { isAuthStorage } from '../api/types-verify';
-import { handleMessage, saveToStorage, clearStorage } from '../api/utils';
+import {
+  handleMessage,
+  saveToStorage,
+  clearStorage,
+  checkOnError,
+  isValidFields,
+  clearMemory,
+} from '../api/utils';
 import type { UserStatus } from '../modules/types';
+import { closeWindow, showInfo } from '../views/dialog';
 import { Chat } from '../views/main/chat';
 import { UserList } from '../views/main/chat/users-block';
 import { pushState } from './router';
@@ -54,11 +62,19 @@ export class AppLogic {
 
   public closeConnection(): void {
     if (this.socket) {
-      this.socket.close();
       this.socket.removeEventListener('open', () => this.login());
       this.socket.removeEventListener('message', (message) =>
         handleMessage(this.uuid, message),
       );
+      this.socket.removeEventListener('close', (event) =>
+        checkOnError(event, this.socket),
+      );
+      this.socket.removeEventListener('error', (event) =>
+        checkOnError(event, this.socket),
+      );
+      if (this.socket.readyState === WebSocket.OPEN) {
+        this.socket.close();
+      }
     }
   }
 
@@ -71,8 +87,14 @@ export class AppLogic {
   }
 
   public logout(): void {
+    this.users.clear();
+    clearMemory();
     const request = auth(this.uuid, 'USER_LOGOUT', this.localUser);
-    this.sendRequest(request);
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      this.checkNoEmpty(request);
+    } else {
+      this.clearUserLogin();
+    }
   }
 
   public meLogined(): void {
@@ -81,9 +103,8 @@ export class AppLogic {
       this.getListUsers();
     } else {
       if (this.socket) {
-        this.socket.close();
-        Chat.resetSelected();
         this.clearUserLogin();
+        this.closeConnection();
       }
       pushState('login');
     }
@@ -141,7 +162,12 @@ export class AppLogic {
       const user = this.users.get(login);
       if (user) {
         user.isLogined = isLogined;
+        this.users.set(login, user);
         UserList.updateUserElement(user);
+
+        if (Chat.getSelected() === login) {
+          Chat.updateSelectedStatus(isLogined);
+        }
       }
     } else {
       const newUser = { login: login, isLogined: isLogined };
@@ -150,21 +176,29 @@ export class AppLogic {
     }
   }
 
-  private login(): void {
-    const request = auth(this.uuid, 'USER_LOGIN', this.localUser);
-    this.sendRequest(request);
-  }
-
-  private initSocket(): void {
+  public initSocket(): void {
     this.socket = new WebSocket('ws://localhost:4000');
     this.socket.addEventListener('open', () => this.login());
     this.socket.addEventListener('message', (message) =>
       handleMessage(this.uuid, message),
     );
+    this.socket.addEventListener('close', (event) =>
+      checkOnError(event, this.socket),
+    );
+    this.socket.addEventListener('error', (event) =>
+      checkOnError(event, this.socket),
+    );
+  }
+
+  private login(): void {
+    this.users.clear();
+    closeWindow();
+    const request = auth(this.uuid, 'USER_LOGIN', this.localUser);
+    this.checkNoEmpty(request);
   }
 
   private sendRequest(request: string): void {
-    if (this.socket) {
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(request);
     }
   }
@@ -173,5 +207,15 @@ export class AppLogic {
     this.localUser = { login: '', password: '' };
     this.logined = false;
     clearStorage();
+  }
+
+  private checkNoEmpty(request: string): void {
+    if (isValidFields(this.localUser)) {
+      this.sendRequest(request);
+    } else {
+      this.logined = false;
+      pushState('login');
+      showInfo('Введите данные заново');
+    }
   }
 }

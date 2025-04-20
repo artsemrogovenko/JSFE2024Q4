@@ -21,6 +21,9 @@ export class Users extends Block<'aside'> {
       this.list.addBlock(user);
     }
   }
+  public cleanListUsers(): void {
+    this.list.deleteAllBlocks();
+  }
 }
 
 export class UserListUI extends Block<'ul'> {
@@ -31,6 +34,10 @@ export class UserListUI extends Block<'ul'> {
 
 export class UserList {
   private static dictionary = new Map<string, UserElement>();
+
+  public static clear(): void {
+    this.dictionary.clear();
+  }
 
   public static getUser(userName: string): UserElement | undefined {
     return this.dictionary.get(userName);

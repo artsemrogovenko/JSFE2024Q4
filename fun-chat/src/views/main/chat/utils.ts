@@ -70,7 +70,7 @@ export function saveToDbMessage(data: MessagePayload): void {
 }
 
 export function updateMessageUI(messageId: string, status: NotifyStatus): void {
-  const message = MessagesUI.dictionary.get(messageId);
+  const message = MessagesUI.get(messageId);
   if (message) {
     if (isMsgEdit(status)) {
       if (status.isEdited) message.edited();

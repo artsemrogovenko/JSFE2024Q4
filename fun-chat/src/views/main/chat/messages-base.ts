@@ -17,6 +17,12 @@ export default class MessagesDB {
   /** id сообщения , name собеседника */
   private static msgOwner = new Map<string, string>();
 
+  public static clear(): void {
+    this.messages.clear();
+    this.messagesChain.clear();
+    this.msgOwner.clear();
+  }
+
   public static updateStatus(_uuid: string, payload: object): void {
     if (isNotifyMsg(payload)) {
       const messageId = payload.message.id;

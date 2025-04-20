@@ -91,3 +91,7 @@ export type AuthStorage = {
   logined: boolean;
   localUser: { login: string; password: string };
 };
+
+export type ApiError = {
+  error: string;
+};
