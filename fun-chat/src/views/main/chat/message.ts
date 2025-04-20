@@ -1,14 +1,14 @@
 import { appLogic } from '../../..';
 import { Container } from '../../../modules/block';
-import { Label } from '../../../modules/form';
+import { Paragraph } from '../../../modules/form';
 import { messageLogic } from '../../../modules/functions';
 import type { MessagePayload, MessageStatuses } from '../../../modules/types';
 
 export default class Message extends Container {
-  private from = new Label('message-from');
-  private timestamp = new Label('message-date');
-  private text = new Label('message');
-  private statusTag = new Label('message-status');
+  private from = new Paragraph('message-from');
+  private timestamp = new Paragraph('message-date');
+  private text = new Paragraph('message-text');
+  private statusTag = new Paragraph('message-status');
   private id: string = '';
   private iOwner: boolean;
   private status = {
@@ -23,13 +23,15 @@ export default class Message extends Container {
     this.text.setText(data.text);
     this.from.setText(data.from);
     const timestamp = new Date(data.datetime);
-    const format: Intl.DateTimeFormatOptions = {
+    const format = new Intl.DateTimeFormat('ru', {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
       weekday: 'short',
-      year: 'numeric',
       month: 'short',
       day: 'numeric',
-    };
-    this.timestamp.setText(timestamp.toLocaleDateString('ru-RU', format));
+    }).format(timestamp);
+    this.timestamp.setText(`${format}`);
     const forMe = appLogic.currentName === data.to;
     this.iOwner = !forMe;
     if (!forMe) {

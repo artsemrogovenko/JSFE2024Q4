@@ -44,3 +44,9 @@ export class Form<T extends Input> extends Block<'form'> {
     return this.input;
   }
 }
+
+export class Paragraph extends Block<'p'> {
+  constructor(className: string = '', text: string = '') {
+    super('p', className, text);
+  }
+}

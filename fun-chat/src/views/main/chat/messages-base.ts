@@ -31,7 +31,10 @@ export default class MessagesDB {
           message.status.isDelivered = true;
         }
         if (isMsgDelete(status)) {
-          if (userName) UserList.decreaseUnreadCount(userName, messageId);
+          if (userName) {
+            UserList.decreaseUnreadCount(userName, messageId);
+            this.messages.delete(messageId);
+          }
         }
         if (isMsgRead(status)) {
           if (userName) UserList.decreaseUnreadCount(userName, messageId);

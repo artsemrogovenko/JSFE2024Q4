@@ -16,12 +16,11 @@
   background: #a0ff7756;
 }
 
-.message-date {
-  grid-column: 2;
-  grid-row: 1;
+.wrapper-message p {
+  display: inline-flex;
 }
 
-.message {
+.message-text {
   grid-column: span 2;
   grid-row: 2;
 
@@ -34,9 +33,28 @@
   background: white;
 }
 
+.message-from {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 10px;
+  font-weight: 600;
+}
+
+.message-date {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 10px;
+  text-transform: capitalize;
+}
+
 .message-status {
   grid-column: 2;
   grid-row: 3;
+  justify-content: flex-end;
+
+  margin: 0 10px;
+
+  text-transform: capitalize;
 }
 
 .messages-list {
