@@ -229,6 +229,10 @@ export function saveToStorage(
   appState.setValue('localuser', JSON.stringify(data));
 }
 
+export function clearStorage(): void {
+  appState.setValue('localuser', '');
+}
+
 function handleUser(data: ApiResponse): void {
   const payload = data.payload;
   if (isThirdPartyUser(payload)) {

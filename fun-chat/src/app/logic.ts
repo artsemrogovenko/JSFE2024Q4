@@ -9,7 +9,12 @@ import {
   messageTextEditing,
   sendingMessagetoUser,
 } from '../api/requests';
-import { handleMessage, isAuthStorage, saveToStorage } from '../api/utils';
+import {
+  clearStorage,
+  handleMessage,
+  isAuthStorage,
+  saveToStorage,
+} from '../api/utils';
 import type { UserStatus } from '../modules/types';
 import { Chat } from '../views/main/chat';
 import { UserList } from '../views/main/chat/users-block';
@@ -82,6 +87,7 @@ export class AppLogic {
       if (this.socket) {
         this.socket.close();
         Chat.resetSelected();
+        this.clearUserLogin();
       }
       pushState('login');
     }
@@ -165,5 +171,11 @@ export class AppLogic {
     if (this.socket) {
       this.socket.send(request);
     }
+  }
+
+  private clearUserLogin(): void {
+    this.localUser = { login: '', password: '' };
+    this.logined = false;
+    clearStorage();
   }
 }
