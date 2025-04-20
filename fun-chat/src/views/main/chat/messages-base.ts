@@ -1,10 +1,10 @@
 import {
-  isMsgDelete,
-  isMsgDelivered,
-  isMsgEdit,
-  isMsgRead,
   isNotifyMsg,
-} from '../../../api/utils';
+  isMsgEdit,
+  isMsgDelivered,
+  isMsgDelete,
+  isMsgRead,
+} from '../../../api/types-verify';
 import { MessagePayload } from '../../../modules/types';
 import { Chat } from '../chat';
 import { UserList } from './users-block';

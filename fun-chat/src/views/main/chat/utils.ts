@@ -4,8 +4,8 @@ import {
   isMsgDelivered,
   isMsgDelete,
   isMsgRead,
-} from '../../../api/utils';
-import { MessagePayload, NotifyStatus } from '../../../modules/types';
+} from '../../../api/types-verify';
+import type { MessagePayload, NotifyStatus } from '../../../modules/types';
 import { Chat } from '../chat';
 import MessagesDB from './messages-base';
 import MessagesUI from './UI/messages-ui';

@@ -9,12 +9,8 @@ import {
   messageTextEditing,
   sendingMessagetoUser,
 } from '../api/requests';
-import {
-  clearStorage,
-  handleMessage,
-  isAuthStorage,
-  saveToStorage,
-} from '../api/utils';
+import { isAuthStorage } from '../api/types-verify';
+import { handleMessage, saveToStorage, clearStorage } from '../api/utils';
 import type { UserStatus } from '../modules/types';
 import { Chat } from '../views/main/chat';
 import { UserList } from '../views/main/chat/users-block';
