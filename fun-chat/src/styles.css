@@ -1,6 +1,7 @@
 @import './views/login/login.scss';
 @import './views/main/styles/main.css';
 @import './views/main/styles/mobile.css';
+@import './views/about/about.css';
 
 * {
   padding: 0;

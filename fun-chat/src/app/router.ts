@@ -1,5 +1,6 @@
 import { appLogic } from '..';
 import type Block from '../modules/block';
+import About from '../views/about/about';
 import Login from '../views/login/login-view';
 import Main from '../views/main/main-view';
 import NotFound from '../views/not-found';
@@ -74,6 +75,7 @@ function routes(path: string): Block<'main'> | undefined {
       }
       return new Main();
     case 'about':
+      return new About();
     default:
       return new NotFound();
       break;

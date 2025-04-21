@@ -1,0 +1,12 @@
+.about {
+  white-space: pre-line;
+}
+
+.about-container {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  border: solid 2px;
+  padding: 10px;
+  text-align: center;
+}

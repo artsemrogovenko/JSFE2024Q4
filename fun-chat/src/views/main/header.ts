@@ -1,4 +1,5 @@
 import { appLogic } from '../..';
+import { pushState } from '../../app/router';
 import Block, { Container } from '../../modules/block';
 import { Button } from '../../modules/buttons';
 
@@ -14,6 +15,7 @@ export default class Header extends Block<'section'> {
     this.logout.addListener('click', () => appLogic.logout());
     const myName = appLogic.currentName;
     this.setName(myName);
+    this.about.addListener('click', () => pushState('about'));
   }
 
   private setName(name: string): void {
