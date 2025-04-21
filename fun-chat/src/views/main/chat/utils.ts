@@ -184,3 +184,9 @@ document.addEventListener('click', (event) => {
     }
   }
 });
+
+type mobileTimer = {
+  timer: NodeJS.Timeout | undefined;
+};
+
+export const myTimer: mobileTimer = { timer: undefined };

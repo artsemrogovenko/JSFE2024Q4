@@ -2,7 +2,7 @@ import { appLogic } from '../../..';
 import { Container } from '../../../modules/block';
 import { Paragraph } from '../../../modules/form';
 import type { MessagePayload, MessageStatuses } from '../../../modules/types';
-import { messageLogic, showMessageMenu } from './utils';
+import { messageLogic, myTimer, showMessageMenu } from './utils';
 
 export default class Message extends Container {
   private from = new Paragraph('message-from');
@@ -45,16 +45,8 @@ export default class Message extends Container {
       this.addClass('you');
     }
     this.setProperties(data.status, forMe);
-    this.addListener('pointerenter', () =>
-      messageLogic(this.id, this.iOwner, this.status),
-    );
-    this.getNode().addEventListener('contextmenu', (event) => {
-      event.preventDefault();
-      if (this.iOwner) {
-        showMessageMenu(this.id, this.text.getText(), event);
-      }
-    });
     this.status = data.status;
+    this.addlisteners();
   }
 
   public delivered(forMe?: boolean): void {
@@ -108,5 +100,29 @@ export default class Message extends Container {
     if (data.isEdited) {
       this.edited();
     }
+  }
+
+  private addlisteners(): void {
+    this.addListener('pointerenter', () =>
+      messageLogic(this.id, this.iOwner, this.status),
+    );
+    this.addListener('contextmenu', (event) => {
+      event.preventDefault();
+      if (this.iOwner) {
+        showMessageMenu(this.id, this.text.getText(), event);
+      }
+    });
+    const timeOut = 2000;
+    this.addListener('touchstart', (event) => {
+      myTimer.timer = setTimeout(() => {
+        event.preventDefault();
+      }, timeOut);
+    });
+    this.addListener('touchmove', () => {
+      clearTimeout(myTimer.timer);
+    });
+    this.addListener('touchend', () => {
+      clearTimeout(myTimer.timer);
+    });
   }
 }
