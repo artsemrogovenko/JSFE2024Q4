@@ -1,4 +1,5 @@
 @import './message.css';
+@import './context.css';
 
 .chat {
   column-gap: 5px;

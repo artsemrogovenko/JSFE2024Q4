@@ -17,9 +17,9 @@ main {
 }
 
 .ui-button {
+  cursor: pointer;
   min-width: 100px;
   padding: 10px;
-  cursor: pointer;
 }
 
 .backdrop {

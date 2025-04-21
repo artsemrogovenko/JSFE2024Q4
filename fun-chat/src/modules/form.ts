@@ -1,5 +1,5 @@
 import Block from './block';
-import type { Input } from './inputs';
+import type { Input, InputText } from './inputs';
 import type { Indicator } from './types';
 
 export class Label extends Block<'label'> {
@@ -43,11 +43,18 @@ export class Form<T extends Input> extends Block<'form'> {
   public get getInput(): Input {
     return this.input;
   }
+
+  public replaceChild(newChild: InputText, oldChild: InputText): void {
+    this.getNode().replaceChild(newChild.getNode(), oldChild.getNode());
+  }
 }
 
 export class Paragraph extends Block<'p'> {
   constructor(className: string = '', text: string = '') {
     super('p', className, text);
+  }
+  public getText(): string {
+    return this.getNode().textContent || '';
   }
 }
 

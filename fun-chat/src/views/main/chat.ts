@@ -22,12 +22,12 @@ export class Chat {
   }
 
   public static clearText(): void {
-    this.history.clearText();
+    this.history.clearInputText();
   }
 
   public static clearList(): void {
     this.history.clearMessageList();
-    this.history.clearText();
+    this.history.clearInputText();
   }
   public static setUser(user: UserElement): void {
     this.history.setUser(user);
@@ -43,5 +43,12 @@ export class Chat {
   }
   public static removeLine(login: string): void {
     this.history.removeLine(login);
+  }
+
+  public static editMode(messageId: string, text: string): void {
+    this.history.setEditMode(messageId, text);
+  }
+  public static regularMode(): void {
+    this.history.setRegularMode();
   }
 }

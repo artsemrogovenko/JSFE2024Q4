@@ -2,14 +2,18 @@ import Block from '../../../modules/block';
 import { Button } from '../../../modules/buttons';
 import { Form } from '../../../modules/form';
 import { disableClick, enableClick } from '../../../modules/functions';
-import { InputText } from '../../../modules/inputs';
+import { InputText, Search } from '../../../modules/inputs';
 import type { MessagePayload } from '../../../modules/types';
 import SelectedUser from './selected-user';
+import MessageMenu from './UI/context-menu';
 import MessagesUI from './UI/messages-ui';
 import type UserElement from './user-element';
-import { sendMessage } from './utils';
+import { editMessage, sendMessage } from './utils';
 
 export default class ChatHistory extends Block<'article'> {
+  public static msgMenu: MessageMenu | undefined;
+  public static editedMsgId: string = '';
+
   private selectedUser = new SelectedUser();
   private messages = new MessagesUI();
   private send = new Form(
@@ -19,26 +23,35 @@ export default class ChatHistory extends Block<'article'> {
     'off',
     false,
   );
+  private editInput = new Search('new-message');
+  private regularInput = this.send.getInput;
+  private editMode: boolean;
+  private sendButton = new Button('send', 'Отправить');
   constructor() {
     super('article', 'history');
     this.addBlocks([this.selectedUser, this.messages, this.send]);
-    const sendButton = new Button('send', 'Отправить');
     this.send.getInput.setAttribute('placeholder', 'Сообщение...');
-    this.send.addBlock(sendButton);
-    this.send.addListener('submit', (event) => {
-      sendMessage(event, this.getSelected());
-    });
+    this.send.addBlock(this.sendButton);
+    this.editMode = false;
+    this.editInput.setAttribute('autofocus', '');
+
+    this.editInput.getNode().style.backgroundColor = '#faebd7';
+    this.setRegularMode();
     this.send.setAttribute('autofocus', '');
     this.setId('chat');
     disableClick(this.send);
-    this.messages.setText('Выберите пользователя');
+    this.messages.setNotify('Выберите пользователя');
   }
 
   public checkHistory(): void {
-    if (this.messages.length === 0) {
-      this.messages.setText('История сообщений пуста');
+    if (this.getSelected() === '') {
+      this.messages.setNotify('Выберите пользователя');
+      return;
+    }
+    if (this.messages.length === 1) {
+      this.messages.setNotify('История сообщений пуста');
     } else {
-      this.messages.setText('');
+      this.messages.setNotify('');
     }
   }
 
@@ -68,7 +81,7 @@ export default class ChatHistory extends Block<'article'> {
     this.messages.appendMessages(history, fromDB);
   }
 
-  public clearText(): void {
+  public clearInputText(): void {
     this.send.getInput.clear();
   }
   public clearMessageList(): void {
@@ -76,5 +89,26 @@ export default class ChatHistory extends Block<'article'> {
   }
   public removeLine(user: string): void {
     this.messages.removeLine(user);
+  }
+
+  public setEditMode(messageId: string, text: string): void {
+    ChatHistory.editedMsgId = messageId;
+    this.editMode = true;
+    this.editInput.setValue(text);
+    this.send.removeListener('submit', sendMessage);
+    this.send.replaceChild(this.editInput, this.regularInput);
+
+    this.send.addListener('submit', editMessage);
+  }
+
+  public setRegularMode(): void {
+    this.editInput.setValue('');
+
+    if (this.editMode) {
+      this.send.removeListener('submit', editMessage);
+      this.send.replaceChild(this.regularInput, this.editInput);
+    }
+    this.send.addListener('submit', sendMessage);
+    this.editMode = false;
   }
 }

@@ -28,10 +28,12 @@ export default class MessagesDB {
       const messageId = payload.message.id;
       const status = payload.message.status;
       const message = this.messages.get(messageId);
+      let text;
       if (message) {
         const userName = this.msgOwner.get(messageId);
         if (isMsgEdit(status)) {
           message.status.isEdited = true;
+          text = payload.message.text;
         }
         if (isMsgDelivered(status)) {
           message.status.isDelivered = true;
@@ -47,7 +49,7 @@ export default class MessagesDB {
           if (userName) UserList.decreaseUnreadCount(userName, messageId);
           message.status.isReaded = true;
         }
-        updateMessageUI(messageId, status);
+        updateMessageUI(messageId, status, text);
       }
     }
   }

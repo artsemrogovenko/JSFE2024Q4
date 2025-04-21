@@ -107,7 +107,7 @@ export class AppLogic {
       this.getListUsers();
     } else {
       if (this.socket) {
-        // this.clearUserLogin();
+        this.clearUserLogin();
         this.closeConnection();
       }
       pushState('login');
@@ -182,7 +182,7 @@ export class AppLogic {
 
   public initSocket(): void {
     this.socket = new WebSocket('ws://localhost:4000');
-    Chat.resetUser();
+    clearMemory();
     this.socket.addEventListener('open', () => this.login());
     this.socket.addEventListener('message', (message) =>
       handleMessage(this.uuid, message),

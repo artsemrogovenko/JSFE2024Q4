@@ -2,13 +2,14 @@ import { appLogic } from '../../..';
 import { Container } from '../../../modules/block';
 import { Paragraph } from '../../../modules/form';
 import type { MessagePayload, MessageStatuses } from '../../../modules/types';
-import { messageLogic } from './utils';
+import { messageLogic, showMessageMenu } from './utils';
 
 export default class Message extends Container {
   private from = new Paragraph('message-from');
   private timestamp = new Paragraph('message-date');
   private text = new Paragraph('message-text');
   private statusTag = new Paragraph('message-status');
+  private editedTag = new Paragraph('message-edited');
   private id: string = '';
   private iOwner: boolean;
   private status = {
@@ -18,7 +19,13 @@ export default class Message extends Container {
   };
   constructor(data: MessagePayload) {
     super('wrapper-message');
-    this.addBlocks([this.from, this.timestamp, this.text, this.statusTag]);
+    this.addBlocks([
+      this.from,
+      this.timestamp,
+      this.text,
+      this.editedTag,
+      this.statusTag,
+    ]);
     this.id = data.id;
     this.text.setText(data.text);
     this.from.setText(data.from);
@@ -38,9 +45,15 @@ export default class Message extends Container {
       this.addClass('you');
     }
     this.setProperties(data.status, forMe);
-    this.getNode().addEventListener('pointerenter', () =>
+    this.addListener('pointerenter', () =>
       messageLogic(this.id, this.iOwner, this.status),
     );
+    this.getNode().addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      if (this.iOwner) {
+        showMessageMenu(this.id, this.text.getText(), event);
+      }
+    });
     this.status = data.status;
   }
 
@@ -65,8 +78,12 @@ export default class Message extends Container {
       this.removeClass('unread');
     }
   }
-  public edited(): void {
-    this.statusTag.setText('изменено');
+  public edited(newText?: string): void {
+    if (newText) {
+      this.text.setText(newText);
+    }
+    // this.statusTag.setText('изменено');
+    this.editedTag.setText('изменено');
   }
   public deleted(): void {
     this.deleteBlock(this.text);

@@ -1,0 +1,26 @@
+.msg-menu {
+  position: absolute;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+
+  width: 100px;
+  padding: 10px;
+  border: solid;
+
+  background: antiquewhite;
+}
+
+.context-edit,
+.context-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notify {
+  align-self: center;
+}

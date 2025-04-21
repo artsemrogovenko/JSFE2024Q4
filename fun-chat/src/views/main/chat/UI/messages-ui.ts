@@ -1,4 +1,5 @@
 import { Container } from '../../../../modules/block';
+import { Paragraph } from '../../../../modules/form';
 import type { MessagePayload } from '../../../../modules/types';
 import { Chat } from '../../chat';
 import Message from '../message';
@@ -8,9 +9,11 @@ import { UnreadLine } from './uread-line';
 
 export default class MessagesUI extends Container {
   public static dictionary = new Map<string, Message>();
+  private notify = new Paragraph('notify');
   private delimeter: UnreadLine | null = null;
   constructor() {
     super('messages-list');
+    this.addBlock(this.notify);
   }
 
   public static get(messageId: string): Message | undefined {
@@ -35,7 +38,7 @@ export default class MessagesUI extends Container {
           this.addBlock(this.delimeter);
         }
       }
-      this.setText('');
+      this.notify.setText('');
       this.addBlock(message);
       if (this.delimeter !== null && data.to === selectedUser) {
         this.removeLine(selectedUser);
@@ -60,7 +63,10 @@ export default class MessagesUI extends Container {
   }
 
   public clearList(): void {
-    this.deleteAllBlocks();
+    if (this.length > 1) {
+      this.deleteAllBlocks();
+      this.notify = new Paragraph('notify');
+    }
   }
 
   public removeLine(login: string): void {
@@ -70,5 +76,8 @@ export default class MessagesUI extends Container {
         this.delimeter = null;
       }
     }
+  }
+  public setNotify(value: string): void {
+    this.notify.setText(value);
   }
 }

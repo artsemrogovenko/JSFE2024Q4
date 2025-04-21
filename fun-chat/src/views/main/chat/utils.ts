@@ -1,8 +1,8 @@
 import { appLogic } from '../../..';
 import {
-  isMsgEdit,
-  isMsgDelivered,
   isMsgDelete,
+  isMsgDelivered,
+  isMsgEdit,
   isMsgRead,
 } from '../../../api/types-verify';
 import { Search } from '../../../modules/inputs';
@@ -12,7 +12,9 @@ import type {
   NotifyStatus,
 } from '../../../modules/types';
 import { Chat } from '../chat';
+import ChatHistory from './history';
 import MessagesDB from './messages-base';
+import MessageMenu from './UI/context-menu';
 import MessagesUI from './UI/messages-ui';
 import type UserElement from './user-element';
 import { UserList } from './users-block';
@@ -39,7 +41,7 @@ export function pickUser(event: Event): UserElement | undefined {
   }
 }
 
-export function sendMessage(event: Event, to: string): void {
+function getTextValue(event: Event): string | undefined {
   event.preventDefault();
   event.stopImmediatePropagation();
   if (event instanceof SubmitEvent) {
@@ -47,10 +49,26 @@ export function sendMessage(event: Event, to: string): void {
     if (target instanceof HTMLFormElement) {
       const textArea = target.firstChild;
       if (textArea instanceof HTMLInputElement) {
-        const message = textArea.value;
-        appLogic.sendMessage(to, message);
+        return textArea.value;
       }
     }
+  }
+}
+
+export function sendMessage(event: Event): void {
+  const text = getTextValue(event);
+  if (text !== undefined) {
+    const to = Chat.getSelected();
+    appLogic.sendMessage(to, text);
+  }
+}
+
+export function editMessage(event: Event): void {
+  const text = getTextValue(event);
+  const messageId = ChatHistory.editedMsgId;
+  if (text !== undefined && messageId) {
+    if (text.trim() !== '') appLogic.editMessage(messageId, text);
+    Chat.regularMode();
   }
 }
 
@@ -74,11 +92,15 @@ export function saveToDbMessage(data: MessagePayload): void {
   }
 }
 
-export function updateMessageUI(messageId: string, status: NotifyStatus): void {
+export function updateMessageUI(
+  messageId: string,
+  status: NotifyStatus,
+  text?: string,
+): void {
   const message = MessagesUI.get(messageId);
   if (message) {
     if (isMsgEdit(status)) {
-      if (status.isEdited) message.edited();
+      if (status.isEdited) message.edited(text);
     }
     if (isMsgDelivered(status)) {
       if (status.isDelivered) message.delivered(!status.isDelivered);
@@ -126,3 +148,39 @@ export function readMessages(login: string): void {
     partner.getUnreadMessages().forEach((id) => MessagesUI.get(id)?.hover());
   }
 }
+
+export function showMessageMenu(id: string, text: string, event: Event): void {
+  const target = event.target;
+  if (target instanceof HTMLElement) {
+    const messageBlock = target.closest('div');
+    if (messageBlock?.className.includes('wrapper-message')) {
+      if (!ChatHistory.msgMenu?.length) {
+        const menu = new MessageMenu(id, text);
+        ChatHistory.msgMenu = menu;
+        if (event instanceof PointerEvent) {
+          menu.getNode().style.left = `${event.clientX}px`;
+          menu.getNode().style.top = `${event.clientY}px`;
+        }
+        document.body.appendChild(menu.getNode());
+      }
+    }
+  }
+}
+
+export function closeMessageMenu(): void {
+  if (ChatHistory.msgMenu) {
+    ChatHistory.msgMenu.destroy();
+    ChatHistory.msgMenu = undefined;
+  }
+}
+
+document.addEventListener('click', (event) => {
+  if (ChatHistory.msgMenu !== undefined) {
+    const target = event.target;
+    if (target instanceof HTMLElement) {
+      if (target.className !== 'msg-menu') {
+        closeMessageMenu();
+      }
+    }
+  }
+});
