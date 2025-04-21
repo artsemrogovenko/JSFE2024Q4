@@ -47,6 +47,9 @@ export default class UserElement extends Block<'li'> {
     }
   }
 
+  public getUnreadMessages(): string[] {
+    return [...this.counter.values()];
+  }
   private toggleValues(): void {
     if (this.counter.size === 0) {
       this.unreadCount.classList.add('none');

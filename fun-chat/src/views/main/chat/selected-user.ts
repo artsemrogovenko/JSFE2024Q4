@@ -28,4 +28,9 @@ export default class SelectedUser extends Container {
   public set name(name: string) {
     this.selectedName.setText(name);
   }
+  public reset(): void {
+    this.name = '';
+    this.isOnline.removeClass('online');
+    this.isOnline.setText('');
+  }
 }

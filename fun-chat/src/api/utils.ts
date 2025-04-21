@@ -148,4 +148,5 @@ export function clearMemory(): void {
   UserList.clear();
   MessagesDB.clear();
   Chat.users.cleanListUsers();
+  Chat.resetUser();
 }

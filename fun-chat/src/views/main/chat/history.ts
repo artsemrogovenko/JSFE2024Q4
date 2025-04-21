@@ -1,6 +1,7 @@
 import Block from '../../../modules/block';
 import { Button } from '../../../modules/buttons';
 import { Form } from '../../../modules/form';
+import { disableClick, enableClick } from '../../../modules/functions';
 import { InputText } from '../../../modules/inputs';
 import type { MessagePayload } from '../../../modules/types';
 import SelectedUser from './selected-user';
@@ -27,7 +28,20 @@ export default class ChatHistory extends Block<'article'> {
     this.send.addListener('submit', (event) => {
       sendMessage(event, this.getSelected());
     });
+    this.send.setAttribute('autofocus', '');
+    this.setId('chat');
+    disableClick(this.send);
+    this.messages.setText('Выберите пользователя');
   }
+
+  public checkHistory(): void {
+    if (this.messages.length === 0) {
+      this.messages.setText('История сообщений пуста');
+    } else {
+      this.messages.setText('');
+    }
+  }
+
   public getSelected(): string {
     return this.selectedUser.getName;
   }
@@ -38,6 +52,12 @@ export default class ChatHistory extends Block<'article'> {
   public setUser(user: UserElement): void {
     this.selectedUser.name = user.name;
     this.selectedUser.status = user.status;
+    enableClick(this.send);
+    this.checkHistory();
+  }
+
+  public resetUser(): void {
+    this.selectedUser.reset();
   }
 
   public newData(data: MessagePayload): void {

@@ -6,7 +6,11 @@ import {
   isMsgRead,
 } from '../../../api/types-verify';
 import { Search } from '../../../modules/inputs';
-import type { MessagePayload, NotifyStatus } from '../../../modules/types';
+import type {
+  MessagePayload,
+  MessageStatuses,
+  NotifyStatus,
+} from '../../../modules/types';
 import { Chat } from '../chat';
 import MessagesDB from './messages-base';
 import MessagesUI from './UI/messages-ui';
@@ -103,5 +107,22 @@ export function filter(event: Event, input: Search): void {
         UserList.getUsers().forEach((user) => user.show());
       }
       break;
+  }
+}
+export function messageLogic(
+  messageId: string,
+  owner: boolean,
+  status: MessageStatuses,
+): void {
+  if (owner === false && !status.isReaded) {
+    appLogic.readMessage(messageId);
+  }
+}
+
+export function readMessages(login: string): void {
+  const partner = UserList.getUser(login);
+  if (partner) {
+    MessagesUI.get;
+    partner.getUnreadMessages().forEach((id) => MessagesUI.get(id)?.hover());
   }
 }

@@ -1,13 +1,25 @@
-@media (width <=575px) {
-  section {
+/* @media (width <=470px) {
+  .main {
+    align-items: flex-start;
+  }
+
+  .main section {
     flex-direction: column;
-    width: 100%;
+  }
+} */
+
+@media (width <=575px) {
+  .main section {
+    flex-direction: column;
+    width: 90%;
   }
 
   .main {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+
+    width: 100%;
     height: unset;
   }
 
@@ -23,7 +35,7 @@
     word-break: normal;
   }
 
-  .header .ui-button {
+  .ui-button {
     padding: 5px;
   }
 
@@ -40,6 +52,10 @@
   .history {
     box-sizing: border-box;
     width: 100%;
+  }
+
+  .chat {
+    height: unset;
   }
 
   .footer {

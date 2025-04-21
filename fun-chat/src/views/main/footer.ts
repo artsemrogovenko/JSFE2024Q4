@@ -14,5 +14,6 @@ export default class Footer extends Block<'section'> {
     this.github.setText('artsemrogovenko');
 
     this.addBlocks([this.logo, this.github, this.year]);
+    this.setId('footer');
   }
 }

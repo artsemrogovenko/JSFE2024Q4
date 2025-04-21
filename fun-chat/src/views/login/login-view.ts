@@ -2,7 +2,7 @@ import { Container } from '../../modules/block';
 import { Button } from '../../modules/buttons';
 import { Form } from '../../modules/form';
 import { InputPassword, InputText } from '../../modules/inputs';
-import View from '../vew';
+import View from '../view';
 import { checkForm } from './functions';
 
 export default class Login extends View {

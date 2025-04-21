@@ -40,6 +40,7 @@ export default class MessagesDB {
           if (userName) {
             UserList.decreaseUnreadCount(userName, messageId);
             this.messages.delete(messageId);
+            Chat.history.checkHistory();
           }
         }
         if (isMsgRead(status)) {

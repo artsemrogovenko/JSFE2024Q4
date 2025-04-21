@@ -19,6 +19,7 @@ main {
 .ui-button {
   min-width: 100px;
   padding: 10px;
+  cursor: pointer;
 }
 
 .backdrop {
@@ -58,4 +59,8 @@ main {
 
 .no-scroll {
   overflow: hidden;
+}
+
+.inactive {
+  opacity: 0.2;
 }

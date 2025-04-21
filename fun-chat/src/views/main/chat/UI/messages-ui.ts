@@ -3,7 +3,7 @@ import type { MessagePayload } from '../../../../modules/types';
 import { Chat } from '../../chat';
 import Message from '../message';
 import { UserList } from '../users-block';
-import { updateMessageUI } from '../utils';
+import { readMessages, updateMessageUI } from '../utils';
 import { UnreadLine } from './uread-line';
 
 export default class MessagesUI extends Container {
@@ -35,9 +35,12 @@ export default class MessagesUI extends Container {
           this.addBlock(this.delimeter);
         }
       }
-
+      this.setText('');
       this.addBlock(message);
-
+      if (this.delimeter !== null && data.to === selectedUser) {
+        this.removeLine(selectedUser);
+        readMessages(selectedUser);
+      }
       if (this.delimeter === null) {
         this.element.scrollTop = this.element.scrollHeight;
         updateMessageUI(data.id, data.status);

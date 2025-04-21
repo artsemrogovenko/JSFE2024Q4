@@ -32,6 +32,9 @@ export class Chat {
   public static setUser(user: UserElement): void {
     this.history.setUser(user);
   }
+  public static resetUser(): void {
+    this.history.resetUser();
+  }
   public static addUser(user: UserElement): void {
     this.users.addUser(user);
   }

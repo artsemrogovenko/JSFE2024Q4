@@ -1,4 +1,4 @@
-import View from './vew';
+import View from './view';
 export default class NotFound extends View {
   constructor() {
     super('not-found-404');

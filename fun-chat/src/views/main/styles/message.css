@@ -3,6 +3,7 @@
   grid-template-columns: 2fr;
   grid-template-rows: 3fr;
 
+  width: fit-content;
   max-width: 350px;
   height: fit-content;
   border-radius: unset;

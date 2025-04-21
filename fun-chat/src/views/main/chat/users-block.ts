@@ -15,6 +15,7 @@ export class Users extends Block<'aside'> {
     this.search.addListener('input', (event) => filter(event, this.search));
     this.search.addListener('search', (event) => filter(event, this.search));
     this.addBlocks([this.search, this.list]);
+    this.setId('userlist');
   }
 
   public getList(): UserListUI {

@@ -1,8 +1,8 @@
 import { appLogic } from '../../..';
 import { Container } from '../../../modules/block';
 import { Paragraph } from '../../../modules/form';
-import { messageLogic } from '../../../modules/functions';
 import type { MessagePayload, MessageStatuses } from '../../../modules/types';
+import { messageLogic } from './utils';
 
 export default class Message extends Container {
   private from = new Paragraph('message-from');
@@ -38,8 +38,8 @@ export default class Message extends Container {
       this.addClass('you');
     }
     this.setProperties(data.status, forMe);
-    this.getNode().addEventListener('pointerenter', (event) =>
-      messageLogic(event, this.id, this.iOwner, this.status),
+    this.getNode().addEventListener('pointerenter', () =>
+      messageLogic(this.id, this.iOwner, this.status),
     );
     this.status = data.status;
   }
@@ -72,6 +72,10 @@ export default class Message extends Container {
     this.deleteBlock(this.text);
     this.statusTag.setText('удалено');
     this.destroy();
+  }
+
+  public hover(): void {
+    this.getNode().dispatchEvent(new Event('pointerenter'));
   }
 
   private setProperties(data: MessageStatuses, forMe: boolean): void {
