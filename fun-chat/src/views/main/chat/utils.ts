@@ -5,6 +5,7 @@ import {
   isMsgDelete,
   isMsgRead,
 } from '../../../api/types-verify';
+import { Search } from '../../../modules/inputs';
 import type { MessagePayload, NotifyStatus } from '../../../modules/types';
 import { Chat } from '../chat';
 import MessagesDB from './messages-base';
@@ -84,5 +85,23 @@ export function updateMessageUI(messageId: string, status: NotifyStatus): void {
     if (isMsgRead(status)) {
       if (status.isReaded) message.readed(!status.isReaded);
     }
+  }
+}
+
+export function filter(event: Event, input: Search): void {
+  const searchValue = input.getValue().toLowerCase();
+  switch (event.type) {
+    case 'input':
+      if (searchValue === '') {
+        UserList.getUsers().forEach((user) => user.show());
+      } else {
+        UserList.getUsers().forEach((user) => user.match(searchValue));
+      }
+      break;
+    case 'search':
+      if (searchValue === '') {
+        UserList.getUsers().forEach((user) => user.show());
+      }
+      break;
   }
 }

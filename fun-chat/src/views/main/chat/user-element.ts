@@ -33,6 +33,20 @@ export default class UserElement extends Block<'li'> {
     this.counter.delete(messageId);
     this.toggleValues();
   }
+
+  public show(): void {
+    this.removeClass('hide');
+  }
+
+  public match(searchValue: string): void {
+    const template = new RegExp(searchValue, 'gi');
+    if (this.login.search(template) < 0) {
+      this.addClass('hide');
+    } else {
+      this.show();
+    }
+  }
+
   private toggleValues(): void {
     if (this.counter.size === 0) {
       this.unreadCount.classList.add('none');

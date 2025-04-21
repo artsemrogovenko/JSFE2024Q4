@@ -29,10 +29,14 @@
   padding-inline-start: 20px;
 }
 
-li.user {
+.user {
   display: inline-flex;
   width: 90%;
   margin: 5px;
+}
+
+.hide {
+  display: none;
 }
 
 .user.online::before {

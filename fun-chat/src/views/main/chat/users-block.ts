@@ -4,6 +4,7 @@ import { Search } from '../../../modules/inputs';
 import type { UserStatus } from '../../../modules/types';
 import { Chat } from '../chat';
 import UserElement from './user-element';
+import { filter } from './utils';
 
 export class Users extends Block<'aside'> {
   private search = new Search('user-search');
@@ -11,8 +12,11 @@ export class Users extends Block<'aside'> {
   constructor() {
     super('aside', 'users');
     this.search.setAttribute('placeholder', 'Найти пользователя');
+    this.search.addListener('input', (event) => filter(event, this.search));
+    this.search.addListener('search', (event) => filter(event, this.search));
     this.addBlocks([this.search, this.list]);
   }
+
   public getList(): UserListUI {
     return this.list;
   }
