@@ -159,7 +159,7 @@ export function showMessageMenu(id: string, text: string, event: Event): void {
         ChatHistory.msgMenu = menu;
         if (event instanceof PointerEvent) {
           menu.getNode().style.left = `${event.clientX}px`;
-          menu.getNode().style.top = `${event.clientY}px`;
+          menu.getNode().style.top = `${event.clientY + window.scrollY}px`;
         }
         document.body.appendChild(menu.getNode());
       }
