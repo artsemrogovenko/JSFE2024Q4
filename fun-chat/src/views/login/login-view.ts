@@ -1,6 +1,8 @@
+import { pushState } from '../../app/router';
 import { Container } from '../../modules/block';
 import { Button } from '../../modules/buttons';
 import { Form } from '../../modules/form';
+import { preventDefault } from '../../modules/functions';
 import { InputPassword, InputText } from '../../modules/inputs';
 import View from '../view';
 import { checkForm } from './functions';
@@ -58,9 +60,13 @@ class FormAuth extends Container {
       this.submitButton,
       this.aboutButton,
     ]);
+    this.aboutButton.addListener('click', () => pushState('about'));
     this.submitButton.addListener('click', (event) =>
       checkForm(event, this.name.getInput, this.password.getInput),
     );
-    this.addListener('submit', () => this.submitButton.getNode().click());
+    this.addListener('submit', (event) => {
+      preventDefault(event);
+      this.submitButton.getNode().click();
+    });
   }
 }

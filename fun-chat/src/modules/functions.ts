@@ -13,7 +13,7 @@ export function enableClick(element: Block<keyof HTMLElementTagNameMap>): void {
   element.removeListener('keydown', preventDefault, true);
 }
 
-function preventDefault(event: Event): void {
+export function preventDefault(event: Event): void {
   event.preventDefault();
   event.stopImmediatePropagation();
 }
