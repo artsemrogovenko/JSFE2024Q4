@@ -1,11 +1,18 @@
 import { pushState } from '../../app/router';
 import { Container } from '../../modules/block';
 import { Button } from '../../modules/buttons';
-import { Form } from '../../modules/form';
+import { Form, Paragraph } from '../../modules/form';
 import { preventDefault } from '../../modules/functions';
 import { InputPassword, InputText } from '../../modules/inputs';
 import View from '../view';
-import { checkForm } from './functions';
+import {
+  checkForm,
+  checkNameInput,
+  checkPasswordInput,
+  maxlength,
+  minlength,
+  specialChars,
+} from './functions';
 
 export default class Login extends View {
   private form: FormAuth = new FormAuth('auth');
@@ -32,6 +39,11 @@ class FormAuth extends Container {
     true,
     'Пароль',
   );
+  private nameHint = new Paragraph('name-Hint');
+  private passwordHint = new Paragraph('password-Hint');
+  private nameInput = this.name.getInput;
+  private passwordInput = this.password.getInput;
+
   private submitButton = new Button('btn-login', 'Войти');
   private aboutButton = new Button('about', 'Инфо');
 
@@ -39,16 +51,17 @@ class FormAuth extends Container {
     super(className);
     const name = this.name.getInput;
     if (name) {
-      name.setAttribute('minlength', '4');
-      name.setAttribute('maxlength', '16');
+      name.setAttribute('minlength', `${minlength}`);
+      name.setAttribute('maxlength', `${maxlength}`);
       name.setAttribute('placeholder', 'Введите имя');
     }
 
     const password = this.password.getInput;
     if (password) {
-      password.setAttribute('minlength', '4');
-      password.setAttribute('maxlength', '16');
+      password.setAttribute('minlength', `${minlength}`);
+      password.setAttribute('maxlength', `${maxlength}`);
       password.setAttribute('placeholder', 'Введите пароль');
+      password.setAttribute('pattern', `.*[${specialChars}].*`);
     }
     this.init();
   }
@@ -56,17 +69,31 @@ class FormAuth extends Container {
   private init(): void {
     this.addBlocks([
       this.name,
+      this.nameHint,
       this.password,
+      this.passwordHint,
       this.submitButton,
       this.aboutButton,
     ]);
     this.aboutButton.addListener('click', () => pushState('about'));
     this.submitButton.addListener('click', (event) =>
-      checkForm(event, this.name.getInput, this.password.getInput),
+      checkForm(event, this.name, this.password),
     );
     this.addListener('submit', (event) => {
       preventDefault(event);
       this.submitButton.getNode().click();
+    });
+    this.nameInput.addListener('input', () => {
+      checkNameInput(this.nameInput, this.nameHint);
+      if (this.nameInput.getValue() === '') {
+        this.nameHint.setText('');
+      }
+    });
+    this.passwordInput.addListener('input', () => {
+      checkPasswordInput(this.passwordInput, this.passwordHint);
+      if (this.passwordInput.getValue() === '') {
+        this.passwordHint.setText('');
+      }
     });
   }
 }
