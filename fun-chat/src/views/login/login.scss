@@ -31,3 +31,7 @@ label {
 input:invalid {
   background-color: rgb(255 143 143 / 33.1%);
 }
+
+.btn-login.inactive {
+  cursor: not-allowed;
+}

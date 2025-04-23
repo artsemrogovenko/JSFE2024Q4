@@ -2,17 +2,10 @@ import { pushState } from '../../app/router';
 import { Container } from '../../modules/block';
 import { Button } from '../../modules/buttons';
 import { Form, Paragraph } from '../../modules/form';
-import { preventDefault } from '../../modules/functions';
+import { disableClick, preventDefault } from '../../modules/functions';
 import { InputPassword, InputText } from '../../modules/inputs';
 import View from '../view';
-import {
-  checkForm,
-  checkNameInput,
-  checkPasswordInput,
-  maxlength,
-  minlength,
-  specialChars,
-} from './functions';
+import { checkForm, maxlength, minlength, specialChars } from './functions';
 
 export default class Login extends View {
   private form: FormAuth = new FormAuth('auth');
@@ -63,10 +56,6 @@ class FormAuth extends Container {
       password.setAttribute('placeholder', 'Введите пароль');
       password.setAttribute('pattern', `.*[${specialChars}].*`);
     }
-    this.init();
-  }
-
-  private init(): void {
     this.addBlocks([
       this.name,
       this.nameHint,
@@ -76,21 +65,47 @@ class FormAuth extends Container {
       this.aboutButton,
     ]);
     this.aboutButton.addListener('click', () => pushState('about'));
-    this.submitButton.addListener('click', (event) =>
-      checkForm(event, this.name, this.password),
-    );
+    disableClick(this.submitButton);
     this.addListener('submit', (event) => {
       preventDefault(event);
       this.submitButton.getNode().click();
     });
-    this.nameInput.addListener('input', () => {
-      checkNameInput(this.nameInput, this.nameHint);
+    this.init();
+  }
+
+  private init(): void {
+    this.submitButton.addListener('click', (event) =>
+      checkForm(
+        event,
+        this.name,
+        this.password,
+        this.nameHint,
+        this.passwordHint,
+        this.submitButton,
+      ),
+    );
+    this.nameInput.addListener('input', (event) => {
+      checkForm(
+        event,
+        this.name,
+        this.password,
+        this.nameHint,
+        this.passwordHint,
+        this.submitButton,
+      );
       if (this.nameInput.getValue() === '') {
         this.nameHint.setText('');
       }
     });
-    this.passwordInput.addListener('input', () => {
-      checkPasswordInput(this.passwordInput, this.passwordHint);
+    this.passwordInput.addListener('input', (event) => {
+      checkForm(
+        event,
+        this.name,
+        this.password,
+        this.nameHint,
+        this.passwordHint,
+        this.submitButton,
+      );
       if (this.passwordInput.getValue() === '') {
         this.passwordHint.setText('');
       }

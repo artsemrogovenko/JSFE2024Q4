@@ -31,6 +31,7 @@
 }
 
 .user {
+  cursor: pointer;
   display: inline-flex;
   width: 90%;
   margin: 5px;
@@ -98,6 +99,10 @@
   padding: 10px;
   border-top: 1px solid;
   border-radius: unset;
+}
+
+.send-message.inactive * {
+  cursor: not-allowed;
 }
 
 .new-message {

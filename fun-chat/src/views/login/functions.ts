@@ -1,19 +1,30 @@
 import { appLogic } from '../..';
+import { Button } from '../../modules/buttons';
 import { Form, Paragraph } from '../../modules/form';
+import { disableClick, enableClick } from '../../modules/functions';
 import type { Input, InputPassword, InputText } from '../../modules/inputs';
 
 export function checkForm(
   event: Event,
   formName: Form<InputText>,
   formPassword: Form<InputPassword>,
+  nameHint: Paragraph,
+  passwordHint: Paragraph,
+  submitButton: Button,
 ): void {
   const target = event.target;
-  const name = formName.getInput;
-  const password = formPassword.getInput;
-  if (checkPasswordInput(password) && checkNameInput(name)) {
-    if (target instanceof HTMLButtonElement) {
-      appLogic.createSocket(name.getValue(), password.getValue());
+  const inputName = formName.getInput;
+  const inputPassword = formPassword.getInput;
+
+  const validInputName = checkNameInput(inputName, nameHint);
+  const validInputPassword = checkPasswordInput(inputPassword, passwordHint);
+  if (validInputName && validInputPassword) {
+    enableClick(submitButton);
+    if (target instanceof HTMLButtonElement && event.type !== 'input') {
+      appLogic.createSocket(inputName.getValue(), inputPassword.getValue());
     }
+  } else {
+    disableClick(submitButton);
   }
 }
 
