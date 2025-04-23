@@ -84,7 +84,7 @@ export default class Message extends Container {
   }
 
   public hover(): void {
-    this.getNode().dispatchEvent(new Event('pointerenter'));
+    this.getNode().dispatchEvent(new CustomEvent('readMessage'));
   }
 
   private setProperties(data: MessageStatuses, forMe: boolean): void {
@@ -103,9 +103,9 @@ export default class Message extends Container {
   }
 
   private addlisteners(): void {
-    this.addListener('pointerenter', () =>
-      messageLogic(this.id, this.iOwner, this.status),
-    );
+    this.addListener('readMessage', () => {
+      messageLogic(this.id, this.iOwner, this.status);
+    });
     this.addListener('contextmenu', (event) => {
       event.preventDefault();
       if (this.iOwner) {

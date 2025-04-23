@@ -1,10 +1,11 @@
 import { Container } from '../../../../modules/block';
 import { Paragraph } from '../../../../modules/form';
+import { preventDefault } from '../../../../modules/functions';
 import type { MessagePayload } from '../../../../modules/types';
 import { Chat } from '../../chat';
 import Message from '../message';
 import { UserList } from '../users-block';
-import { readMessages, updateMessageUI } from '../utils';
+import { readMessages } from '../utils';
 import { UnreadLine } from './uread-line';
 
 export default class MessagesUI extends Container {
@@ -27,7 +28,7 @@ export default class MessagesUI extends Container {
     MessagesUI.dictionary.set(data.id, message);
     const selectedUser = Chat.getSelected();
     if (data.from === selectedUser || data.to === selectedUser) {
-      this.notify.setText('');
+      this.setNotify('');
       this.addBlock(message);
       if (
         !data.status.isReaded &&
@@ -44,8 +45,7 @@ export default class MessagesUI extends Container {
       }
       if (this.delimeter === null) {
         this.element.scrollTop = this.element.scrollHeight;
-        updateMessageUI(data.id, data.status);
-        // message.readed();
+        message.hover();
       }
       if (data.to === selectedUser) Chat.clearText();
     } else {
@@ -63,18 +63,20 @@ export default class MessagesUI extends Container {
       this.deleteAllBlocks();
       this.notify = new Paragraph('notify');
     }
+    this.removeListeners();
   }
 
   public removeLine(login: string): void {
     if (login === Chat.getSelected()) {
       if (this.delimeter) {
+        this.removeListeners();
         this.deleteBlock(this.delimeter);
         this.delimeter = null;
       }
     }
   }
   public setNotify(value: string): void {
-    this.notify.setText(value);
+    if (this.notify) this.notify.setText(value);
   }
 
   private addLine(message: Message): void {
@@ -87,5 +89,41 @@ export default class MessagesUI extends Container {
     this.getNode().scrollTo({
       top: delimeterHeight - messageHeight - containerHeight,
     });
+    this.addListener('scroll', this.readAndRemove.bind(this));
+    this.addListener('click', this.readAndRemove.bind(this));
+  }
+
+  private readAndRemove(event: Event): void {
+    preventDefault(event);
+    const target = event.target;
+    if (target instanceof HTMLElement) {
+      switch (event.type) {
+        case 'scroll':
+          if (target.scrollHeight - target.scrollTop <= target.clientHeight + 1)
+            readMessages(Chat.getSelected());
+          break;
+        case 'click':
+          if (event instanceof PointerEvent) {
+            if (this.delimeter) {
+              const delimiterBottom = this.delimeter
+                .getNode()
+                .getBoundingClientRect().bottom;
+              const point = event.clientY;
+              if (point > delimiterBottom) {
+                this.getNode().scrollTo({
+                  top: this.getNode().scrollHeight,
+                  behavior: 'smooth',
+                });
+                readMessages(Chat.getSelected());
+              }
+            }
+          }
+          break;
+      }
+    }
+  }
+  private removeListeners(): void {
+    this.removeListener('scroll', this.readAndRemove.bind(this));
+    this.removeListener('click', this.readAndRemove.bind(this));
   }
 }

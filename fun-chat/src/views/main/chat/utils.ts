@@ -97,6 +97,7 @@ export function updateMessageUI(
   status: NotifyStatus,
   text?: string,
 ): void {
+  debugger;
   const message = MessagesUI.get(messageId);
   if (message) {
     if (isMsgEdit(status)) {
@@ -105,11 +106,11 @@ export function updateMessageUI(
     if (isMsgDelivered(status)) {
       if (status.isDelivered) message.delivered(!status.isDelivered);
     }
-    if (isMsgDelete(status)) {
-      if (status.isDeleted) message.deleted();
-    }
     if (isMsgRead(status)) {
       if (status.isReaded) message.readed(!status.isReaded);
+    }
+    if (isMsgDelete(status)) {
+      if (status.isDeleted) message.deleted();
     }
   }
 }
