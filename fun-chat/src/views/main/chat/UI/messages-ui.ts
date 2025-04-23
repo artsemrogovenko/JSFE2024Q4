@@ -27,19 +27,17 @@ export default class MessagesUI extends Container {
     MessagesUI.dictionary.set(data.id, message);
     const selectedUser = Chat.getSelected();
     if (data.from === selectedUser || data.to === selectedUser) {
+      this.notify.setText('');
+      this.addBlock(message);
       if (
         !data.status.isReaded &&
         typeof fromDB === 'boolean' &&
         fromDB === true &&
         this.delimeter === null
       ) {
-        if (data.to !== selectedUser) {
-          this.delimeter = new UnreadLine();
-          this.addBlock(this.delimeter);
-        }
+        if (data.to !== selectedUser) this.addLine(message);
       }
-      this.notify.setText('');
-      this.addBlock(message);
+
       if (this.delimeter !== null && data.to === selectedUser) {
         this.removeLine(selectedUser);
         readMessages(selectedUser);
@@ -49,9 +47,7 @@ export default class MessagesUI extends Container {
         updateMessageUI(data.id, data.status);
         // message.readed();
       }
-      if (data.to === selectedUser) {
-        Chat.clearText();
-      }
+      if (data.to === selectedUser) Chat.clearText();
     } else {
       if (!data.status.isReaded)
         UserList.increaseUnreadCount(data.from, data.id);
@@ -79,5 +75,17 @@ export default class MessagesUI extends Container {
   }
   public setNotify(value: string): void {
     this.notify.setText(value);
+  }
+
+  private addLine(message: Message): void {
+    this.delimeter = new UnreadLine();
+    this.addBlock(this.delimeter);
+    const delimeterHeight = this.delimeter.getNode().offsetTop;
+    const containerHeight = this.getNode().offsetTop;
+    const messageHeight = message.getNode().scrollHeight;
+    this.getNode().insertBefore(this.delimeter.getNode(), message.getNode());
+    this.getNode().scrollTo({
+      top: delimeterHeight - messageHeight - containerHeight,
+    });
   }
 }
