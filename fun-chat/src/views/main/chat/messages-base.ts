@@ -41,6 +41,7 @@ export default class MessagesDB {
         if (isMsgDelete(status)) {
           if (userName) {
             UserList.decreaseUnreadCount(userName, messageId);
+            Chat.history.deleteMessage(messageId);
             this.messages.delete(messageId);
             Chat.history.checkHistory();
           }

@@ -37,6 +37,10 @@
   margin: 5px;
 }
 
+.user:hover {
+  background-color: aquamarine;
+}
+
 .hide {
   display: none;
 }

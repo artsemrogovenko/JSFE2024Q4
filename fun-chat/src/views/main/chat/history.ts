@@ -54,7 +54,9 @@ export default class ChatHistory extends Block<'article'> {
       this.messages.setNotify('');
     }
   }
-
+  public deleteMessage(messageId: string): void {
+    this.messages.delete(messageId);
+  }
   public getSelected(): string {
     return this.selectedUser.getName;
   }

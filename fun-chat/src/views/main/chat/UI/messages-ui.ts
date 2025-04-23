@@ -58,10 +58,21 @@ export default class MessagesUI extends Container {
     data.forEach((message) => this.addMessage(message, fromDB));
   }
 
+  public delete(messageId: string): void {
+    const block = MessagesUI.get(messageId);
+    if (block) {
+      const index = this.deleteBlock(block);
+      this.getComponents().splice(index, 1);
+      MessagesUI.dictionary.delete(messageId);
+    }
+  }
+
   public clearList(): void {
     if (this.length > 1) {
       this.deleteAllBlocks();
+      this.getComponents().length = 0;
       this.notify = new Paragraph('notify');
+      this.addBlock(this.notify);
     }
     this.removeListeners();
   }

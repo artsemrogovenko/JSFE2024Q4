@@ -97,7 +97,6 @@ export function updateMessageUI(
   status: NotifyStatus,
   text?: string,
 ): void {
-  debugger;
   const message = MessagesUI.get(messageId);
   if (message) {
     if (isMsgEdit(status)) {
