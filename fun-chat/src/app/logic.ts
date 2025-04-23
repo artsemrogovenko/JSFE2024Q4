@@ -20,7 +20,6 @@ import {
 } from '../api/utils';
 import type { UserStatus } from '../modules/types';
 import { closeWindow, showInfo } from '../views/dialog';
-import { Chat } from '../views/main/chat';
 import { UserList } from '../views/main/chat/users-block';
 import { pushState } from './router';
 
@@ -168,10 +167,6 @@ export class AppLogic {
         user.isLogined = isLogined;
         this.users.set(login, user);
         UserList.updateUserElement(user);
-
-        if (Chat.getSelected() === login) {
-          Chat.updateSelectedStatus(isLogined);
-        }
       }
     } else {
       const newUser = { login: login, isLogined: isLogined };

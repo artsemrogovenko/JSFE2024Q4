@@ -92,6 +92,8 @@ export class UserList {
   }
 
   public static updateUserElement(value: UserStatus): void {
+    // debugger;
+    console.log(this.dictionary);
     const element = this.getUser(value.login);
     if (element) {
       element.setStatus(value.isLogined);
@@ -100,6 +102,7 @@ export class UserList {
         Chat.updateSelectedStatus(value.isLogined);
       }
     }
+    console.log(this.dictionary);
   }
 
   private static fetchHistory(): void {

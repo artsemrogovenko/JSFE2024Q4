@@ -23,7 +23,8 @@ export default class UserElement extends Block<'li'> {
     return this.isOnline;
   }
   public setStatus(status: boolean): void {
-    status === true ? this.setClass('user online') : this.setClass('user');
+    this.isOnline = status;
+    this.isOnline ? this.setClass('user online') : this.setClass('user');
   }
   public increaseCount(messageId: string): void {
     this.counter.add(messageId);
