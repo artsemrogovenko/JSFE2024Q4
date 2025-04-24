@@ -1,3 +1,4 @@
+import { appLogic } from '../../../..';
 import { Container } from '../../../../modules/block';
 import { Paragraph } from '../../../../modules/form';
 import { preventDefault } from '../../../../modules/functions';
@@ -27,6 +28,9 @@ export default class MessagesUI extends Container {
     const message = new Message(data);
     MessagesUI.dictionary.set(data.id, message);
     const selectedUser = Chat.getSelected();
+    if (!data.status.isReaded && data.to === appLogic.currentName) {
+      UserList.increaseUnreadCount(data.from, data.id);
+    }
     if (data.from === selectedUser || data.to === selectedUser) {
       this.setNotify('');
       this.addBlock(message);
@@ -34,9 +38,10 @@ export default class MessagesUI extends Container {
         !data.status.isReaded &&
         typeof fromDB === 'boolean' &&
         fromDB === true &&
-        this.delimeter === null
+        this.delimeter === null &&
+        data.to === appLogic.currentName
       ) {
-        if (data.to !== selectedUser) this.addLine(message);
+        this.addLine(message);
       }
 
       if (this.delimeter !== null && data.to === selectedUser) {
@@ -48,9 +53,6 @@ export default class MessagesUI extends Container {
         message.hover();
       }
       if (data.to === selectedUser) Chat.clearText();
-    } else {
-      if (!data.status.isReaded)
-        UserList.increaseUnreadCount(data.from, data.id);
     }
   }
 
@@ -73,6 +75,7 @@ export default class MessagesUI extends Container {
       this.getComponents().length = 0;
       this.notify = new Paragraph('notify');
       this.addBlock(this.notify);
+      this.delimeter = null;
     }
     this.removeListeners();
   }
@@ -91,42 +94,40 @@ export default class MessagesUI extends Container {
   }
 
   private addLine(message: Message): void {
-    this.delimeter = new UnreadLine();
-    this.addBlock(this.delimeter);
-    const delimeterHeight = this.delimeter.getNode().offsetTop;
-    const containerHeight = this.getNode().offsetTop;
-    const messageHeight = message.getNode().scrollHeight;
-    this.getNode().insertBefore(this.delimeter.getNode(), message.getNode());
-    this.getNode().scrollTo({
-      top: delimeterHeight - messageHeight - containerHeight,
-    });
-    this.addListener('scroll', this.readAndRemove.bind(this));
-    this.addListener('click', this.readAndRemove.bind(this));
+    if (this.delimeter === null) {
+      this.delimeter = new UnreadLine();
+      this.addBlock(this.delimeter);
+      this.getNode().insertBefore(this.delimeter.getNode(), message.getNode());
+      if (this.getNode().scrollHeight > this.getNode().clientHeight) {
+        message.getNode().scrollIntoView({ block: 'end' });
+      }
+      this.addListener('scroll', this.readAndRemove.bind(this));
+      this.addListener('click', this.readAndRemove.bind(this));
+    }
   }
 
   private readAndRemove(event: Event): void {
     preventDefault(event);
     const target = event.target;
     if (target instanceof HTMLElement) {
+      debugger;
       switch (event.type) {
         case 'scroll':
-          if (target.scrollHeight - target.scrollTop <= target.clientHeight + 1)
+          if (
+            target.scrollHeight - target.scrollTop <=
+            target.clientHeight + 1
+          ) {
             readMessages(Chat.getSelected());
+          }
           break;
         case 'click':
           if (event instanceof PointerEvent) {
             if (this.delimeter) {
-              const delimiterBottom = this.delimeter
-                .getNode()
-                .getBoundingClientRect().bottom;
-              const point = event.clientY;
-              if (point > delimiterBottom) {
-                this.getNode().scrollTo({
-                  top: this.getNode().scrollHeight,
-                  behavior: 'smooth',
-                });
-                readMessages(Chat.getSelected());
-              }
+              this.getNode().scrollTo({
+                top: this.getNode().scrollHeight,
+                behavior: 'smooth',
+              });
+              readMessages(Chat.getSelected());
             }
           }
           break;
