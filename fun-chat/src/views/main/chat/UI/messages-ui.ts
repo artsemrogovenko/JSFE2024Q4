@@ -110,7 +110,6 @@ export default class MessagesUI extends Container {
     preventDefault(event);
     const target = event.target;
     if (target instanceof HTMLElement) {
-      debugger;
       switch (event.type) {
         case 'scroll':
           if (
